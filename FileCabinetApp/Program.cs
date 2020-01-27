@@ -1,8 +1,9 @@
 ﻿using System;
+using FileCabinetApp;
 
-namespace FileCabinetApp
+namespace Program
 {
-    public static class Program
+    public static class FileCabinetApp
     {
         private const string DeveloperName = "Ivan Markevich";
         private const string HintMessage = "Enter your command, or enter 'help' to get help.";
@@ -12,22 +13,26 @@ namespace FileCabinetApp
 
         private static bool isRunning = true;
 
+        private static FileCabinetService fileCabinetService=new FileCabinetService();
+
         private static Tuple<string, Action<string>>[] commands = new Tuple<string, Action<string>>[]
         {
             new Tuple<string, Action<string>>("help", PrintHelp),
+            new Tuple<string, Action<string>>("stat", Stat), 
             new Tuple<string, Action<string>>("exit", Exit),
         };
 
         private static string[][] helpMessages = new string[][]
         {
             new string[] { "help", "prints the help screen", "The 'help' command prints the help screen." },
+            new string[] { "stat", "prints the records' statistics", "The 'stat' command prints the statistics screen"}, 
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
         };
 
         public static void Main(string[] args)
         {
-            Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
-            Console.WriteLine(Program.HintMessage);
+            Console.WriteLine($"File Cabinet Application, developed by {FileCabinetApp.DeveloperName}");
+            Console.WriteLine(FileCabinetApp.HintMessage);
             Console.WriteLine();
 
             do
@@ -39,7 +44,7 @@ namespace FileCabinetApp
 
                 if (string.IsNullOrEmpty(command))
                 {
-                    Console.WriteLine(Program.HintMessage);
+                    Console.WriteLine(FileCabinetApp.HintMessage);
                     continue;
                 }
 
@@ -68,10 +73,10 @@ namespace FileCabinetApp
         {
             if (!string.IsNullOrEmpty(parameters))
             {
-                var index = Array.FindIndex(helpMessages, 0, helpMessages.Length, i => string.Equals(i[Program.CommandHelpIndex], parameters, StringComparison.InvariantCultureIgnoreCase));
+                var index = Array.FindIndex(helpMessages, 0, helpMessages.Length, i => string.Equals(i[FileCabinetApp.CommandHelpIndex], parameters, StringComparison.InvariantCultureIgnoreCase));
                 if (index >= 0)
                 {
-                    Console.WriteLine(helpMessages[index][Program.ExplanationHelpIndex]);
+                    Console.WriteLine(helpMessages[index][FileCabinetApp.ExplanationHelpIndex]);
                 }
                 else
                 {
@@ -84,7 +89,7 @@ namespace FileCabinetApp
 
                 foreach (var helpMessage in helpMessages)
                 {
-                    Console.WriteLine("\t{0}\t- {1}", helpMessage[Program.CommandHelpIndex], helpMessage[Program.DescriptionHelpIndex]);
+                    Console.WriteLine("\t{0}\t- {1}", helpMessage[FileCabinetApp.CommandHelpIndex], helpMessage[FileCabinetApp.DescriptionHelpIndex]);
                 }
             }
 
@@ -95,6 +100,12 @@ namespace FileCabinetApp
         {
             Console.WriteLine("Exiting an application...");
             isRunning = false;
+        }
+
+        private static void Stat(string parameters)
+        {
+            var recordsCount = fileCabinetService.GetStat();
+            Console.WriteLine($"{recordsCount} record(s).");
         }
     }
 }
