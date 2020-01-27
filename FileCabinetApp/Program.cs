@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Globalization;
 using FileCabinetApp;
 
-namespace Program
+namespace FileCabinetApp
 {
-    public static class FileCabinetApp
+    public static class Program
     {
         private const string DeveloperName = "Ivan Markevich";
         private const string HintMessage = "Enter your command, or enter 'help' to get help.";
@@ -17,8 +18,9 @@ namespace Program
 
         private static Tuple<string, Action<string>>[] commands = new Tuple<string, Action<string>>[]
         {
+            new Tuple<string, Action<string>>("create", Create),
+            new Tuple<string, Action<string>>("stat", Stat),
             new Tuple<string, Action<string>>("help", PrintHelp),
-            new Tuple<string, Action<string>>("stat", Stat), 
             new Tuple<string, Action<string>>("exit", Exit),
         };
 
@@ -31,8 +33,8 @@ namespace Program
 
         public static void Main(string[] args)
         {
-            Console.WriteLine($"File Cabinet Application, developed by {FileCabinetApp.DeveloperName}");
-            Console.WriteLine(FileCabinetApp.HintMessage);
+            Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
+            Console.WriteLine(Program.HintMessage);
             Console.WriteLine();
 
             do
@@ -44,7 +46,7 @@ namespace Program
 
                 if (string.IsNullOrEmpty(command))
                 {
-                    Console.WriteLine(FileCabinetApp.HintMessage);
+                    Console.WriteLine(Program.HintMessage);
                     continue;
                 }
 
@@ -73,10 +75,10 @@ namespace Program
         {
             if (!string.IsNullOrEmpty(parameters))
             {
-                var index = Array.FindIndex(helpMessages, 0, helpMessages.Length, i => string.Equals(i[FileCabinetApp.CommandHelpIndex], parameters, StringComparison.InvariantCultureIgnoreCase));
+                var index = Array.FindIndex(helpMessages, 0, helpMessages.Length, i => string.Equals(i[Program.CommandHelpIndex], parameters, StringComparison.InvariantCultureIgnoreCase));
                 if (index >= 0)
                 {
-                    Console.WriteLine(helpMessages[index][FileCabinetApp.ExplanationHelpIndex]);
+                    Console.WriteLine(helpMessages[index][Program.ExplanationHelpIndex]);
                 }
                 else
                 {
@@ -89,11 +91,33 @@ namespace Program
 
                 foreach (var helpMessage in helpMessages)
                 {
-                    Console.WriteLine("\t{0}\t- {1}", helpMessage[FileCabinetApp.CommandHelpIndex], helpMessage[FileCabinetApp.DescriptionHelpIndex]);
+                    Console.WriteLine("\t{0}\t- {1}", helpMessage[Program.CommandHelpIndex], helpMessage[Program.DescriptionHelpIndex]);
                 }
             }
 
             Console.WriteLine();
+        }
+
+        private static void Create(string parameters)
+        {
+            string firstName;
+            string lastName;
+            DateTime dateOfBirth;
+            int id;
+            Console.Write("First Name: ");
+            firstName = Console.ReadLine();
+            Console.Write("Last Name: ");
+            lastName = Console.ReadLine();
+            Console.Write("Date of birth: ");
+            dateOfBirth = Convert.ToDateTime(Console.ReadLine(), new CultureInfo(string.Empty));
+            id = fileCabinetService.CreateRecord(firstName, lastName, dateOfBirth);
+            Console.WriteLine($"Record #{id} has been created");
+        }
+
+        private static void Stat(string parameters)
+        {
+            var recordsCount = Program.fileCabinetService.GetStat();
+            Console.WriteLine($"{recordsCount} record(s).");
         }
 
         private static void Exit(string parameters)
@@ -102,10 +126,6 @@ namespace Program
             isRunning = false;
         }
 
-        private static void Stat(string parameters)
-        {
-            var recordsCount = fileCabinetService.GetStat();
-            Console.WriteLine($"{recordsCount} record(s).");
-        }
+
     }
 }
