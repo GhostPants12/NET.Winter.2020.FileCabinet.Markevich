@@ -20,14 +20,17 @@ namespace FileCabinetApp
         {
             new Tuple<string, Action<string>>("create", Create),
             new Tuple<string, Action<string>>("stat", Stat),
+            new Tuple<string, Action<string>>("list", List),
             new Tuple<string, Action<string>>("help", PrintHelp),
             new Tuple<string, Action<string>>("exit", Exit),
         };
 
         private static string[][] helpMessages = new string[][]
         {
+            new string[] { "create", "creates a record in the list", "The 'create' command leads to the screen where records can be created"},
+            new string[] { "stat", "prints the records' statistics", "The 'stat' command prints the count of the list."},
+            new string[] { "list", "gets the list of the records", "The 'list' command prints out all the records in list."},
             new string[] { "help", "prints the help screen", "The 'help' command prints the help screen." },
-            new string[] { "stat", "prints the records' statistics", "The 'stat' command prints the statistics screen"}, 
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
         };
 
@@ -109,9 +112,18 @@ namespace FileCabinetApp
             Console.Write("Last Name: ");
             lastName = Console.ReadLine();
             Console.Write("Date of birth: ");
-            dateOfBirth = Convert.ToDateTime(Console.ReadLine(), new CultureInfo(string.Empty));
+            dateOfBirth = DateTime.ParseExact(Console.ReadLine(), "MM/dd/yyyy", System.Globalization.CultureInfo.InvariantCulture);
             id = fileCabinetService.CreateRecord(firstName, lastName, dateOfBirth);
             Console.WriteLine($"Record #{id} has been created");
+        }
+
+        private static void List(string parameters)
+        {
+            FileCabinetRecord[] arrayOfRecords = fileCabinetService.GetRecords();
+            foreach (FileCabinetRecord record in arrayOfRecords)
+            {
+                Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {record.DateOfBirth.ToString("yyyy-MMM-dd", System.Globalization.CultureInfo.InvariantCulture)}");
+            }
         }
 
         private static void Stat(string parameters)
