@@ -12,6 +12,12 @@ namespace FileCabinetApp
 
         public string LastName { get; set; }
 
+        public short Code { get; set; }
+
+        public char Letter { get; set; }
+
+        public decimal Balance { get; set; }
+
         public DateTime DateOfBirth { get; set; }
     }
 }
