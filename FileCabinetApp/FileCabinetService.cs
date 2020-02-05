@@ -27,6 +27,26 @@ namespace FileCabinetApp
             return record.Id;
         }
 
+        public void EditRecord(int id, string firstName, string lastName, short code, char letter, decimal balance, DateTime dateOfBirth)
+        {
+            this.CheckParameters(firstName, lastName, code, letter, balance, dateOfBirth);
+            foreach (var record in this.list)
+            {
+                if (record.Id == id)
+                {
+                    record.FirstName = firstName;
+                    record.LastName = lastName;
+                    record.Code = code;
+                    record.Letter = letter;
+                    record.Balance = balance;
+                    record.DateOfBirth = dateOfBirth;
+                    return;
+                }
+            }
+
+            throw new ArgumentException($"{nameof(id)} is incorrect.");
+        }
+
         public FileCabinetRecord[] GetRecords()
         {
             return this.list.ToArray();
