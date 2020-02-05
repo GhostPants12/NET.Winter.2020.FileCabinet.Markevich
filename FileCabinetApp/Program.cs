@@ -110,21 +110,28 @@ namespace FileCabinetApp
             char letter;
             decimal balance;
             DateTime dateOfBirth;
-            Console.Write("First Name: ");
-            firstName = Console.ReadLine();
-            Console.Write("Last Name: ");
-            lastName = Console.ReadLine();
-            Console.Write("Code: ");
-            code = short.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
-            Console.Write("Letter: ");
-            letter = Console.ReadKey().KeyChar;
-            Console.WriteLine();
-            Console.Write("Balance: ");
-            balance = decimal.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
-            Console.Write("Date of birth: ");
-            dateOfBirth = DateTime.ParseExact(Console.ReadLine(), "MM/dd/yyyy", System.Globalization.CultureInfo.InvariantCulture);
-            id = fileCabinetService.CreateRecord(firstName, lastName, code, letter, balance, dateOfBirth);
-            Console.WriteLine($"Record #{id} has been created");
+            try
+            {
+                Console.Write("First Name: ");
+                firstName = Console.ReadLine();
+                Console.Write("Last Name: ");
+                lastName = Console.ReadLine();
+                Console.Write("Code: ");
+                code = short.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
+                Console.Write("Letter: ");
+                letter = Console.ReadKey().KeyChar;
+                Console.WriteLine();
+                Console.Write("Balance: ");
+                balance = decimal.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
+                Console.Write("Date of birth: ");
+                dateOfBirth = DateTime.ParseExact(Console.ReadLine(), "MM/dd/yyyy", System.Globalization.CultureInfo.InvariantCulture);
+                id = fileCabinetService.CreateRecord(firstName, lastName, code, letter, balance, dateOfBirth);
+                Console.WriteLine($"Record #{id} has been created");
+            }
+            catch (Exception)
+            {
+                Create(parameters);
+            }
         }
 
         private static void List(string parameters)
