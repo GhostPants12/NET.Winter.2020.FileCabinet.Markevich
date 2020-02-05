@@ -19,6 +19,7 @@ namespace FileCabinetApp
         private static Tuple<string, Action<string>>[] commands = new Tuple<string, Action<string>>[]
         {
             new Tuple<string, Action<string>>("create", Create),
+            new Tuple<string, Action<string>>("edit", Edit),
             new Tuple<string, Action<string>>("stat", Stat),
             new Tuple<string, Action<string>>("list", List),
             new Tuple<string, Action<string>>("help", PrintHelp),
@@ -28,6 +29,7 @@ namespace FileCabinetApp
         private static string[][] helpMessages = new string[][]
         {
             new string[] { "create", "creates a record in the list", "The 'create' command leads to the screen where records can be created" },
+            new string[] { "edit", "edits a record in the list", "The 'edit' command leads to the screen where you can recreate the record" },
             new string[] { "stat", "prints the records' statistics", "The 'stat' command prints the count of the list." },
             new string[] { "list", "gets the list of the records", "The 'list' command prints out all the records in list." },
             new string[] { "help", "prints the help screen", "The 'help' command prints the help screen." },
@@ -110,21 +112,63 @@ namespace FileCabinetApp
             char letter;
             decimal balance;
             DateTime dateOfBirth;
-            Console.Write("First Name: ");
-            firstName = Console.ReadLine();
-            Console.Write("Last Name: ");
-            lastName = Console.ReadLine();
-            Console.Write("Code: ");
-            code = short.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
-            Console.Write("Letter: ");
-            letter = Console.ReadKey().KeyChar;
-            Console.WriteLine();
-            Console.Write("Balance: ");
-            balance = decimal.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
-            Console.Write("Date of birth: ");
-            dateOfBirth = DateTime.ParseExact(Console.ReadLine(), "MM/dd/yyyy", System.Globalization.CultureInfo.InvariantCulture);
-            id = fileCabinetService.CreateRecord(firstName, lastName, code, letter, balance, dateOfBirth);
-            Console.WriteLine($"Record #{id} has been created");
+            try
+            {
+                Console.Write("First Name: ");
+                firstName = Console.ReadLine();
+                Console.Write("Last Name: ");
+                lastName = Console.ReadLine();
+                Console.Write("Code: ");
+                code = short.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
+                Console.Write("Letter: ");
+                letter = Console.ReadKey().KeyChar;
+                Console.WriteLine();
+                Console.Write("Balance: ");
+                balance = decimal.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
+                Console.Write("Date of birth: ");
+                dateOfBirth = DateTime.ParseExact(Console.ReadLine(), "MM/dd/yyyy", System.Globalization.CultureInfo.InvariantCulture);
+                id = fileCabinetService.CreateRecord(firstName, lastName, code, letter, balance, dateOfBirth);
+                Console.WriteLine($"Record #{id} has been created.");
+            }
+            catch (Exception)
+            {
+                Create(parameters);
+            }
+        }
+
+        private static void Edit(string parameters)
+        {
+            int id = 0;
+            string firstName;
+            string lastName;
+            short code;
+            char letter;
+            decimal balance;
+            DateTime dateOfBirth;
+            try
+            {
+                Console.WriteLine("Id: ");
+                id = int.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
+                Console.Write("First Name: ");
+                firstName = Console.ReadLine();
+                Console.Write("Last Name: ");
+                lastName = Console.ReadLine();
+                Console.Write("Code: ");
+                code = short.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
+                Console.Write("Letter: ");
+                letter = Console.ReadKey().KeyChar;
+                Console.WriteLine();
+                Console.Write("Balance: ");
+                balance = decimal.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
+                Console.Write("Date of birth: ");
+                dateOfBirth = DateTime.ParseExact(Console.ReadLine(), "MM/dd/yyyy", System.Globalization.CultureInfo.InvariantCulture);
+                fileCabinetService.EditRecord(id, firstName, lastName, code, letter, balance, dateOfBirth);
+                Console.WriteLine($"Record #{id} is updated.");
+            }
+            catch (ArgumentException)
+            {
+                Console.WriteLine($"#{id} record is not found.");
+            }
         }
 
         private static void List(string parameters)
