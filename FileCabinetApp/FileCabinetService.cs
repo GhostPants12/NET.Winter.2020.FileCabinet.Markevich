@@ -7,6 +7,7 @@ namespace FileCabinetApp
     public class FileCabinetService
     {
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
+        private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
 
         public int CreateRecord(string firstName, string lastName, short code, char letter, decimal balance, DateTime dateOfBirth)
         {
@@ -23,6 +24,15 @@ namespace FileCabinetApp
             };
 
             this.list.Add(record);
+            if (!this.firstNameDictionary.ContainsKey(firstName))
+            {
+                this.firstNameDictionary.Add(firstName, new List<FileCabinetRecord>());
+                this.firstNameDictionary[firstName].Add(record);
+            }
+            else
+            {
+                this.firstNameDictionary[firstName].Add(record);
+            }
 
             return record.Id;
         }
@@ -34,12 +44,23 @@ namespace FileCabinetApp
             {
                 if (record.Id == id)
                 {
+                    this.firstNameDictionary.Remove(record.FirstName);
                     record.FirstName = firstName;
                     record.LastName = lastName;
                     record.Code = code;
                     record.Letter = letter;
                     record.Balance = balance;
                     record.DateOfBirth = dateOfBirth;
+                    if (!this.firstNameDictionary.ContainsKey(firstName))
+                    {
+                        this.firstNameDictionary.Add(firstName, new List<FileCabinetRecord>());
+                        this.firstNameDictionary[firstName].Add(record);
+                    }
+                    else
+                    {
+                        this.firstNameDictionary[firstName].Add(record);
+                    }
+
                     return;
                 }
             }
@@ -50,11 +71,11 @@ namespace FileCabinetApp
         public FileCabinetRecord[] FindByFirstName(string firstName)
         {
             List<FileCabinetRecord> resultList = new List<FileCabinetRecord>();
-            foreach (var record in this.list)
+            foreach (var key in this.firstNameDictionary.Keys)
             {
-                if (record.FirstName.Equals(firstName, StringComparison.InvariantCultureIgnoreCase))
+                if (firstName.Equals(key, StringComparison.InvariantCultureIgnoreCase))
                 {
-                    resultList.Add(record);
+                    resultList = this.firstNameDictionary[key];
                 }
             }
 
