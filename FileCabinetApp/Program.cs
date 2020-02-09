@@ -20,6 +20,7 @@ namespace FileCabinetApp
         {
             new Tuple<string, Action<string>>("create", Create),
             new Tuple<string, Action<string>>("edit", Edit),
+            new Tuple<string, Action<string>>("find", Find),
             new Tuple<string, Action<string>>("stat", Stat),
             new Tuple<string, Action<string>>("list", List),
             new Tuple<string, Action<string>>("help", PrintHelp),
@@ -30,6 +31,7 @@ namespace FileCabinetApp
         {
             new string[] { "create", "creates a record in the list", "The 'create' command leads to the screen where records can be created" },
             new string[] { "edit", "edits a record in the list", "The 'edit' command leads to the screen where you can recreate the record" },
+            new string[] { "find", "finds a record with a specified property and its specified value", "The 'find' command leads to the screen where you can find a record" },
             new string[] { "stat", "prints the records' statistics", "The 'stat' command prints the count of the list." },
             new string[] { "list", "gets the list of the records", "The 'list' command prints out all the records in list." },
             new string[] { "help", "prints the help screen", "The 'help' command prints the help screen." },
@@ -168,6 +170,21 @@ namespace FileCabinetApp
             catch (ArgumentException)
             {
                 Console.WriteLine($"#{id} record is not found.");
+            }
+        }
+
+        private static void Find(string parameters)
+        {
+            string[] parametersArray = parameters.Split('"');
+            string propertyName = parametersArray[0];
+            string valueToFind = parametersArray[1];
+            if (propertyName.Equals("firstname ", StringComparison.InvariantCultureIgnoreCase))
+            {
+                FileCabinetRecord[] arrayOfRecords = fileCabinetService.FindByFirstName(valueToFind);
+                foreach (FileCabinetRecord record in arrayOfRecords)
+                {
+                    Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {record.Code}, {record.Letter}, {record.Balance.ToString(CultureInfo.InvariantCulture)}, {record.DateOfBirth.ToString("yyyy-MMM-dd", System.Globalization.CultureInfo.InvariantCulture)}");
+                }
             }
         }
 

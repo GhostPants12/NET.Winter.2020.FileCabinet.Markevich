@@ -47,6 +47,20 @@ namespace FileCabinetApp
             throw new ArgumentException($"{nameof(id)} is incorrect.");
         }
 
+        public FileCabinetRecord[] FindByFirstName(string firstName)
+        {
+            List<FileCabinetRecord> resultList = new List<FileCabinetRecord>();
+            foreach (var record in this.list)
+            {
+                if (record.FirstName.Equals(firstName, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    resultList.Add(record);
+                }
+            }
+
+            return resultList.ToArray();
+        }
+
         public FileCabinetRecord[] GetRecords()
         {
             return this.list.ToArray();
