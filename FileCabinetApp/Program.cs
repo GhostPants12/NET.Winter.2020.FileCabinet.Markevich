@@ -186,6 +186,15 @@ namespace FileCabinetApp
                     Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {record.Code}, {record.Letter}, {record.Balance.ToString(CultureInfo.InvariantCulture)}, {record.DateOfBirth.ToString("yyyy-MMM-dd", System.Globalization.CultureInfo.InvariantCulture)}");
                 }
             }
+
+            if (propertyName.Equals("lastname ", StringComparison.InvariantCultureIgnoreCase))
+            {
+                FileCabinetRecord[] arrayOfRecords = fileCabinetService.FindByLastName(valueToFind);
+                foreach (FileCabinetRecord record in arrayOfRecords)
+                {
+                    Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {record.Code}, {record.Letter}, {record.Balance.ToString(CultureInfo.InvariantCulture)}, {record.DateOfBirth.ToString("yyyy-MMM-dd", System.Globalization.CultureInfo.InvariantCulture)}");
+                }
+            }
         }
 
         private static void List(string parameters)
