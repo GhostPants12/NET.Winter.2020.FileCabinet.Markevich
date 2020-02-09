@@ -8,6 +8,7 @@ namespace FileCabinetApp
     {
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
         private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
+        private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
 
         public int CreateRecord(string firstName, string lastName, short code, char letter, decimal balance, DateTime dateOfBirth)
         {
@@ -32,6 +33,16 @@ namespace FileCabinetApp
             else
             {
                 this.firstNameDictionary[firstName].Add(record);
+            }
+
+            if (!this.lastNameDictionary.ContainsKey(lastName))
+            {
+                this.lastNameDictionary.Add(lastName, new List<FileCabinetRecord>());
+                this.lastNameDictionary[lastName].Add(record);
+            }
+            else
+            {
+                this.lastNameDictionary[lastName].Add(record);
             }
 
             return record.Id;
@@ -85,11 +96,11 @@ namespace FileCabinetApp
         public FileCabinetRecord[] FindByLastName(string lastName)
         {
             List<FileCabinetRecord> resultList = new List<FileCabinetRecord>();
-            foreach (var record in this.list)
+            foreach (var key in this.lastNameDictionary.Keys)
             {
-                if (record.LastName.Equals(lastName, StringComparison.InvariantCultureIgnoreCase))
+                if (lastName.Equals(key, StringComparison.InvariantCultureIgnoreCase))
                 {
-                    resultList.Add(record);
+                    resultList = this.lastNameDictionary[key];
                 }
             }
 
