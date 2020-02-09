@@ -9,6 +9,7 @@ namespace FileCabinetApp
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
         private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
+        private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<DateTime, List<FileCabinetRecord>>();
 
         public int CreateRecord(string firstName, string lastName, short code, char letter, decimal balance, DateTime dateOfBirth)
         {
@@ -43,6 +44,16 @@ namespace FileCabinetApp
             else
             {
                 this.lastNameDictionary[lastName].Add(record);
+            }
+
+            if (!this.dateOfBirthDictionary.ContainsKey(dateOfBirth))
+            {
+                this.dateOfBirthDictionary.Add(dateOfBirth, new List<FileCabinetRecord>());
+                this.dateOfBirthDictionary[dateOfBirth].Add(record);
+            }
+            else
+            {
+                this.dateOfBirthDictionary[dateOfBirth].Add(record);
             }
 
             return record.Id;
@@ -110,11 +121,11 @@ namespace FileCabinetApp
         public FileCabinetRecord[] FindByDateOfBirth(DateTime dateTime)
         {
             List<FileCabinetRecord> resultList = new List<FileCabinetRecord>();
-            foreach (var record in this.list)
+            foreach (var key in this.dateOfBirthDictionary.Keys)
             {
-                if (record.DateOfBirth.Equals(dateTime))
+                if (dateTime.Equals(key))
                 {
-                    resultList.Add(record);
+                    resultList = this.dateOfBirthDictionary[key];
                 }
             }
 
