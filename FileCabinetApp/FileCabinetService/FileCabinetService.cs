@@ -5,19 +5,26 @@ using System.Text;
 namespace FileCabinetApp
 {
     /// <summary>Class for working with the file cabinet.</summary>
-    public class FileCabinetService
+    public abstract class FileCabinetService
     {
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
-        private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
-        private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
-        private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<DateTime, List<FileCabinetRecord>>();
+
+        private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary =
+            new Dictionary<string, List<FileCabinetRecord>>();
+
+        private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary =
+            new Dictionary<string, List<FileCabinetRecord>>();
+
+        private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary =
+            new Dictionary<DateTime, List<FileCabinetRecord>>();
 
         /// <summary>Creates the record.</summary>
         /// <param name="newRecordData">Container for the record's fields.</param>
         /// <returns>Returns the new record's ID.</returns>
         public int CreateRecord(RecordData newRecordData)
         {
-            this.CheckParameters(newRecordData.FirstName, newRecordData.LastName, newRecordData.Code, newRecordData.Letter, newRecordData.Balance, newRecordData.DateOfBirth);
+            this.CheckParameters(newRecordData.FirstName, newRecordData.LastName, newRecordData.Code,
+                newRecordData.Letter, newRecordData.Balance, newRecordData.DateOfBirth);
             var record = new FileCabinetRecord
             {
                 Id = this.list.Count + 1,
@@ -68,7 +75,8 @@ namespace FileCabinetApp
         /// <exception cref="ArgumentException">Thrown when id is incorrect.</exception>
         public void EditRecord(RecordData newRecordData)
         {
-            this.CheckParameters(newRecordData.FirstName, newRecordData.LastName, newRecordData.Code, newRecordData.Letter, newRecordData.Balance, newRecordData.DateOfBirth);
+            this.CheckParameters(newRecordData.FirstName, newRecordData.LastName, newRecordData.Code,
+                newRecordData.Letter, newRecordData.Balance, newRecordData.DateOfBirth);
             foreach (var record in this.list)
             {
                 if (record.Id == newRecordData.Id)
@@ -190,51 +198,6 @@ namespace FileCabinetApp
         /// <param name="balance">The balance.</param>
         /// <param name="dateOfBirth">The date of birth.</param>
         /// <exception cref="ArgumentException">Thrown when one of the parameters is incorrect.</exception>
-        private void CheckParameters(string firstName, string lastName, short code, char letter, decimal balance, DateTime dateOfBirth)
-        {
-            this.CheckName(firstName);
-            this.CheckName(lastName);
-            if (dateOfBirth < new DateTime(1950, 1, 1) || dateOfBirth > DateTime.Today)
-            {
-                throw new ArgumentException($"{nameof(dateOfBirth)} is earlier than 01-Jan-1950 or later than today.");
-            }
-
-            if (code < 0)
-            {
-                throw new ArgumentException($"{nameof(code)} is less than zero.");
-            }
-
-            if (letter == ' ')
-            {
-                throw new ArgumentException($"{nameof(letter)} can't be whitespace.");
-            }
-
-            if (balance < 0)
-            {
-                throw new ArgumentException($"{nameof(balance)} can't be negative.");
-            }
-        }
-
-        /// <summary>Checks the name.</summary>
-        /// <param name="name">The name.</param>
-        /// <exception cref="ArgumentNullException">name - Name is null.</exception>
-        /// <exception cref="ArgumentException">name - Name's length is less than two or more than 60.</exception>
-        private void CheckName(string name)
-        {
-            if (name == null)
-            {
-                throw new ArgumentNullException(nameof(name), "Name is null.");
-            }
-
-            if (name.Length < 2 || name.Length > 60)
-            {
-                throw new ArgumentException($"{nameof(name)}'s length is less than 2 or more than 60.");
-            }
-
-            if (name.Contains(' ', StringComparison.InvariantCulture))
-            {
-                throw new ArgumentException($"{nameof(name)} contains whitespaces.");
-            }
-        }
+        public abstract void CheckParameters(string firstName, string lastName, short code, char letter, decimal balance, DateTime dateOfBirth);
     }
 }
