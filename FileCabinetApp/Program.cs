@@ -4,6 +4,7 @@ using FileCabinetApp;
 
 namespace FileCabinetApp
 {
+    /// <summary>The Program Class.</summary>
     public static class Program
     {
         private const string DeveloperName = "Ivan Markevich";
@@ -38,6 +39,8 @@ namespace FileCabinetApp
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
         };
 
+        /// <summary>Defines the entry point of the application.</summary>
+        /// <param name="args">The arguments.</param>
         public static void Main(string[] args)
         {
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
@@ -72,12 +75,16 @@ namespace FileCabinetApp
             while (isRunning);
         }
 
+        /// <summary>Prints the missed command information.</summary>
+        /// <param name="command">The command.</param>
         private static void PrintMissedCommandInfo(string command)
         {
             Console.WriteLine($"There is no '{command}' command.");
             Console.WriteLine();
         }
 
+        /// <summary>Prints the help.</summary>
+        /// <param name="parameters">The parameters.</param>
         private static void PrintHelp(string parameters)
         {
             if (!string.IsNullOrEmpty(parameters))
@@ -105,6 +112,8 @@ namespace FileCabinetApp
             Console.WriteLine();
         }
 
+        /// <summary>Creates the record.</summary>
+        /// <param name="parameters">The parameters.</param>
         private static void Create(string parameters)
         {
             int id;
@@ -138,6 +147,8 @@ namespace FileCabinetApp
             }
         }
 
+        /// <summary>Edits the record.</summary>
+        /// <param name="parameters">The parameters.</param>
         private static void Edit(string parameters)
         {
             int id = 0;
@@ -173,6 +184,8 @@ namespace FileCabinetApp
             }
         }
 
+        /// <summary>Finds the record.</summary>
+        /// <param name="parameters">The parameters.</param>
         private static void Find(string parameters)
         {
             string[] parametersArray = parameters.Split('"');
@@ -207,6 +220,8 @@ namespace FileCabinetApp
             }
         }
 
+        /// <summary>  Gets the list of the records.</summary>
+        /// <param name="parameters">The parameters.</param>
         private static void List(string parameters)
         {
             FileCabinetRecord[] arrayOfRecords = fileCabinetService.GetRecords();
@@ -216,12 +231,16 @@ namespace FileCabinetApp
             }
         }
 
+        /// <summary>  Shows the stat.</summary>
+        /// <param name="parameters">The parameters.</param>
         private static void Stat(string parameters)
         {
             var recordsCount = Program.fileCabinetService.GetStat();
             Console.WriteLine($"{recordsCount} record(s).");
         }
 
+        /// <summary>Exits from the application.</summary>
+        /// <param name="parameters">The parameters.</param>
         private static void Exit(string parameters)
         {
             Console.WriteLine("Exiting an application...");

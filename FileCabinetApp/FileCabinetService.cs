@@ -4,6 +4,7 @@ using System.Text;
 
 namespace FileCabinetApp
 {
+    /// <summary>Class for working with the file cabinet.</summary>
     public class FileCabinetService
     {
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
@@ -11,6 +12,14 @@ namespace FileCabinetApp
         private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<DateTime, List<FileCabinetRecord>>();
 
+        /// <summary>Creates the record.</summary>
+        /// <param name="firstName">The first name.</param>
+        /// <param name="lastName">The last name.</param>
+        /// <param name="code">The code.</param>
+        /// <param name="letter">The letter.</param>
+        /// <param name="balance">The balance.</param>
+        /// <param name="dateOfBirth">The date of birth.</param>
+        /// <returns>Returns the new record's ID.</returns>
         public int CreateRecord(string firstName, string lastName, short code, char letter, decimal balance, DateTime dateOfBirth)
         {
             this.CheckParameters(firstName, lastName, code, letter, balance, dateOfBirth);
@@ -59,6 +68,15 @@ namespace FileCabinetApp
             return record.Id;
         }
 
+        /// <summary>Edits the record.</summary>
+        /// <param name="id">The identifier.</param>
+        /// <param name="firstName">The first name.</param>
+        /// <param name="lastName">The last name.</param>
+        /// <param name="code">The code.</param>
+        /// <param name="letter">The letter.</param>
+        /// <param name="balance">The balance.</param>
+        /// <param name="dateOfBirth">The date of birth.</param>
+        /// <exception cref="ArgumentException">Thrown when id is incorrect.</exception>
         public void EditRecord(int id, string firstName, string lastName, short code, char letter, decimal balance, DateTime dateOfBirth)
         {
             this.CheckParameters(firstName, lastName, code, letter, balance, dateOfBirth);
@@ -90,6 +108,9 @@ namespace FileCabinetApp
             throw new ArgumentException($"{nameof(id)} is incorrect.");
         }
 
+        /// <summary>Finds the record by its first name.</summary>
+        /// <param name="firstName">The first name.</param>
+        /// <returns>The array of record with specific first name.</returns>
         public FileCabinetRecord[] FindByFirstName(string firstName)
         {
             List<FileCabinetRecord> resultList = new List<FileCabinetRecord>();
@@ -104,6 +125,9 @@ namespace FileCabinetApp
             return resultList.ToArray();
         }
 
+        /// <summary>Finds the record by its last name.</summary>
+        /// <param name="lastName">The last name.</param>
+        /// <returns>The array of record with specific last name.</returns>
         public FileCabinetRecord[] FindByLastName(string lastName)
         {
             List<FileCabinetRecord> resultList = new List<FileCabinetRecord>();
@@ -118,6 +142,9 @@ namespace FileCabinetApp
             return resultList.ToArray();
         }
 
+        /// <summary>Finds the record by its date of birth.</summary>
+        /// <param name="dateTimee">The date of birth.</param>
+        /// <returns>The array of record with specific date of birth.</returns>
         public FileCabinetRecord[] FindByDateOfBirth(DateTime dateTime)
         {
             List<FileCabinetRecord> resultList = new List<FileCabinetRecord>();
@@ -132,16 +159,28 @@ namespace FileCabinetApp
             return resultList.ToArray();
         }
 
+        /// <summary>Gets all the records.</summary>
+        /// <returns>An array of records.</returns>
         public FileCabinetRecord[] GetRecords()
         {
             return this.list.ToArray();
         }
 
+        /// <summary>Gets the stat.</summary>
+        /// <returns>The number of records.</returns>
         public int GetStat()
         {
             return this.list.Count;
         }
 
+        /// <summary>Checks the parameters.</summary>
+        /// <param name="firstName">The first name.</param>
+        /// <param name="lastName">The last name.</param>
+        /// <param name="code">The code.</param>
+        /// <param name="letter">The letter.</param>
+        /// <param name="balance">The balance.</param>
+        /// <param name="dateOfBirth">The date of birth.</param>
+        /// <exception cref="ArgumentException">Thrown when one of the parameters is incorrect.</exception>
         private void CheckParameters(string firstName, string lastName, short code, char letter, decimal balance, DateTime dateOfBirth)
         {
             this.CheckName(firstName);
@@ -167,6 +206,10 @@ namespace FileCabinetApp
             }
         }
 
+        /// <summary>Checks the name.</summary>
+        /// <param name="name">The name.</param>
+        /// <exception cref="ArgumentNullException">name - Name is null.</exception>
+        /// <exception cref="ArgumentException">name - Name's length is less than two or more than 60.</exception>
         private void CheckName(string name)
         {
             if (name == null)
@@ -176,7 +219,7 @@ namespace FileCabinetApp
 
             if (name.Length < 2 || name.Length > 60)
             {
-                throw new ArgumentException($"{nameof(name)}'s length is less than zero or more than 60.");
+                throw new ArgumentException($"{nameof(name)}'s length is less than 2 or more than 60.");
             }
 
             if (name.Contains(' ', StringComparison.InvariantCulture))
