@@ -138,7 +138,8 @@ namespace FileCabinetApp
                 balance = decimal.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
                 Console.Write("Date of birth: ");
                 dateOfBirth = DateTime.ParseExact(Console.ReadLine(), "MM/dd/yyyy", System.Globalization.CultureInfo.InvariantCulture);
-                id = fileCabinetService.CreateRecord(firstName, lastName, code, letter, balance, dateOfBirth);
+                RecordData recordDataToCreate = new RecordData(firstName, lastName, code, letter, balance, dateOfBirth);
+                id = fileCabinetService.CreateRecord(recordDataToCreate);
                 Console.WriteLine($"Record #{id} has been created.");
             }
             catch (Exception)
@@ -175,7 +176,9 @@ namespace FileCabinetApp
                 balance = decimal.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
                 Console.Write("Date of birth: ");
                 dateOfBirth = DateTime.ParseExact(Console.ReadLine(), "MM/dd/yyyy", System.Globalization.CultureInfo.InvariantCulture);
-                fileCabinetService.EditRecord(id, firstName, lastName, code, letter, balance, dateOfBirth);
+                RecordData recordDataToEdit = new RecordData(firstName, lastName, code, letter, balance, dateOfBirth);
+                recordDataToEdit.Id = id;
+                fileCabinetService.EditRecord(recordDataToEdit);
                 Console.WriteLine($"Record #{id} is updated.");
             }
             catch (ArgumentException)

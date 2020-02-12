@@ -13,99 +13,108 @@ namespace FileCabinetApp
         private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<DateTime, List<FileCabinetRecord>>();
 
         /// <summary>Creates the record.</summary>
-        /// <param name="firstName">The first name.</param>
-        /// <param name="lastName">The last name.</param>
-        /// <param name="code">The code.</param>
-        /// <param name="letter">The letter.</param>
-        /// <param name="balance">The balance.</param>
-        /// <param name="dateOfBirth">The date of birth.</param>
+        /// <param name="newRecordData">Container for the record's fields.</param>
         /// <returns>Returns the new record's ID.</returns>
-        public int CreateRecord(string firstName, string lastName, short code, char letter, decimal balance, DateTime dateOfBirth)
+        public int CreateRecord(RecordData newRecordData)
         {
-            this.CheckParameters(firstName, lastName, code, letter, balance, dateOfBirth);
+            this.CheckParameters(newRecordData.FirstName, newRecordData.LastName, newRecordData.Code, newRecordData.Letter, newRecordData.Balance, newRecordData.DateOfBirth);
             var record = new FileCabinetRecord
             {
                 Id = this.list.Count + 1,
-                FirstName = firstName,
-                LastName = lastName,
-                Code = code,
-                Letter = letter,
-                Balance = balance,
-                DateOfBirth = dateOfBirth,
+                FirstName = newRecordData.FirstName,
+                LastName = newRecordData.LastName,
+                Code = newRecordData.Code,
+                Letter = newRecordData.Letter,
+                Balance = newRecordData.Balance,
+                DateOfBirth = newRecordData.DateOfBirth,
             };
 
             this.list.Add(record);
-            if (!this.firstNameDictionary.ContainsKey(firstName))
+            if (!this.firstNameDictionary.ContainsKey(newRecordData.FirstName))
             {
-                this.firstNameDictionary.Add(firstName, new List<FileCabinetRecord>());
-                this.firstNameDictionary[firstName].Add(record);
+                this.firstNameDictionary.Add(newRecordData.FirstName, new List<FileCabinetRecord>());
+                this.firstNameDictionary[newRecordData.FirstName].Add(record);
             }
             else
             {
-                this.firstNameDictionary[firstName].Add(record);
+                this.firstNameDictionary[newRecordData.FirstName].Add(record);
             }
 
-            if (!this.lastNameDictionary.ContainsKey(lastName))
+            if (!this.lastNameDictionary.ContainsKey(newRecordData.LastName))
             {
-                this.lastNameDictionary.Add(lastName, new List<FileCabinetRecord>());
-                this.lastNameDictionary[lastName].Add(record);
+                this.lastNameDictionary.Add(newRecordData.LastName, new List<FileCabinetRecord>());
+                this.lastNameDictionary[newRecordData.LastName].Add(record);
             }
             else
             {
-                this.lastNameDictionary[lastName].Add(record);
+                this.lastNameDictionary[newRecordData.LastName].Add(record);
             }
 
-            if (!this.dateOfBirthDictionary.ContainsKey(dateOfBirth))
+            if (!this.dateOfBirthDictionary.ContainsKey(newRecordData.DateOfBirth))
             {
-                this.dateOfBirthDictionary.Add(dateOfBirth, new List<FileCabinetRecord>());
-                this.dateOfBirthDictionary[dateOfBirth].Add(record);
+                this.dateOfBirthDictionary.Add(newRecordData.DateOfBirth, new List<FileCabinetRecord>());
+                this.dateOfBirthDictionary[newRecordData.DateOfBirth].Add(record);
             }
             else
             {
-                this.dateOfBirthDictionary[dateOfBirth].Add(record);
+                this.dateOfBirthDictionary[newRecordData.DateOfBirth].Add(record);
             }
 
             return record.Id;
         }
 
         /// <summary>Edits the record.</summary>
-        /// <param name="id">The identifier.</param>
-        /// <param name="firstName">The first name.</param>
-        /// <param name="lastName">The last name.</param>
-        /// <param name="code">The code.</param>
-        /// <param name="letter">The letter.</param>
-        /// <param name="balance">The balance.</param>
-        /// <param name="dateOfBirth">The date of birth.</param>
+        /// <param name="newRecordData">Container for the record's fields.</param>
         /// <exception cref="ArgumentException">Thrown when id is incorrect.</exception>
-        public void EditRecord(int id, string firstName, string lastName, short code, char letter, decimal balance, DateTime dateOfBirth)
+        public void EditRecord(RecordData newRecordData)
         {
-            this.CheckParameters(firstName, lastName, code, letter, balance, dateOfBirth);
+            this.CheckParameters(newRecordData.FirstName, newRecordData.LastName, newRecordData.Code, newRecordData.Letter, newRecordData.Balance, newRecordData.DateOfBirth);
             foreach (var record in this.list)
             {
-                if (record.Id == id)
+                if (record.Id == newRecordData.Id)
                 {
                     this.firstNameDictionary.Remove(record.FirstName);
-                    record.FirstName = firstName;
-                    record.LastName = lastName;
-                    record.Code = code;
-                    record.Letter = letter;
-                    record.Balance = balance;
-                    record.DateOfBirth = dateOfBirth;
-                    if (!this.firstNameDictionary.ContainsKey(firstName))
+                    record.FirstName = newRecordData.FirstName;
+                    record.LastName = newRecordData.LastName;
+                    record.Code = newRecordData.Code;
+                    record.Letter = newRecordData.Letter;
+                    record.Balance = newRecordData.Balance;
+                    record.DateOfBirth = newRecordData.DateOfBirth;
+                    if (!this.firstNameDictionary.ContainsKey(newRecordData.FirstName))
                     {
-                        this.firstNameDictionary.Add(firstName, new List<FileCabinetRecord>());
-                        this.firstNameDictionary[firstName].Add(record);
+                        this.firstNameDictionary.Add(newRecordData.FirstName, new List<FileCabinetRecord>());
+                        this.firstNameDictionary[newRecordData.FirstName].Add(record);
                     }
                     else
                     {
-                        this.firstNameDictionary[firstName].Add(record);
+                        this.firstNameDictionary[newRecordData.FirstName].Add(record);
+                    }
+
+                    if (!this.lastNameDictionary.ContainsKey(newRecordData.LastName))
+                    {
+                        this.lastNameDictionary.Add(newRecordData.LastName, new List<FileCabinetRecord>());
+                        this.lastNameDictionary[newRecordData.LastName].Add(record);
+                    }
+                    else
+                    {
+                        this.lastNameDictionary[newRecordData.LastName].Add(record);
+                    }
+
+                    if (!this.dateOfBirthDictionary.ContainsKey(newRecordData.DateOfBirth))
+                    {
+                        this.dateOfBirthDictionary.Add(newRecordData.DateOfBirth, new List<FileCabinetRecord>());
+                        this.dateOfBirthDictionary[newRecordData.DateOfBirth].Add(record);
+                    }
+                    else
+                    {
+                        this.dateOfBirthDictionary[newRecordData.DateOfBirth].Add(record);
                     }
 
                     return;
                 }
             }
 
-            throw new ArgumentException($"{nameof(id)} is incorrect.");
+            throw new ArgumentException($"{nameof(newRecordData.Id)} is incorrect.");
         }
 
         /// <summary>Finds the record by its first name.</summary>
