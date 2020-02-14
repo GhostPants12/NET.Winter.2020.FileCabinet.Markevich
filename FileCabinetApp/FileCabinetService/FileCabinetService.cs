@@ -7,6 +7,7 @@ namespace FileCabinetApp
     /// <summary>Class for working with the file cabinet.</summary>
     public abstract class FileCabinetService
     {
+        private readonly IRecordValidator.IRecordValidator validator;
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
 
         private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary =
@@ -17,6 +18,12 @@ namespace FileCabinetApp
 
         private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary =
             new Dictionary<DateTime, List<FileCabinetRecord>>();
+
+
+        public FileCabinetService(IRecordValidator.IRecordValidator recordValidator)
+        {
+            this.validator = recordValidator;
+        }
 
         /// <summary>Creates the record.</summary>
         /// <param name="newRecordData">Container for the record's fields.</param>

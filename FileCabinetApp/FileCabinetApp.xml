@@ -39,6 +39,9 @@
             <summary>Custom implementation for the FileCabinetService.</summary>
             <seealso cref="T:FileCabinetApp.FileCabinetService" />
         </member>
+        <member name="M:FileCabinetApp.FileCabinetCustomService.#ctor">
+            <summary>Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetCustomService"/> class.</summary>
+        </member>
         <member name="M:FileCabinetApp.FileCabinetCustomService.CreateValidator">
             <summary>Creates the validator.</summary>
             <returns>Returns the validator.</returns>
@@ -46,6 +49,9 @@
         <member name="T:FileCabinetApp.FileCabinetDefaultService">
             <summary>Default implementation for the FileCabinetService.</summary>
             <seealso cref="T:FileCabinetApp.FileCabinetService" />
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetDefaultService.#ctor">
+            <summary>Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetDefaultService"/> class.</summary>
         </member>
         <member name="M:FileCabinetApp.FileCabinetDefaultService.CreateValidator">
             <summary>Creates the validator.</summary>
