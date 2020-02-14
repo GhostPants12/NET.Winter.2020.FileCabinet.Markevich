@@ -30,7 +30,7 @@ namespace FileCabinetApp
         /// <returns>Returns the new record's ID.</returns>
         public int CreateRecord(RecordData newRecordData)
         {
-            this.CreateValidator().ValidateParameters(newRecordData.FirstName, newRecordData.LastName, newRecordData.Code,
+            this.validator.ValidateParameters(newRecordData.FirstName, newRecordData.LastName, newRecordData.Code,
                 newRecordData.Letter, newRecordData.Balance, newRecordData.DateOfBirth);
             var record = new FileCabinetRecord
             {
@@ -82,7 +82,7 @@ namespace FileCabinetApp
         /// <exception cref="ArgumentException">Thrown when id is incorrect.</exception>
         public void EditRecord(RecordData newRecordData)
         {
-            this.CreateValidator().ValidateParameters(newRecordData.FirstName, newRecordData.LastName, newRecordData.Code, newRecordData.Letter, newRecordData.Balance, newRecordData.DateOfBirth);
+            this.validator.ValidateParameters(newRecordData.FirstName, newRecordData.LastName, newRecordData.Code, newRecordData.Letter, newRecordData.Balance, newRecordData.DateOfBirth);
             foreach (var record in this.list)
             {
                 if (record.Id == newRecordData.Id)
@@ -195,9 +195,5 @@ namespace FileCabinetApp
         {
             return this.list.Count;
         }
-
-        /// <summary>Creates the validator.</summary>
-        /// <returns>Returns the validator.</returns>
-        public abstract IRecordValidator.IRecordValidator CreateValidator();
     }
 }
