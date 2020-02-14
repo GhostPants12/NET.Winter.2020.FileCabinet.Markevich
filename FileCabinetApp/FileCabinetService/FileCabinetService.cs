@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 
 namespace FileCabinetApp
@@ -151,7 +152,7 @@ namespace FileCabinetApp
         /// <summary>Finds the record by its last name.</summary>
         /// <param name="lastName">The last name.</param>
         /// <returns>The array of record with specific last name.</returns>
-        public FileCabinetRecord[] FindByLastName(string lastName)
+        public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
         {
             List<FileCabinetRecord> resultList = new List<FileCabinetRecord>();
             foreach (var key in this.lastNameDictionary.Keys)
@@ -162,13 +163,13 @@ namespace FileCabinetApp
                 }
             }
 
-            return resultList.ToArray();
+            return new ReadOnlyCollection<FileCabinetRecord>(resultList);
         }
 
         /// <summary>Finds the record by its date of birth.</summary>
         /// <param name="dateTime">The date of birth.</param>
         /// <returns>The array of record with specific date of birth.</returns>
-        public FileCabinetRecord[] FindByDateOfBirth(DateTime dateTime)
+        public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(DateTime dateTime)
         {
             List<FileCabinetRecord> resultList = new List<FileCabinetRecord>();
             foreach (var key in this.dateOfBirthDictionary.Keys)
@@ -179,14 +180,14 @@ namespace FileCabinetApp
                 }
             }
 
-            return resultList.ToArray();
+            return new ReadOnlyCollection<FileCabinetRecord>(resultList);
         }
 
         /// <summary>Gets all the records.</summary>
         /// <returns>An array of records.</returns>
-        public FileCabinetRecord[] GetRecords()
+        public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
-            return this.list.ToArray();
+            return new ReadOnlyCollection<FileCabinetRecord>(this.list);
         }
 
         /// <summary>Gets the stat.</summary>

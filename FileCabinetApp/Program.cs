@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using FileCabinetApp;
 
@@ -226,7 +227,7 @@ namespace FileCabinetApp
 
             if (propertyName.Equals("lastname ", StringComparison.InvariantCultureIgnoreCase))
             {
-                FileCabinetRecord[] arrayOfRecords = fileCabinetService.FindByLastName(valueToFind);
+                ReadOnlyCollection<FileCabinetRecord> arrayOfRecords = fileCabinetService.FindByLastName(valueToFind);
                 foreach (FileCabinetRecord record in arrayOfRecords)
                 {
                     Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {record.Code}, {record.Letter}, {record.Balance.ToString(CultureInfo.InvariantCulture)}, {record.DateOfBirth.ToString("yyyy-MMM-dd", System.Globalization.CultureInfo.InvariantCulture)}");
@@ -236,7 +237,7 @@ namespace FileCabinetApp
             if (propertyName.Equals("dateofbirth ", StringComparison.InvariantCultureIgnoreCase))
             {
                 DateTime parameterDateTime = DateTime.ParseExact(valueToFind, "yyyy-MMM-dd", CultureInfo.InvariantCulture);
-                FileCabinetRecord[] arrayOfRecords = fileCabinetService.FindByDateOfBirth(parameterDateTime);
+                ReadOnlyCollection<FileCabinetRecord> arrayOfRecords = fileCabinetService.FindByDateOfBirth(parameterDateTime);
                 foreach (FileCabinetRecord record in arrayOfRecords)
                 {
                     Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {record.Code}, {record.Letter}, {record.Balance.ToString(CultureInfo.InvariantCulture)}, {record.DateOfBirth.ToString("yyyy-MMM-dd", System.Globalization.CultureInfo.InvariantCulture)}");
@@ -248,7 +249,7 @@ namespace FileCabinetApp
         /// <param name="parameters">The parameters.</param>
         private static void List(string parameters)
         {
-            FileCabinetRecord[] arrayOfRecords = fileCabinetService.GetRecords();
+            ReadOnlyCollection<FileCabinetRecord> arrayOfRecords = fileCabinetService.GetRecords();
             foreach (FileCabinetRecord record in arrayOfRecords)
             {
                 Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {record.Code}, {record.Letter}, {record.Balance.ToString(CultureInfo.InvariantCulture)}, {record.DateOfBirth.ToString("yyyy-MMM-dd", System.Globalization.CultureInfo.InvariantCulture)}");
