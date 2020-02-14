@@ -39,41 +39,17 @@
             <summary>Custom implementation for the FileCabinetService.</summary>
             <seealso cref="T:FileCabinetApp.FileCabinetService" />
         </member>
-        <member name="M:FileCabinetApp.FileCabinetCustomService.CheckParameters(System.String,System.String,System.Int16,System.Char,System.Decimal,System.DateTime)">
-            <summary>Checks the parameters.</summary>
-            <param name="firstName">The first name.</param>
-            <param name="lastName">The last name.</param>
-            <param name="code">The code.</param>
-            <param name="letter">The letter.</param>
-            <param name="balance">The balance.</param>
-            <param name="dateOfBirth">The date of birth.</param>
-            <exception cref="T:System.ArgumentException">Thrown when one of the parameters is incorrect.</exception>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetCustomService.CheckName(System.String)">
-            <summary>Checks the name.</summary>
-            <param name="name">The name.</param>
-            <exception cref="T:System.ArgumentNullException">name - Name is null.</exception>
-            <exception cref="T:System.ArgumentException">name - Name's length is less than two or more than 60.</exception>
+        <member name="M:FileCabinetApp.FileCabinetCustomService.CreateValidator">
+            <summary>Creates the validator.</summary>
+            <returns>Returns the validator.</returns>
         </member>
         <member name="T:FileCabinetApp.FileCabinetDefaultService">
             <summary>Default implementation for the FileCabinetService.</summary>
             <seealso cref="T:FileCabinetApp.FileCabinetService" />
         </member>
-        <member name="M:FileCabinetApp.FileCabinetDefaultService.CheckParameters(System.String,System.String,System.Int16,System.Char,System.Decimal,System.DateTime)">
-            <summary>Checks the parameters.</summary>
-            <param name="firstName">The first name.</param>
-            <param name="lastName">The last name.</param>
-            <param name="code">The code.</param>
-            <param name="letter">The letter.</param>
-            <param name="balance">The balance.</param>
-            <param name="dateOfBirth">The date of birth.</param>
-            <exception cref="T:System.ArgumentException">Thrown when one of the parameters is incorrect.</exception>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetDefaultService.CheckName(System.String)">
-            <summary>Checks the name.</summary>
-            <param name="name">The name.</param>
-            <exception cref="T:System.ArgumentNullException">name - Name is null.</exception>
-            <exception cref="T:System.ArgumentException">name - Name's length is less than two or more than 60.</exception>
+        <member name="M:FileCabinetApp.FileCabinetDefaultService.CreateValidator">
+            <summary>Creates the validator.</summary>
+            <returns>Returns the validator.</returns>
         </member>
         <member name="T:FileCabinetApp.FileCabinetService">
             <summary>Class for working with the file cabinet.</summary>
@@ -100,7 +76,7 @@
         </member>
         <member name="M:FileCabinetApp.FileCabinetService.FindByDateOfBirth(System.DateTime)">
             <summary>Finds the record by its date of birth.</summary>
-            <param name="dateTimee">The date of birth.</param>
+            <param name="dateTime">The date of birth.</param>
             <returns>The array of record with specific date of birth.</returns>
         </member>
         <member name="M:FileCabinetApp.FileCabinetService.GetRecords">
@@ -111,7 +87,15 @@
             <summary>Gets the stat.</summary>
             <returns>The number of records.</returns>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetService.CheckParameters(System.String,System.String,System.Int16,System.Char,System.Decimal,System.DateTime)">
+        <member name="M:FileCabinetApp.FileCabinetService.CreateValidator">
+            <summary>Creates the validator.</summary>
+            <returns>Returns the validator.</returns>
+        </member>
+        <member name="T:FileCabinetApp.IRecordValidator.CustomValidator">
+            <summary>Validator for custom file cabinet.</summary>
+            <seealso cref="T:FileCabinetApp.IRecordValidator.IRecordValidator" />
+        </member>
+        <member name="M:FileCabinetApp.IRecordValidator.CustomValidator.ValidateParameters(System.String,System.String,System.Int16,System.Char,System.Decimal,System.DateTime)">
             <summary>Checks the parameters.</summary>
             <param name="firstName">The first name.</param>
             <param name="lastName">The last name.</param>
@@ -120,6 +104,44 @@
             <param name="balance">The balance.</param>
             <param name="dateOfBirth">The date of birth.</param>
             <exception cref="T:System.ArgumentException">Thrown when one of the parameters is incorrect.</exception>
+        </member>
+        <member name="M:FileCabinetApp.IRecordValidator.CustomValidator.CheckName(System.String)">
+            <summary>Checks the name.</summary>
+            <param name="name">The name.</param>
+            <exception cref="T:System.ArgumentNullException">name - Name is null.</exception>
+            <exception cref="T:System.ArgumentException">name - Name's length is less than two or more than 60.</exception>
+        </member>
+        <member name="T:FileCabinetApp.IRecordValidator.DefaultValidator">
+            <summary>Validator for default file cabinet service.</summary>
+            <seealso cref="T:FileCabinetApp.IRecordValidator.IRecordValidator" />
+        </member>
+        <member name="M:FileCabinetApp.IRecordValidator.DefaultValidator.ValidateParameters(System.String,System.String,System.Int16,System.Char,System.Decimal,System.DateTime)">
+            <summary>Checks the parameters.</summary>
+            <param name="firstName">The first name.</param>
+            <param name="lastName">The last name.</param>
+            <param name="code">The code.</param>
+            <param name="letter">The letter.</param>
+            <param name="balance">The balance.</param>
+            <param name="dateOfBirth">The date of birth.</param>
+            <exception cref="T:System.ArgumentException">Thrown when one of the parameters is incorrect.</exception>
+        </member>
+        <member name="M:FileCabinetApp.IRecordValidator.DefaultValidator.CheckName(System.String)">
+            <summary>Checks the name.</summary>
+            <param name="name">The name.</param>
+            <exception cref="T:System.ArgumentNullException">name - Name is null.</exception>
+            <exception cref="T:System.ArgumentException">name - Name's length is less than two or more than 60.</exception>
+        </member>
+        <member name="T:FileCabinetApp.IRecordValidator.IRecordValidator">
+            <summary>Interface for fields' validation.</summary>
+        </member>
+        <member name="M:FileCabinetApp.IRecordValidator.IRecordValidator.ValidateParameters(System.String,System.String,System.Int16,System.Char,System.Decimal,System.DateTime)">
+            <summary>Validates the parameters.</summary>
+            <param name="firstName">First name.</param>
+            <param name="lastName">Last name.</param>
+            <param name="code">Code.</param>
+            <param name="letter">Letter.</param>
+            <param name="balance">Balance.</param>
+            <param name="dateOfBirth">Date of birth.</param>
         </member>
         <member name="T:FileCabinetApp.Program">
             <summary>The Program Class.</summary>

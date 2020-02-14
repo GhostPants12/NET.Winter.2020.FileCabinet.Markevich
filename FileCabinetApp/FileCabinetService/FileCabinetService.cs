@@ -23,7 +23,7 @@ namespace FileCabinetApp
         /// <returns>Returns the new record's ID.</returns>
         public int CreateRecord(RecordData newRecordData)
         {
-            this.CheckParameters(newRecordData.FirstName, newRecordData.LastName, newRecordData.Code,
+            this.CreateValidator().ValidateParameters(newRecordData.FirstName, newRecordData.LastName, newRecordData.Code,
                 newRecordData.Letter, newRecordData.Balance, newRecordData.DateOfBirth);
             var record = new FileCabinetRecord
             {
@@ -75,8 +75,7 @@ namespace FileCabinetApp
         /// <exception cref="ArgumentException">Thrown when id is incorrect.</exception>
         public void EditRecord(RecordData newRecordData)
         {
-            this.CheckParameters(newRecordData.FirstName, newRecordData.LastName, newRecordData.Code,
-                newRecordData.Letter, newRecordData.Balance, newRecordData.DateOfBirth);
+            this.CreateValidator().ValidateParameters(newRecordData.FirstName, newRecordData.LastName, newRecordData.Code, newRecordData.Letter, newRecordData.Balance, newRecordData.DateOfBirth);
             foreach (var record in this.list)
             {
                 if (record.Id == newRecordData.Id)
@@ -160,7 +159,7 @@ namespace FileCabinetApp
         }
 
         /// <summary>Finds the record by its date of birth.</summary>
-        /// <param name="dateTimee">The date of birth.</param>
+        /// <param name="dateTime">The date of birth.</param>
         /// <returns>The array of record with specific date of birth.</returns>
         public FileCabinetRecord[] FindByDateOfBirth(DateTime dateTime)
         {
@@ -190,14 +189,8 @@ namespace FileCabinetApp
             return this.list.Count;
         }
 
-        /// <summary>Checks the parameters.</summary>
-        /// <param name="firstName">The first name.</param>
-        /// <param name="lastName">The last name.</param>
-        /// <param name="code">The code.</param>
-        /// <param name="letter">The letter.</param>
-        /// <param name="balance">The balance.</param>
-        /// <param name="dateOfBirth">The date of birth.</param>
-        /// <exception cref="ArgumentException">Thrown when one of the parameters is incorrect.</exception>
-        public abstract void CheckParameters(string firstName, string lastName, short code, char letter, decimal balance, DateTime dateOfBirth);
+        /// <summary>Creates the validator.</summary>
+        /// <returns>Returns the validator.</returns>
+        public abstract IRecordValidator.IRecordValidator CreateValidator();
     }
 }
