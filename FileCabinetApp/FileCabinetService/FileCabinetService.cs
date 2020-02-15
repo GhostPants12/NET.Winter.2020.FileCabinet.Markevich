@@ -6,7 +6,7 @@ using System.Text;
 namespace FileCabinetApp
 {
     /// <summary>Class for working with the file cabinet.</summary>
-    public abstract class FileCabinetService
+    public abstract class FileCabinetService : IFileCabinetService
     {
         private readonly IRecordValidator.IRecordValidator validator;
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
@@ -21,6 +21,8 @@ namespace FileCabinetApp
             new Dictionary<DateTime, List<FileCabinetRecord>>();
 
 
+        /// <summary>Initializes a new instance of the <see cref="FileCabinetService"/> class.</summary>
+        /// <param name="recordValidator">The record validator.</param>
         public FileCabinetService(IRecordValidator.IRecordValidator recordValidator)
         {
             this.validator = recordValidator;
@@ -135,7 +137,7 @@ namespace FileCabinetApp
         /// <summary>Finds the record by its first name.</summary>
         /// <param name="firstName">The first name.</param>
         /// <returns>The array of record with specific first name.</returns>
-        public FileCabinetRecord[] FindByFirstName(string firstName)
+        public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
         {
             List<FileCabinetRecord> resultList = new List<FileCabinetRecord>();
             foreach (var key in this.firstNameDictionary.Keys)
@@ -146,7 +148,7 @@ namespace FileCabinetApp
                 }
             }
 
-            return resultList.ToArray();
+            return new ReadOnlyCollection<FileCabinetRecord>(resultList);
         }
 
         /// <summary>Finds the record by its last name.</summary>

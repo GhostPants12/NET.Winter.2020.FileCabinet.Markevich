@@ -16,7 +16,7 @@ namespace FileCabinetApp
 
         private static bool isRunning = true;
 
-        private static FileCabinetService fileCabinetService = new FileCabinetCustomService();
+        private static IFileCabinetService fileCabinetService = new FileCabinetCustomService();
 
         private static Tuple<string, Action<string>>[] commands = new Tuple<string, Action<string>>[]
         {
@@ -218,7 +218,7 @@ namespace FileCabinetApp
             string valueToFind = parametersArray[1];
             if (propertyName.Equals("firstname ", StringComparison.InvariantCultureIgnoreCase))
             {
-                FileCabinetRecord[] arrayOfRecords = fileCabinetService.FindByFirstName(valueToFind);
+                ReadOnlyCollection<FileCabinetRecord> arrayOfRecords = fileCabinetService.FindByFirstName(valueToFind);
                 foreach (FileCabinetRecord record in arrayOfRecords)
                 {
                     Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {record.Code}, {record.Letter}, {record.Balance.ToString(CultureInfo.InvariantCulture)}, {record.DateOfBirth.ToString("yyyy-MMM-dd", System.Globalization.CultureInfo.InvariantCulture)}");
