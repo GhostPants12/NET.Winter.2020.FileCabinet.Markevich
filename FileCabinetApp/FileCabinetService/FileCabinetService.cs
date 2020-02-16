@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace FileCabinetApp
@@ -20,12 +21,18 @@ namespace FileCabinetApp
         private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary =
             new Dictionary<DateTime, List<FileCabinetRecord>>();
 
-
         /// <summary>Initializes a new instance of the <see cref="FileCabinetService"/> class.</summary>
         /// <param name="recordValidator">The record validator.</param>
         public FileCabinetService(IRecordValidator.IRecordValidator recordValidator)
         {
             this.validator = recordValidator;
+        }
+
+        /// <summary>Gets the validator.</summary>
+        /// <value>The validator.</value>
+        public IRecordValidator.IRecordValidator GetValidator()
+        {
+            return this.validator;
         }
 
         /// <summary>Creates the record.</summary>

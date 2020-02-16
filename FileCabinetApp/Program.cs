@@ -148,18 +148,17 @@ namespace FileCabinetApp
             try
             {
                 Console.Write("First Name: ");
-                firstName = Console.ReadLine();
+                firstName = ReadInput<string>(ConvertStringToString, ValidateName);
                 Console.Write("Last Name: ");
-                lastName = Console.ReadLine();
+                lastName = ReadInput<string>(ConvertStringToString, ValidateName);
                 Console.Write("Code: ");
-                code = short.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
+                code = ReadInput<short>(ConvertStringToShort, ValidateCode);
                 Console.Write("Letter: ");
-                letter = Console.ReadKey().KeyChar;
-                Console.WriteLine();
+                letter = ReadInput<char>(ConvertStringToChar, ValidateLetter);
                 Console.Write("Balance: ");
-                balance = decimal.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
+                balance = ReadInput<decimal>(ConvertStringToDecimal, ValidateBalance);
                 Console.Write("Date of birth: ");
-                dateOfBirth = DateTime.ParseExact(Console.ReadLine(), "MM/dd/yyyy", System.Globalization.CultureInfo.InvariantCulture);
+                dateOfBirth = ReadInput<DateTime>(ConvertStringToDate, ValidateDate);
                 RecordData recordDataToCreate = new RecordData(firstName, lastName, code, letter, balance, dateOfBirth);
                 id = fileCabinetService.CreateRecord(recordDataToCreate);
                 Console.WriteLine($"Record #{id} has been created.");
@@ -186,18 +185,17 @@ namespace FileCabinetApp
                 Console.WriteLine("Id: ");
                 id = int.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
                 Console.Write("First Name: ");
-                firstName = Console.ReadLine();
+                firstName = ReadInput<string>(ConvertStringToString, ValidateName);
                 Console.Write("Last Name: ");
-                lastName = Console.ReadLine();
+                lastName = ReadInput<string>(ConvertStringToString, ValidateName);
                 Console.Write("Code: ");
-                code = short.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
+                code = ReadInput<short>(ConvertStringToShort, ValidateCode);
                 Console.Write("Letter: ");
-                letter = Console.ReadKey().KeyChar;
-                Console.WriteLine();
+                letter = ReadInput<char>(ConvertStringToChar, ValidateLetter);
                 Console.Write("Balance: ");
-                balance = decimal.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
+                balance = ReadInput<decimal>(ConvertStringToDecimal, ValidateBalance);
                 Console.Write("Date of birth: ");
-                dateOfBirth = DateTime.ParseExact(Console.ReadLine(), "MM/dd/yyyy", System.Globalization.CultureInfo.InvariantCulture);
+                dateOfBirth = ReadInput<DateTime>(ConvertStringToDate, ValidateDate);
                 RecordData recordDataToEdit = new RecordData(firstName, lastName, code, letter, balance, dateOfBirth);
                 recordDataToEdit.Id = id;
                 fileCabinetService.EditRecord(recordDataToEdit);
@@ -270,6 +268,154 @@ namespace FileCabinetApp
         {
             Console.WriteLine("Exiting an application...");
             isRunning = false;
+        }
+
+        private static T ReadInput<T>(Func<string, Tuple<bool, string, T>> converter, Func<T, Tuple<bool, string>> validator)
+        {
+            do
+            {
+                T value;
+
+                var input = Console.ReadLine();
+                var conversionResult = converter(input);
+
+                if (!conversionResult.Item1)
+                {
+                    Console.WriteLine($"Conversion failed: {conversionResult.Item2}. Please, correct your input.");
+                    continue;
+                }
+
+                value = conversionResult.Item3;
+
+                var validationResult = validator(value);
+                if (!validationResult.Item1)
+                {
+                    Console.WriteLine($"Validation failed: {validationResult.Item2}. Please, correct your input.");
+                    continue;
+                }
+
+                return value;
+            }
+            while (true);
+        }
+
+        private static Tuple<bool, string, string> ConvertStringToString(string value)
+        {
+            return new Tuple<bool, string, string>(true, value, value);
+        }
+
+        private static Tuple<bool, string, char> ConvertStringToChar(string value)
+        {
+            if (value.Length == 1)
+            {
+                return new Tuple<bool, string, char>(true, value, value[0]);
+            }
+
+            return new Tuple<bool, string, char>(false, value, '0');
+        }
+
+        private static Tuple<bool, string, short> ConvertStringToShort(string value)
+        {
+            short result;
+            if (short.TryParse(value, out result))
+            {
+                return new Tuple<bool, string, short>(true, value, result);
+            }
+
+            return new Tuple<bool, string, short>(false, value, result);
+        }
+
+        private static Tuple<bool, string, decimal> ConvertStringToDecimal(string value)
+        {
+            decimal result;
+            if (decimal.TryParse(value, out result))
+            {
+                return new Tuple<bool, string, decimal>(true, value, result);
+            }
+
+            return new Tuple<bool, string, decimal>(false, value, result);
+        }
+
+        private static Tuple<bool, string, DateTime> ConvertStringToDate(string value)
+        {
+            DateTime result;
+            if (DateTime.TryParseExact(value, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out result))
+            {
+                return new Tuple<bool, string, DateTime>(true, value, result);
+            }
+
+            return new Tuple<bool, string, DateTime>(false, value, result);
+        }
+
+        private static Tuple<bool, string> ValidateDate(DateTime date)
+        {
+            try
+            {
+                fileCabinetService.GetValidator().ValidateParameters("1234", "1234", 123, 'a', 1, date);
+            }
+            catch (ArgumentException e)
+            {
+                return new Tuple<bool, string>(false, e.Message);
+            }
+
+            return new Tuple<bool, string>(true, string.Empty);
+        }
+
+        private static Tuple<bool, string> ValidateName(string firstname)
+        {
+            try
+            {
+                fileCabinetService.GetValidator()
+                    .ValidateParameters(firstname, "1234", 123, 'a', 1, new DateTime(1990, 1, 1));
+            }
+            catch (ArgumentException e)
+            {
+                return new Tuple<bool, string>(false, e.Message);
+            }
+
+            return new Tuple<bool, string>(true, string.Empty);
+        }
+
+        private static Tuple<bool, string> ValidateCode(short code)
+        {
+            try
+            {
+                fileCabinetService.GetValidator().ValidateParameters("1234", "1234", code, 'a', 1, new DateTime(1990, 1, 1));
+            }
+            catch (ArgumentException e)
+            {
+                return new Tuple<bool, string>(false, e.Message);
+            }
+
+            return new Tuple<bool, string>(true, string.Empty);
+        }
+
+        private static Tuple<bool, string> ValidateBalance(decimal balance)
+        {
+            try
+            {
+                fileCabinetService.GetValidator().ValidateParameters("1234", "1234", 123, 'a', balance, new DateTime(1990, 1, 1));
+            }
+            catch (ArgumentException e)
+            {
+                return new Tuple<bool, string>(false, e.Message);
+            }
+
+            return new Tuple<bool, string>(true, string.Empty);
+        }
+
+        private static Tuple<bool, string> ValidateLetter(char letter)
+        {
+            try
+            {
+                fileCabinetService.GetValidator().ValidateParameters("1234", "1234", 123, letter, 1, new DateTime(1990, 1, 1));
+            }
+            catch (ArgumentException e)
+            {
+                return new Tuple<bool, string>(false, e.Message);
+            }
+
+            return new Tuple<bool, string>(true, string.Empty);
         }
     }
 }

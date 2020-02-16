@@ -27,7 +27,7 @@ namespace FileCabinetApp.IRecordValidator
 
             if (code < 1)
             {
-                throw new ArgumentException($"{nameof(code)} is less than zero.");
+                throw new ArgumentException($"{nameof(code)} is less than one.");
             }
 
             if (letter == ' ')
