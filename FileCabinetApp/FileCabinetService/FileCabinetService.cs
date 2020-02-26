@@ -199,6 +199,11 @@ namespace FileCabinetApp
             return new ReadOnlyCollection<FileCabinetRecord>(this.list);
         }
 
+        public FileCabinetServiceSnapshot MakeSnapshot()
+        {
+            return new FileCabinetServiceSnapshot(this.list);
+        }
+
         /// <summary>Gets the stat.</summary>
         /// <returns>The number of records.</returns>
         public int GetStat()

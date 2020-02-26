@@ -8,6 +8,7 @@ namespace FileCabinetApp
     public interface IFileCabinetService
     {
         IRecordValidator.IRecordValidator GetValidator(); 
+
         int CreateRecord(RecordData newRecordData);
 
         void EditRecord(RecordData newRecordData);
@@ -19,6 +20,8 @@ namespace FileCabinetApp
         ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(DateTime dateTime);
 
         ReadOnlyCollection<FileCabinetRecord> GetRecords();
+
+        FileCabinetServiceSnapshot MakeSnapshot();
 
         int GetStat();
     }
