@@ -282,6 +282,16 @@ namespace FileCabinetApp
                         return;
                     }
                 }
+
+                if (formatName.Equals("xml", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    using (StreamWriter sr = new StreamWriter(new FileStream(path, FileMode.Create)))
+                    {
+                        fileCabinetService.MakeSnapshot().SaveToXml(sr);
+                        Console.WriteLine($"All records are exported to {path}");
+                        sr.Close();
+                    }
+                }
             }
             catch (Exception ex)
             {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -19,7 +20,7 @@ namespace FileCabinetApp.Writers
         public void Write(FileCabinetRecord record)
         {
             this.writer.WriteLine();
-            this.writer.Write(record.Id + ", " + record.FirstName + ", " + record.LastName + ", " + record.DateOfBirth + ", " + record.Code + ", " + record.Letter + ", " + record.Balance);
+            this.writer.Write(record.Id + ", " + record.FirstName + ", " + record.LastName + ", " + record.DateOfBirth.ToString("MM/dd/yyyy", CultureInfo.InvariantCulture) + ", " + record.Code + ", " + record.Letter + ", " + record.Balance);
         }
     }
 }

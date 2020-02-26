@@ -23,5 +23,15 @@ namespace FileCabinetApp
                 writer.Write(records[i]);
             }
         }
+
+        public void SaveToXml(StreamWriter sr)
+        {
+            FileCabinetRecordXmlWriter writer = new FileCabinetRecordXmlWriter(sr);
+            for (int i = 0; i < records.Length; i++)
+            {
+                writer.Write(records[i]);
+            }
+            writer.EndWriting();
+        }
     }
 }
