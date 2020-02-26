@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Buffers;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.IO;
 using FileCabinetApp;
 
 namespace FileCabinetApp
@@ -25,6 +27,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("find", Find),
             new Tuple<string, Action<string>>("stat", Stat),
             new Tuple<string, Action<string>>("list", List),
+            new Tuple<string, Action<string>>("export", Export),
             new Tuple<string, Action<string>>("help", PrintHelp),
             new Tuple<string, Action<string>>("exit", Exit),
         };
@@ -240,6 +243,49 @@ namespace FileCabinetApp
                 {
                     Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {record.Code}, {record.Letter}, {record.Balance.ToString(CultureInfo.InvariantCulture)}, {record.DateOfBirth.ToString("yyyy-MMM-dd", System.Globalization.CultureInfo.InvariantCulture)}");
                 }
+            }
+        }
+
+        private static void Export(string parameters)
+        {
+            string[] parametersArray = parameters.Split(' ');
+            string formatName = parametersArray[0];
+            string path = parametersArray[1];
+            try
+            {
+                if (File.Exists(path))
+                {
+                    while (true)
+                    {
+                        Console.Write($"File is exist - rewrite {path} [Y/n] ");
+                        string answer = Console.ReadKey().KeyChar.ToString(CultureInfo.InvariantCulture);
+                        Console.WriteLine();
+                        if (answer.Equals("y", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            break;
+                        }
+
+                        if (answer.Equals("n", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            return;
+                        }
+                    }
+                }
+
+                if (formatName.Equals("csv", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    using (StreamWriter sr = new StreamWriter(new FileStream(path, FileMode.Create)))
+                    {
+                        fileCabinetService.MakeSnapshot().SaveToCsv(sr);
+                        Console.WriteLine($"All records are exported to {path}");
+                        sr.Close();
+                        return;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Export failed: " + ex.Message);
             }
         }
 
