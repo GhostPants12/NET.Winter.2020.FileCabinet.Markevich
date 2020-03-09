@@ -117,7 +117,7 @@ namespace FileCabinetApp
 
         public int GetStat()
         {
-            throw new NotImplementedException();
+            return this.count;
         }
 
         public IRecordValidator.IRecordValidator GetValidator()
