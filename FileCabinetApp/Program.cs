@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using FileCabinetApp;
+using FileCabinetApp.IRecordValidator;
 
 namespace FileCabinetApp
 {
@@ -74,7 +75,7 @@ namespace FileCabinetApp
                 if (args[0].Equals("--storage=file", StringComparison.InvariantCultureIgnoreCase) ||
                     (args[0] == "-s" && args[1].Equals("file", StringComparison.CurrentCultureIgnoreCase)))
                 {
-                    fileCabinetService = new FileCabinetFilesystemService(new FileStream("cabinet-records.db", FileMode.Create));
+                    fileCabinetService = new FileCabinetFilesystemService(new FileStream("cabinet-records.db", FileMode.Create), new DefaultValidator());
                 }
             }
             else

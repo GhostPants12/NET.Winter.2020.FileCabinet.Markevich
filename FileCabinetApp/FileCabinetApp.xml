@@ -53,7 +53,7 @@
             <summary>Class for working with the file cabinet.</summary>
         </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.#ctor(FileCabinetApp.IRecordValidator.IRecordValidator)">
-            <summary>Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetMemoryService"/> class.</summary>
+            <summary>Initializes a new instance of the <see cref="!:FileCabinetService"/> class.</summary>
             <param name="recordValidator">The record validator.</param>
         </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.GetValidator">
@@ -90,50 +90,6 @@
             <returns>An array of records.</returns>
         </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.GetStat">
-            <summary>Gets the stat.</summary>
-            <returns>The number of records.</returns>
-        </member>
-        <member name="T:FileCabinetApp.FileCabinetService">
-            <summary>Class for working with the file cabinet.</summary>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetService.#ctor(FileCabinetApp.IRecordValidator.IRecordValidator)">
-            <summary>Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetService"/> class.</summary>
-            <param name="recordValidator">The record validator.</param>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetService.GetValidator">
-            <summary>Gets the validator.</summary>
-            <value>The validator.</value>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetService.CreateRecord(FileCabinetApp.RecordData)">
-            <summary>Creates the record.</summary>
-            <param name="newRecordData">Container for the record's fields.</param>
-            <returns>Returns the new record's ID.</returns>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetService.EditRecord(FileCabinetApp.RecordData)">
-            <summary>Edits the record.</summary>
-            <param name="newRecordData">Container for the record's fields.</param>
-            <exception cref="T:System.ArgumentException">Thrown when id is incorrect.</exception>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetService.FindByFirstName(System.String)">
-            <summary>Finds the record by its first name.</summary>
-            <param name="firstName">The first name.</param>
-            <returns>The array of record with specific first name.</returns>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetService.FindByLastName(System.String)">
-            <summary>Finds the record by its last name.</summary>
-            <param name="lastName">The last name.</param>
-            <returns>The array of record with specific last name.</returns>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetService.FindByDateOfBirth(System.DateTime)">
-            <summary>Finds the record by its date of birth.</summary>
-            <param name="dateTime">The date of birth.</param>
-            <returns>The array of record with specific date of birth.</returns>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetService.GetRecords">
-            <summary>Gets all the records.</summary>
-            <returns>An array of records.</returns>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetService.GetStat">
             <summary>Gets the stat.</summary>
             <returns>The number of records.</returns>
         </member>
