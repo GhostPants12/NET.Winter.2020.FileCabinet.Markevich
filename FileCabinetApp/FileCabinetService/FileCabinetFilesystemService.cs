@@ -100,17 +100,44 @@ namespace FileCabinetApp
 
         public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(DateTime dateTime)
         {
-            throw new NotImplementedException();
+            List<FileCabinetRecord> returnList = new List<FileCabinetRecord>();
+            foreach (var record in this.GetRecords())
+            {
+                if (record.DateOfBirth.Equals(dateTime))
+                {
+                    returnList.Add(record);
+                }
+            }
+
+            return new ReadOnlyCollection<FileCabinetRecord>(returnList);
         }
 
         public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
         {
-            throw new NotImplementedException();
+            List<FileCabinetRecord> returnList = new List<FileCabinetRecord>();
+            foreach (var record in this.GetRecords())
+            {
+                if (record.FirstName.Equals(firstName, StringComparison.InvariantCulture))
+                {
+                    returnList.Add(record);
+                }
+            }
+
+            return new ReadOnlyCollection<FileCabinetRecord>(returnList);
         }
 
         public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
         {
-            throw new NotImplementedException();
+            List<FileCabinetRecord> returnList = new List<FileCabinetRecord>();
+            foreach (var record in this.GetRecords())
+            {
+                if (record.LastName.Equals(lastName, StringComparison.InvariantCulture))
+                {
+                    returnList.Add(record);
+                }
+            }
+
+            return new ReadOnlyCollection<FileCabinetRecord>(returnList);
         }
 
         public ReadOnlyCollection<FileCabinetRecord> GetRecords()
