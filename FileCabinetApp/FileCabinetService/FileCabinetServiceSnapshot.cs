@@ -31,6 +31,7 @@ namespace FileCabinetApp
             {
                 writer.Write(records[i]);
             }
+
             writer.EndWriting();
         }
     }
