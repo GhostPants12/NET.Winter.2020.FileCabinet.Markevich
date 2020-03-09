@@ -57,7 +57,45 @@ namespace FileCabinetApp
 
         public void EditRecord(RecordData newRecordData)
         {
-            throw new NotImplementedException();
+            int i = 0;
+            byte[] buffer = new byte[120];
+            foreach (var record in this.GetRecords())
+            {
+                if (record.Id == newRecordData.Id)
+                {
+                    this.fileStream.Position = ((newRecordData.Id - 1) * 276) + 4;
+                    this.validator.ValidateParameters(newRecordData.FirstName, newRecordData.LastName,
+                        newRecordData.Code, newRecordData.Letter, newRecordData.Balance, newRecordData.DateOfBirth);
+                    foreach (var element in Encoding.Default.GetBytes(newRecordData.FirstName))
+                    {
+                        buffer[i] = element;
+                        i++;
+                    }
+
+                    i = 0;
+                    this.fileStream.Write(buffer, 0, 120);
+                    foreach (var element in Encoding.Default.GetBytes(newRecordData.LastName))
+                    {
+                        buffer[i] = element;
+                        i++;
+                    }
+
+                    this.fileStream.Write(buffer, 0, 120);
+                    this.fileStream.Write(BitConverter.GetBytes(newRecordData.DateOfBirth.Year));
+                    this.fileStream.Write(BitConverter.GetBytes(newRecordData.DateOfBirth.Month));
+                    this.fileStream.Write(BitConverter.GetBytes(newRecordData.DateOfBirth.Day));
+                    this.fileStream.Write(BitConverter.GetBytes(newRecordData.Code));
+                    this.fileStream.Write(BitConverter.GetBytes(newRecordData.Letter));
+                    foreach (int value in decimal.GetBits(newRecordData.Balance))
+                    {
+                        this.fileStream.Write(BitConverter.GetBytes(value));
+                    }
+
+                    return;
+                }
+            }
+
+            throw new ArgumentException($"{nameof(newRecordData.Id)} is incorrect.");
         }
 
         public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(DateTime dateTime)
