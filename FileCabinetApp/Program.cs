@@ -75,7 +75,7 @@ namespace FileCabinetApp
                 if (args[0].Equals("--storage=file", StringComparison.InvariantCultureIgnoreCase) ||
                     (args[0] == "-s" && args[1].Equals("file", StringComparison.CurrentCultureIgnoreCase)))
                 {
-                    fileCabinetService = new FileCabinetFilesystemService(new FileStream("cabinet-records.db", FileMode.Create), new DefaultValidator());
+                    fileCabinetService = new FileCabinetFilesystemService(new FileStream("cabinet-records.db", FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None), new DefaultValidator());
                 }
             }
             else
