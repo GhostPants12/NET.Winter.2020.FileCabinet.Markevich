@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
+using FileCabinetGenerator.Generator;
 
 namespace FileCabinetGenerator
 {
@@ -7,11 +9,10 @@ namespace FileCabinetGenerator
     {
         static void Main(string[] args)
         {
-            IGenerator generator;
             string outputType = "unassigned";
-            string path;
-            int recordsAmount;
-            int startId;
+            string path = "unassigned";
+            int recordsAmount=0;
+            int startId=0;
             if (args.Length >= 1)
             {
                 for (int i = 0; i < args.Length; i++)
@@ -98,13 +99,35 @@ namespace FileCabinetGenerator
                 }
             }
 
+            if (File.Exists(path))
+            {
+                while (true)
+                {
+                    Console.Write($"File is exist - rewrite {path} [Y/n] ");
+                    string answer = Console.ReadKey().KeyChar.ToString(CultureInfo.InvariantCulture);
+                    Console.WriteLine();
+                    if (answer.Equals("y", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        break;
+                    }
+
+                    if (answer.Equals("n", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        return;
+                    }
+                }
+            }
+
             switch (outputType)
             {
                 case "csv":
-                    generator = new CSVGenerator();
+                    using (StreamWriter sw = new StreamWriter(new FileStream(path, FileMode.Create)))
+                    {
+                        new CSVWriter(sw).Generate(RecordGenerator.Generate(recordsAmount, startId));
+                    }
+                    Console.WriteLine($"{recordsAmount} records were written to {path}");
                     break;
                 case "xml":
-                    generator = new XMLGenerator();
                     break;
                 default:
                     throw new ArgumentException($"Incorrect output type: {outputType}");

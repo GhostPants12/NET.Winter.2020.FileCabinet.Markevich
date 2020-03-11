@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Dynamic;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -59,11 +60,11 @@ namespace FileCabinetGenerator.Generator
             "Molotov"
         };
 
-        private static char[] chars = "$%#@!*abcdefghijklmnopqrstuvwxyz1234567890?;:ABCDEFGHIJKLMNOPQRSTUVWXYZ^&".ToCharArray();
+        private static readonly char[] chars = "$%#@!*abcdefghijklmnopqrstuvwxyz1234567890?;:ABCDEFGHIJKLMNOPQRSTUVWXYZ^&".ToCharArray();
 
-        private static Random gen = new Random();
+        private static readonly Random gen = new Random();
 
-        public static IReadOnlyCollection<FileCabinetRecord> Generate(int amount, int startId)
+        public static ReadOnlyCollection<FileCabinetRecord> Generate(int amount, int startId)
         {
             List<FileCabinetRecord> returnList = new List<FileCabinetRecord>();
             for(int i=0;i<amount;i++)
@@ -71,22 +72,24 @@ namespace FileCabinetGenerator.Generator
                 returnList.Add(GenerateRecord(startId+i));
             }
 
-            return returnList;
+            return new ReadOnlyCollection<FileCabinetRecord>(returnList);
         }
 
         private static FileCabinetRecord GenerateRecord(int id)
         {
-            FileCabinetRecord returnRecord = new FileCabinetRecord();
-            returnRecord.Id = id;
-            returnRecord.FirstName = names[gen.Next(names.Length - 1)];
-            returnRecord.LastName = surnames[gen.Next(surnames.Length - 1)];
-            returnRecord.Code = (short)gen.Next(32766);
-            returnRecord.Letter = chars[gen.Next(chars.Length - 1)];
-            returnRecord.Balance = new decimal(gen.Next(),
+            FileCabinetRecord returnRecord = new FileCabinetRecord
+            {
+                Id = id,
+                FirstName = names[gen.Next(names.Length - 1)],
+                LastName = surnames[gen.Next(surnames.Length - 1)],
+                Code = (short)gen.Next(32766),
+                Letter = chars[gen.Next(chars.Length - 1)],
+                Balance = new decimal(gen.Next(),
                 gen.Next(),
                 gen.Next(0x204FCE5E),
-                false, 0);
-            returnRecord.DateOfBirth = RandomDate();
+                false, 0),
+                DateOfBirth = RandomDate()
+            };
             return returnRecord;
         }
 
