@@ -18,7 +18,7 @@ namespace FileCabinetGenerator
         }
 
 
-        public void Generate(ReadOnlyCollection<FileCabinetApp.FileCabinetRecord> records)
+        public void Generate(List<FileCabinetApp.FileCabinetRecord> records)
         {
             foreach (var record in records)
             {

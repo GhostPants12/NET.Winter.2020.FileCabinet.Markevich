@@ -128,6 +128,13 @@ namespace FileCabinetGenerator
                     Console.WriteLine($"{recordsAmount} records were written to {path}");
                     break;
                 case "xml":
+                    using (FileStream fs = new FileStream(path, FileMode.OpenOrCreate))
+                    {
+                        XMLContainer container = new XMLContainer();
+                        container.Records = RecordGenerator.Generate(recordsAmount, startId);
+                        new XMLWriter(fs).Generate(container);
+                    }
+                    Console.WriteLine($"{recordsAmount} records were written to {path}");
                     break;
                 default:
                     throw new ArgumentException($"Incorrect output type: {outputType}");

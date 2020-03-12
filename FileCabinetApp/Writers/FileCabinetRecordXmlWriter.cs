@@ -28,9 +28,11 @@ namespace FileCabinetApp.Writers
         {
             this.writer.WriteStartElement("record");
             this.writer.WriteAttributeString("id", record.Id.ToString(CultureInfo.InvariantCulture));
-            this.writer.WriteStartElement("name");
-            this.writer.WriteAttributeString("first", record.FirstName.ToString(CultureInfo.InvariantCulture));
-            this.writer.WriteAttributeString("last", record.LastName.ToString(CultureInfo.InvariantCulture));
+            this.writer.WriteStartElement("firstname");
+            this.writer.WriteString(record.FirstName.ToString(CultureInfo.InvariantCulture));
+            this.writer.WriteEndElement();
+            this.writer.WriteStartElement("lastname");
+            this.writer.WriteString(record.LastName.ToString(CultureInfo.InvariantCulture));
             this.writer.WriteEndElement();
             this.writer.WriteStartElement("dateOfBirth");
             this.writer.WriteString(record.DateOfBirth.ToString("MM/dd/yyyy", CultureInfo.InvariantCulture));

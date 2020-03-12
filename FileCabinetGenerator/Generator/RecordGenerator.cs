@@ -64,7 +64,7 @@ namespace FileCabinetGenerator.Generator
 
         private static readonly Random gen = new Random();
 
-        public static ReadOnlyCollection<FileCabinetRecord> Generate(int amount, int startId)
+        public static List<FileCabinetRecord> Generate(int amount, int startId)
         {
             List<FileCabinetRecord> returnList = new List<FileCabinetRecord>();
             for(int i=0;i<amount;i++)
@@ -72,7 +72,7 @@ namespace FileCabinetGenerator.Generator
                 returnList.Add(GenerateRecord(startId+i));
             }
 
-            return new ReadOnlyCollection<FileCabinetRecord>(returnList);
+            return returnList;
         }
 
         private static FileCabinetRecord GenerateRecord(int id)
