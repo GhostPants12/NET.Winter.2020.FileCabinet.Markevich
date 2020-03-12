@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using FileCabinetApp;
+using FileCabinetApp.IRecordValidator;
 
 namespace FileCabinetApp
 {
@@ -39,6 +40,7 @@ namespace FileCabinetApp
             new string[] { "find", "finds a record with a specified property and its specified value", "The 'find' command leads to the screen where you can find a record" },
             new string[] { "stat", "prints the records' statistics", "The 'stat' command prints the count of the list." },
             new string[] { "list", "gets the list of the records", "The 'list' command prints out all the records in list." },
+            new string[] { "export", "exports the data to csv or xml format", "The 'export' command leads to the screen where records can be exported" },
             new string[] { "help", "prints the help screen", "The 'help' command prints the help screen." },
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
         };
@@ -61,6 +63,19 @@ namespace FileCabinetApp
                 {
                     fileCabinetService = new FileCabinetCustomService();
                     Console.WriteLine("Using custom validation rules.");
+                }
+
+                if (args[0].Equals("--storage=memory", StringComparison.InvariantCultureIgnoreCase) ||
+                    (args[0] == "-s" && args[1].Equals("memory", StringComparison.CurrentCultureIgnoreCase)))
+                {
+                    fileCabinetService = new FileCabinetDefaultService();
+                    Console.WriteLine("Using default validation rules.");
+                }
+
+                if (args[0].Equals("--storage=file", StringComparison.InvariantCultureIgnoreCase) ||
+                    (args[0] == "-s" && args[1].Equals("file", StringComparison.CurrentCultureIgnoreCase)))
+                {
+                    fileCabinetService = new FileCabinetFilesystemService(new FileStream("cabinet-records.db", FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None), new DefaultValidator());
                 }
             }
             else

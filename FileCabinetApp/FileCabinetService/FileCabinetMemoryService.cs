@@ -7,7 +7,7 @@ using System.Text;
 namespace FileCabinetApp
 {
     /// <summary>Class for working with the file cabinet.</summary>
-    public abstract class FileCabinetService : IFileCabinetService
+    public abstract class FileCabinetMemoryService : IFileCabinetService
     {
         private readonly IRecordValidator.IRecordValidator validator;
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
@@ -23,7 +23,7 @@ namespace FileCabinetApp
 
         /// <summary>Initializes a new instance of the <see cref="FileCabinetService"/> class.</summary>
         /// <param name="recordValidator">The record validator.</param>
-        public FileCabinetService(IRecordValidator.IRecordValidator recordValidator)
+        public FileCabinetMemoryService(IRecordValidator.IRecordValidator recordValidator)
         {
             this.validator = recordValidator;
         }

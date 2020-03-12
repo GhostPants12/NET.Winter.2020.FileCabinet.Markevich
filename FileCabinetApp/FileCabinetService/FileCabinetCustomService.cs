@@ -6,8 +6,8 @@ using FileCabinetApp.IRecordValidator;
 namespace FileCabinetApp
 {
     /// <summary>Custom implementation for the FileCabinetService.</summary>
-    /// <seealso cref="FileCabinetApp.FileCabinetService" />
-    public class FileCabinetCustomService : FileCabinetService
+    /// <seealso cref="FileCabinetApp.FileCabinetMemoryService" />
+    public class FileCabinetCustomService : FileCabinetMemoryService
     {
         /// <summary>Initializes a new instance of the <see cref="FileCabinetCustomService"/> class.</summary>
         public FileCabinetCustomService()
