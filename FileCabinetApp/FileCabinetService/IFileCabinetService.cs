@@ -7,7 +7,7 @@ namespace FileCabinetApp
 {
     public interface IFileCabinetService
     {
-        IRecordValidator.IRecordValidator GetValidator(); 
+        IRecordValidator.IRecordValidator GetValidator();
 
         int CreateRecord(RecordData newRecordData);
 
@@ -22,6 +22,8 @@ namespace FileCabinetApp
         ReadOnlyCollection<FileCabinetRecord> GetRecords();
 
         FileCabinetServiceSnapshot MakeSnapshot();
+
+        void Restore(FileCabinetServiceSnapshot snapshot);
 
         int GetStat();
     }

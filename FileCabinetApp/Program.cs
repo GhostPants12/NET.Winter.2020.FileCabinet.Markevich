@@ -3,6 +3,7 @@ using System.Buffers;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
+using System.Runtime.CompilerServices;
 using FileCabinetApp;
 using FileCabinetApp.IRecordValidator;
 
@@ -29,6 +30,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("stat", Stat),
             new Tuple<string, Action<string>>("list", List),
             new Tuple<string, Action<string>>("export", Export),
+            new Tuple<string, Action<string>>("import", Import),
             new Tuple<string, Action<string>>("help", PrintHelp),
             new Tuple<string, Action<string>>("exit", Exit),
         };
@@ -326,10 +328,13 @@ namespace FileCabinetApp
                 {
                     using (StreamReader sr = new StreamReader(new FileStream(path, FileMode.Open)))
                     {
-                        Console.WriteLine($"All records are exported to {path}");
+                        FileCabinetServiceSnapshot snapshot = fileCabinetService.MakeSnapshot();
+                        snapshot.LoadFromCsv(sr);
+                        fileCabinetService.Restore(snapshot);
                         sr.Close();
-                        return;
                     }
+
+                    Console.WriteLine("All records are imported.");
                 }
             }
             catch (Exception ex)

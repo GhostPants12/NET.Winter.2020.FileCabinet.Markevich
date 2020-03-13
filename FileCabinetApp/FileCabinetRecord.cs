@@ -10,8 +10,7 @@ using System.Xml.Serialization;
 namespace FileCabinetApp
 {
     /// <summary>Class for the record in the file cabinet.</summary>
-    [Serializable]
-    [XmlRoot("FileCabinetRecord")]
+    [XmlRoot("record")]
     public class FileCabinetRecord
     {
         /// <summary>Gets or sets the identifier.</summary>
