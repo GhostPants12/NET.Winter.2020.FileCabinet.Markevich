@@ -192,7 +192,19 @@ namespace FileCabinetApp
 
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
-            throw new NotImplementedException();
+            FileCabinetRecord[] records = new FileCabinetRecord[this.GetRecords().Count];
+            this.GetRecords().CopyTo(records, 0);
+            return new FileCabinetServiceSnapshot(new List<FileCabinetRecord>(records));
+        }
+
+        public void Restore(FileCabinetServiceSnapshot snapshot)
+        {
+            this.fileStream.Position = 0;
+            foreach (var element in snapshot.Records)
+            {
+                this.count = element.Id--;
+                CreateRecord(new RecordData(element.FirstName, element.LastName, element.Code, element.Letter, element.Balance, element.DateOfBirth));
+            }
         }
     }
 }
