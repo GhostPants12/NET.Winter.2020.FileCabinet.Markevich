@@ -19,6 +19,14 @@
             <summary>Gets or sets the last name.</summary>
             <value>The last name.</value>
         </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.DateOfBirth">
+            <summary>Gets or sets the date of birth.</summary>
+            <value>The date of birth.</value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.Date">
+            <summary>Property for date time representation for xml serialization.</summary>
+            <value>The date.</value>
+        </member>
         <member name="P:FileCabinetApp.FileCabinetRecord.Code">
             <summary>Gets or sets the code.</summary>
             <value>The code.</value>
@@ -27,13 +35,13 @@
             <summary>Gets or sets the letter.</summary>
             <value>The letter.</value>
         </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.LetterProperty">
+            <summary>Property for date time representation for xml serialization.</summary>
+            <value>The date.</value>
+        </member>
         <member name="P:FileCabinetApp.FileCabinetRecord.Balance">
             <summary>Gets or sets the balance.</summary>
             <value>The balance.</value>
-        </member>
-        <member name="P:FileCabinetApp.FileCabinetRecord.DateOfBirth">
-            <summary>Gets or sets the date of birth.</summary>
-            <value>The date of birth.</value>
         </member>
         <member name="T:FileCabinetApp.FileCabinetCustomService">
             <summary>Custom implementation for the FileCabinetService.</summary>

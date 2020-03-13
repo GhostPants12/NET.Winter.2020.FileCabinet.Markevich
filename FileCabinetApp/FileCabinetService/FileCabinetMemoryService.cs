@@ -10,7 +10,7 @@ namespace FileCabinetApp
     public abstract class FileCabinetMemoryService : IFileCabinetService
     {
         private readonly IRecordValidator.IRecordValidator validator;
-        private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
+        private List<FileCabinetRecord> list = new List<FileCabinetRecord>();
 
         private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary =
             new Dictionary<string, List<FileCabinetRecord>>();
@@ -202,6 +202,11 @@ namespace FileCabinetApp
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
             return new FileCabinetServiceSnapshot(this.list);
+        }
+
+        public void Restore(FileCabinetServiceSnapshot snapshot)
+        {
+            this.list = new List<FileCabinetRecord>(snapshot.Records);
         }
 
         /// <summary>Gets the stat.</summary>

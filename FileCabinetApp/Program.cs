@@ -3,6 +3,7 @@ using System.Buffers;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
+using System.Runtime.CompilerServices;
 using FileCabinetApp;
 using FileCabinetApp.IRecordValidator;
 
@@ -29,6 +30,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("stat", Stat),
             new Tuple<string, Action<string>>("list", List),
             new Tuple<string, Action<string>>("export", Export),
+            new Tuple<string, Action<string>>("import", Import),
             new Tuple<string, Action<string>>("help", PrintHelp),
             new Tuple<string, Action<string>>("exit", Exit),
         };
@@ -41,6 +43,7 @@ namespace FileCabinetApp
             new string[] { "stat", "prints the records' statistics", "The 'stat' command prints the count of the list." },
             new string[] { "list", "gets the list of the records", "The 'list' command prints out all the records in list." },
             new string[] { "export", "exports the data to csv or xml format", "The 'export' command leads to the screen where records can be exported" },
+            new string[] { "import", "imports the data to csv or xml format", "The 'import' command leads to the screen where records can be imported" },
             new string[] { "help", "prints the help screen", "The 'help' command prints the help screen." },
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
         };
@@ -311,6 +314,45 @@ namespace FileCabinetApp
             catch (Exception ex)
             {
                 Console.WriteLine("Export failed: " + ex.Message);
+            }
+        }
+
+        private static void Import(string parameters)
+        {
+            string[] parametersArray = parameters.Split(' ');
+            string formatName = parametersArray[0];
+            string path = parametersArray[1];
+            try
+            {
+                if (formatName.Equals("csv", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    using (StreamReader sr = new StreamReader(new FileStream(path, FileMode.Open)))
+                    {
+                        FileCabinetServiceSnapshot snapshot = fileCabinetService.MakeSnapshot();
+                        snapshot.LoadFromCsv(sr);
+                        fileCabinetService.Restore(snapshot);
+                        sr.Close();
+                    }
+
+                    Console.WriteLine("All records were imported.");
+                }
+
+                if (formatName.Equals("xml", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    using (FileStream fs = new FileStream(path, FileMode.Open))
+                    {
+                        FileCabinetServiceSnapshot snapshot = fileCabinetService.MakeSnapshot();
+                        snapshot.LoadFromXml(fs);
+                        fileCabinetService.Restore(snapshot);
+                        fs.Close();
+                    }
+
+                    Console.WriteLine("All records were imported.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Import failed: " + ex.Message);
             }
         }
 
