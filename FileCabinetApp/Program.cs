@@ -41,6 +41,7 @@ namespace FileCabinetApp
             new string[] { "stat", "prints the records' statistics", "The 'stat' command prints the count of the list." },
             new string[] { "list", "gets the list of the records", "The 'list' command prints out all the records in list." },
             new string[] { "export", "exports the data to csv or xml format", "The 'export' command leads to the screen where records can be exported" },
+            new string[] { "import", "imports the data to csv or xml format", "The 'import' command leads to the screen where records can be imported" },
             new string[] { "help", "prints the help screen", "The 'help' command prints the help screen." },
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
         };
@@ -311,6 +312,29 @@ namespace FileCabinetApp
             catch (Exception ex)
             {
                 Console.WriteLine("Export failed: " + ex.Message);
+            }
+        }
+
+        private static void Import(string parameters)
+        {
+            string[] parametersArray = parameters.Split(' ');
+            string formatName = parametersArray[0];
+            string path = parametersArray[1];
+            try
+            {
+                if (formatName.Equals("csv", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    using (StreamReader sr = new StreamReader(new FileStream(path, FileMode.Open)))
+                    {
+                        Console.WriteLine($"All records are exported to {path}");
+                        sr.Close();
+                        return;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Import failed: " + ex.Message);
             }
         }
 
