@@ -78,5 +78,41 @@ namespace FileCabinetApp
 
             writer.EndWriting();
         }
+
+        public void LoadFromXml(FileStream fs)
+        {
+            int overwrittenElements = 0;
+            int lastElementIndex = this.records.Length - 1;
+            IList<FileCabinetRecord> list = new FileCabinetRecordXmlReader(fs).ReadAll();
+            Array.Resize(ref this.records, this.records.Length + list.Count);
+            foreach (var element in list)
+            {
+                if (lastElementIndex < 0)
+                {
+                    this.records[lastElementIndex + 1] = element;
+                    lastElementIndex++;
+                    continue;
+                }
+
+                for (int i = 0; i <= lastElementIndex; i++)
+                {
+                    if (this.records[i].Id == element.Id)
+                    {
+                        this.records[i] = element;
+                        overwrittenElements++;
+                        break;
+                    }
+
+                    if (i == lastElementIndex)
+                    {
+                        this.records[lastElementIndex + 1] = element;
+                        lastElementIndex++;
+                        break;
+                    }
+                }
+            }
+
+            Array.Resize(ref this.records, this.records.Length - overwrittenElements);
+        }
     }
 }

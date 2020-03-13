@@ -334,7 +334,20 @@ namespace FileCabinetApp
                         sr.Close();
                     }
 
-                    Console.WriteLine("All records are imported.");
+                    Console.WriteLine("All records were imported.");
+                }
+
+                if (formatName.Equals("xml", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    using (FileStream fs = new FileStream(path, FileMode.Open))
+                    {
+                        FileCabinetServiceSnapshot snapshot = fileCabinetService.MakeSnapshot();
+                        snapshot.LoadFromXml(fs);
+                        fileCabinetService.Restore(snapshot);
+                        fs.Close();
+                    }
+
+                    Console.WriteLine("All records were imported.");
                 }
             }
             catch (Exception ex)

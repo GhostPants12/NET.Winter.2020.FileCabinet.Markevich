@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Xml.Serialization;
-using FileCabinetApp;
 
-namespace FileCabinetGenerator.Generator
+namespace FileCabinetApp
 {
     [Serializable]
     public class XMLContainer
