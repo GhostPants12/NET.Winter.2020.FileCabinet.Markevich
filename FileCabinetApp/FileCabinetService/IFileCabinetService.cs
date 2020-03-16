@@ -13,6 +13,8 @@ namespace FileCabinetApp
 
         void EditRecord(RecordData newRecordData);
 
+        void DeleteRecord(int id);
+
         ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName);
 
         ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName);
@@ -25,6 +27,10 @@ namespace FileCabinetApp
 
         void Restore(FileCabinetServiceSnapshot snapshot);
 
+        int Purge();
+
         int GetStat();
+
+        int GetRemovedStat();
     }
 }

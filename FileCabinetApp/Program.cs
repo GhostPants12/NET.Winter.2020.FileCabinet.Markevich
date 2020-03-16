@@ -27,6 +27,8 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("create", Create),
             new Tuple<string, Action<string>>("edit", Edit),
             new Tuple<string, Action<string>>("find", Find),
+            new Tuple<string, Action<string>>("remove", Remove),
+            new Tuple<string, Action<string>>("purge", Purge),
             new Tuple<string, Action<string>>("stat", Stat),
             new Tuple<string, Action<string>>("list", List),
             new Tuple<string, Action<string>>("export", Export),
@@ -39,7 +41,9 @@ namespace FileCabinetApp
         {
             new string[] { "create", "creates a record in the list", "The 'create' command leads to the screen where records can be created" },
             new string[] { "edit", "edits a record in the list", "The 'edit' command leads to the screen where you can recreate the record" },
-            new string[] { "find", "finds a record with a specified property and its specified value", "The 'find' command leads to the screen where you can find a record" },
+            new string[] { "find", "finds a record with a specified property and its specified value", "The 'find' command leads to the screen where records can be found" },
+            new string[] { "remove", "removes record with a specified index from the cabinet", "The 'remove' command leads to the screen where records can be deleted"},
+            new string[] { "purge", "cleans up records' list by removing deleted records", "The 'purge' command leads to the screen where records are purged"},
             new string[] { "stat", "prints the records' statistics", "The 'stat' command prints the count of the list." },
             new string[] { "list", "gets the list of the records", "The 'list' command prints out all the records in list." },
             new string[] { "export", "exports the data to csv or xml format", "The 'export' command leads to the screen where records can be exported" },
@@ -232,9 +236,19 @@ namespace FileCabinetApp
         /// <param name="parameters">The parameters.</param>
         private static void Find(string parameters)
         {
-            string[] parametersArray = parameters.Split('"');
-            string propertyName = parametersArray[0];
-            string valueToFind = parametersArray[1];
+            string propertyName = string.Empty;
+            string valueToFind = string.Empty;
+            try
+            {
+                string[] parametersArray = parameters.Split('"');
+                propertyName = parametersArray[0];
+                valueToFind = parametersArray[1];
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Command parameters are incorrect.");
+            }
+
             if (propertyName.Equals("firstname ", StringComparison.InvariantCultureIgnoreCase))
             {
                 ReadOnlyCollection<FileCabinetRecord> arrayOfRecords = fileCabinetService.FindByFirstName(valueToFind);
@@ -261,6 +275,33 @@ namespace FileCabinetApp
                 {
                     Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {record.Code}, {record.Letter}, {record.Balance.ToString(CultureInfo.InvariantCulture)}, {record.DateOfBirth.ToString("yyyy-MMM-dd", System.Globalization.CultureInfo.InvariantCulture)}");
                 }
+            }
+        }
+
+        private static void Remove(string parameters)
+        {
+            int id = int.Parse(parameters, CultureInfo.InvariantCulture);
+            try
+            {
+                fileCabinetService.DeleteRecord(id);
+                Console.WriteLine($"Record #{id} was successfully deleted.");
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+
+        private static void Purge(string parameters)
+        {
+            try
+            {
+                int purged = fileCabinetService.Purge();
+                Console.WriteLine($"{purged} elements from {fileCabinetService.GetStat() + purged} were purged.");
+            }
+            catch (NotImplementedException ex)
+            {
+                Console.WriteLine(ex.Message);
             }
         }
 
@@ -372,7 +413,15 @@ namespace FileCabinetApp
         private static void Stat(string parameters)
         {
             var recordsCount = Program.fileCabinetService.GetStat();
+            var recordsToRemoveCount = fileCabinetService.GetRemovedStat();
             Console.WriteLine($"{recordsCount} record(s).");
+            if (recordsToRemoveCount == 0)
+            {
+                Console.WriteLine("There are no records to remove.");
+                return;
+            }
+
+            Console.WriteLine($"There are {recordsToRemoveCount} records to remove.");
         }
 
         /// <summary>Exits from the application.</summary>

@@ -1,8 +1,7 @@
 {
   "profiles": {
     "FileCabinetGenerator": {
-      "commandName": "Project",
-      "commandLineArgs": "-t xml -o records.xml -a 5000 -i 45"
+      "commandName": "Project"
     }
   }
 }

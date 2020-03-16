@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace FileCabinetApp
@@ -141,6 +142,23 @@ namespace FileCabinetApp
             throw new ArgumentException($"{nameof(newRecordData.Id)} is incorrect.");
         }
 
+        public void DeleteRecord(int id)
+        {
+            foreach (var element in this.list)
+            {
+                if (element.Id == id)
+                {
+                    this.firstNameDictionary[element.FirstName].Remove(element);
+                    this.lastNameDictionary[element.LastName].Remove(element);
+                    this.dateOfBirthDictionary[element.DateOfBirth].Remove(element);
+                    this.list.Remove(element);
+                    return;
+                }
+            }
+
+            throw new ArgumentException($"Id #{id} doesn't exist.");
+        }
+
         /// <summary>Finds the record by its first name.</summary>
         /// <param name="firstName">The first name.</param>
         /// <returns>The array of record with specific first name.</returns>
@@ -214,6 +232,16 @@ namespace FileCabinetApp
         public int GetStat()
         {
             return this.list.Count;
+        }
+
+        public int GetRemovedStat()
+        {
+            return 0;
+        }
+
+        public int Purge()
+        {
+            throw new NotImplementedException("This method is incorrect for this type of FileCabinet.");
         }
     }
 }
