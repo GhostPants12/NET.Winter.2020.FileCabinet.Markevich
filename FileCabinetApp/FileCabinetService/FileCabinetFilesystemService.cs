@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -11,7 +12,9 @@ namespace FileCabinetApp
 {
     public class FileCabinetFilesystemService : IFileCabinetService
     {
+        private int removedCount;
         private int count;
+        private int idCounter = 0;
         private FileStream fileStream;
         private readonly IRecordValidator.IRecordValidator validator;
 
@@ -21,7 +24,8 @@ namespace FileCabinetApp
             this.validator = validator;
             try
             {
-                GetRecords();
+                this.GetStat();
+                idCounter = this.GetRecords().Max((record => record.Id));
             }
             catch (Exception ex)
             {
@@ -32,7 +36,7 @@ namespace FileCabinetApp
         public int CreateRecord(RecordData newRecordData)
         {
             this.validator.ValidateParameters(newRecordData.FirstName, newRecordData.LastName, newRecordData.Code, newRecordData.Letter, newRecordData.Balance, newRecordData.DateOfBirth);
-            newRecordData.Id = ++this.count;
+            newRecordData.Id = ++this.idCounter;
             byte[] buffer = new byte[120];
             this.fileStream.Write(BitConverter.GetBytes((short)0), 0, 2);
             int i = 0;
@@ -146,7 +150,7 @@ namespace FileCabinetApp
 
         public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
-            this.count = 0;
+            this.removedCount = 0;
             List<FileCabinetRecord> records = new List<FileCabinetRecord>();
             int year, month, day;
             int[] decimalArray = new int[4];
@@ -159,7 +163,7 @@ namespace FileCabinetApp
                 if ((bytes[0] & 4) == 4)
                 {
                     this.fileStream.Position += 276;
-                    this.count++;
+                    this.removedCount++;
                     continue;
                 }
 
@@ -188,14 +192,56 @@ namespace FileCabinetApp
 
                 recordToAdd.Balance = new decimal(decimalArray);
                 records.Add(recordToAdd);
-                this.count++;
             }
 
             return new ReadOnlyCollection<FileCabinetRecord>(records);
         }
 
+        public int Purge()
+        {
+            int purgedElements = 0;
+            byte[] deletionBuf = new byte[2];
+            this.fileStream.Position = 0;
+            do
+            {
+                this.fileStream.Read(deletionBuf, 0, 2);
+                if ((deletionBuf[0] & 4) == 4)
+                {
+                    this.fileStream.Position -= 2;
+                    long positionBackup = this.fileStream.Position;
+                    this.fileStream.Position += 278;
+                    if (this.fileStream.Length - this.fileStream.Position > 0)
+                    {
+                        byte[] buf = new byte[this.fileStream.Length - this.fileStream.Position];
+                        this.fileStream.Read(buf, 0, buf.Length);
+                        this.fileStream.Position = positionBackup;
+                        this.fileStream.Write(buf, 0, buf.Length);
+                        this.fileStream.SetLength(this.fileStream.Position);
+                        this.fileStream.Position = positionBackup;
+                        this.fileStream.Position += 278;
+                        purgedElements++;
+                        continue;
+                    }
+                    else
+                    {
+                        this.fileStream.Position -= 278;
+                        purgedElements++;
+                        this.fileStream.SetLength(this.fileStream.Position);
+                        break;
+                    }
+                }
+
+                this.fileStream.Position += 276;
+            }
+            while (this.fileStream.Position != this.fileStream.Length);
+
+            this.removedCount = 0;
+            return purgedElements;
+        }
+
         public int GetStat()
         {
+            this.count = (int)(this.fileStream.Length / 278);
             return this.count;
         }
 
@@ -242,9 +288,9 @@ namespace FileCabinetApp
 
         private void SetPositionToId(int id)
         {
+            this.fileStream.Position = 0;
             if (id == 0)
             {
-                this.fileStream.Position = 0;
                 return;
             }
 
@@ -272,6 +318,12 @@ namespace FileCabinetApp
                 this.fileStream.Read(buffer, 0, 272);
             }
             while (this.fileStream.Position != this.fileStream.Length);
+        }
+
+        public int GetRemovedStat()
+        {
+            GetRecords();
+            return this.removedCount;
         }
     }
 }

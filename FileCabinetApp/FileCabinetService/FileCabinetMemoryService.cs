@@ -233,5 +233,15 @@ namespace FileCabinetApp
         {
             return this.list.Count;
         }
+
+        public int GetRemovedStat()
+        {
+            return 0;
+        }
+
+        public int Purge()
+        {
+            throw new NotImplementedException("This method is incorrect for this type of FileCabinet.");
+        }
     }
 }

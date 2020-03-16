@@ -27,6 +27,10 @@ namespace FileCabinetApp
 
         void Restore(FileCabinetServiceSnapshot snapshot);
 
+        int Purge();
+
         int GetStat();
+
+        int GetRemovedStat();
     }
 }
