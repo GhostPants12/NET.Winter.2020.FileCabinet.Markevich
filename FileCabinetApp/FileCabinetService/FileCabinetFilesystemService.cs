@@ -218,7 +218,6 @@ namespace FileCabinetApp
                         this.fileStream.Write(buf, 0, buf.Length);
                         this.fileStream.SetLength(this.fileStream.Position);
                         this.fileStream.Position = positionBackup;
-                        this.fileStream.Position += 278;
                         purgedElements++;
                         continue;
                     }
@@ -270,17 +269,8 @@ namespace FileCabinetApp
         public void DeleteRecord(int id)
         {
             byte[] buf = new byte[2];
-            if (this.count < id)
-            {
-                throw new ArgumentException($"Id #{id} is incorrect.");
-            }
-
-            this.SetPositionToId(id - 1);
-            if (id != 1)
-            {
-                this.fileStream.Position += 272;
-            }
-
+            this.SetPositionToId(id);
+            this.fileStream.Position -= 6;
             this.fileStream.Read(buf, 0, 2);
             this.fileStream.Position -= 2;
             this.fileStream.Write(new byte[] { (byte)(buf[0] | 4),  buf[1] }, 0, 2);
@@ -289,24 +279,15 @@ namespace FileCabinetApp
         private void SetPositionToId(int id)
         {
             this.fileStream.Position = 0;
-            if (id == 0)
-            {
-                return;
-            }
-
-            if (this.count < id)
-            {
-                throw new ArgumentException($"Id #{id} is incorrect.");
-            }
-
-            byte[] buffer = new byte[272];
+            byte[] buffer = new byte[4];
 
             do
             {
                 this.fileStream.Read(buffer, 0, 2);
                 if ((buffer[0] & 4) == 4)
                 {
-                    throw new ArgumentException($"Id #{id} is incorrect.");
+                    this.fileStream.Position += 276;
+                    continue;
                 }
 
                 this.fileStream.Read(buffer, 0, 4);
@@ -315,9 +296,11 @@ namespace FileCabinetApp
                     return;
                 }
 
-                this.fileStream.Read(buffer, 0, 272);
+                this.fileStream.Position += 272;
             }
             while (this.fileStream.Position != this.fileStream.Length);
+
+            throw new ArgumentException($"Id #{id} is incorrect.");
         }
 
         public int GetRemovedStat()

@@ -280,13 +280,13 @@ namespace FileCabinetApp
 
         private static void Remove(string parameters)
         {
-            int id = int.Parse(parameters, CultureInfo.InvariantCulture);
             try
             {
+                int id = int.Parse(parameters, CultureInfo.InvariantCulture);
                 fileCabinetService.DeleteRecord(id);
                 Console.WriteLine($"Record #{id} was successfully deleted.");
             }
-            catch (ArgumentException ex)
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }
