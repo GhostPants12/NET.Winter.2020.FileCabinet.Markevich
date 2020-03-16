@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text;
 using FileCabinetApp.IRecordValidator;
 
@@ -10,7 +11,7 @@ namespace FileCabinetApp
 {
     public class FileCabinetFilesystemService : IFileCabinetService
     {
-        private int count = 0;
+        private int count;
         private FileStream fileStream;
         private readonly IRecordValidator.IRecordValidator validator;
 
@@ -18,6 +19,14 @@ namespace FileCabinetApp
         {
             this.fileStream = fileStream;
             this.validator = validator;
+            try
+            {
+                GetRecords();
+            }
+            catch (Exception ex)
+            {
+                this.count = 0;
+            }
         }
 
         public int CreateRecord(RecordData newRecordData)
@@ -25,6 +34,7 @@ namespace FileCabinetApp
             this.validator.ValidateParameters(newRecordData.FirstName, newRecordData.LastName, newRecordData.Code, newRecordData.Letter, newRecordData.Balance, newRecordData.DateOfBirth);
             newRecordData.Id = ++this.count;
             byte[] buffer = new byte[120];
+            this.fileStream.Write(BitConverter.GetBytes((short)0), 0, 2);
             int i = 0;
             this.fileStream.Write(BitConverter.GetBytes(newRecordData.Id));
             foreach (var element in Encoding.Default.GetBytes(newRecordData.FirstName))
@@ -57,45 +67,39 @@ namespace FileCabinetApp
 
         public void EditRecord(RecordData newRecordData)
         {
+            long positionBackup = this.fileStream.Position;
             int i = 0;
-            byte[] buffer = new byte[120];
-            foreach (var record in this.GetRecords())
+            this.fileStream.Position = 0;
+            byte[] buffer = new byte[280];
+            this.SetPositionToId(newRecordData.Id);
+            this.validator.ValidateParameters(newRecordData.FirstName, newRecordData.LastName,
+                newRecordData.Code, newRecordData.Letter, newRecordData.Balance, newRecordData.DateOfBirth);
+            foreach (var element in Encoding.Default.GetBytes(newRecordData.FirstName))
             {
-                if (record.Id == newRecordData.Id)
-                {
-                    this.fileStream.Position = ((newRecordData.Id - 1) * 276) + 4;
-                    this.validator.ValidateParameters(newRecordData.FirstName, newRecordData.LastName,
-                        newRecordData.Code, newRecordData.Letter, newRecordData.Balance, newRecordData.DateOfBirth);
-                    foreach (var element in Encoding.Default.GetBytes(newRecordData.FirstName))
-                    {
-                        buffer[i] = element;
-                        i++;
-                    }
-
-                    i = 0;
-                    this.fileStream.Write(buffer, 0, 120);
-                    foreach (var element in Encoding.Default.GetBytes(newRecordData.LastName))
-                    {
-                        buffer[i] = element;
-                        i++;
-                    }
-
-                    this.fileStream.Write(buffer, 0, 120);
-                    this.fileStream.Write(BitConverter.GetBytes(newRecordData.DateOfBirth.Year));
-                    this.fileStream.Write(BitConverter.GetBytes(newRecordData.DateOfBirth.Month));
-                    this.fileStream.Write(BitConverter.GetBytes(newRecordData.DateOfBirth.Day));
-                    this.fileStream.Write(BitConverter.GetBytes(newRecordData.Code));
-                    this.fileStream.Write(BitConverter.GetBytes(newRecordData.Letter));
-                    foreach (int value in decimal.GetBits(newRecordData.Balance))
-                    {
-                        this.fileStream.Write(BitConverter.GetBytes(value));
-                    }
-
-                    return;
-                }
+                buffer[i] = element;
+                i++;
             }
 
-            throw new ArgumentException($"{nameof(newRecordData.Id)} is incorrect.");
+            i = 0;
+            this.fileStream.Write(buffer, 0, 120);
+            foreach (var element in Encoding.Default.GetBytes(newRecordData.LastName))
+            {
+                buffer[i] = element;
+                i++;
+            }
+
+            this.fileStream.Write(buffer, 0, 120);
+            this.fileStream.Write(BitConverter.GetBytes(newRecordData.DateOfBirth.Year));
+            this.fileStream.Write(BitConverter.GetBytes(newRecordData.DateOfBirth.Month));
+            this.fileStream.Write(BitConverter.GetBytes(newRecordData.DateOfBirth.Day));
+            this.fileStream.Write(BitConverter.GetBytes(newRecordData.Code));
+            this.fileStream.Write(BitConverter.GetBytes(newRecordData.Letter));
+            foreach (int value in decimal.GetBits(newRecordData.Balance))
+            {
+                this.fileStream.Write(BitConverter.GetBytes(value));
+            }
+
+            this.fileStream.Position = positionBackup;
         }
 
         public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(DateTime dateTime)
@@ -142,6 +146,7 @@ namespace FileCabinetApp
 
         public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
+            this.count = 0;
             List<FileCabinetRecord> records = new List<FileCabinetRecord>();
             int year, month, day;
             int[] decimalArray = new int[4];
@@ -150,6 +155,14 @@ namespace FileCabinetApp
             while (this.fileStream.Position < this.fileStream.Length)
             {
                 FileCabinetRecord recordToAdd = new FileCabinetRecord();
+                this.fileStream.Read(bytes, 0, 2);
+                if ((bytes[0] & 4) == 4)
+                {
+                    this.fileStream.Position += 276;
+                    this.count++;
+                    continue;
+                }
+
                 this.fileStream.Read(bytes, 0, 4);
                 recordToAdd.Id = BitConverter.ToInt32(bytes);
                 this.fileStream.Read(bytes, 0, 120);
@@ -175,6 +188,7 @@ namespace FileCabinetApp
 
                 recordToAdd.Balance = new decimal(decimalArray);
                 records.Add(recordToAdd);
+                this.count++;
             }
 
             return new ReadOnlyCollection<FileCabinetRecord>(records);
@@ -205,6 +219,59 @@ namespace FileCabinetApp
                 this.count = element.Id--;
                 CreateRecord(new RecordData(element.FirstName, element.LastName, element.Code, element.Letter, element.Balance, element.DateOfBirth));
             }
+        }
+
+        public void DeleteRecord(int id)
+        {
+            byte[] buf = new byte[2];
+            if (this.count < id)
+            {
+                throw new ArgumentException($"Id #{id} is incorrect.");
+            }
+
+            this.SetPositionToId(id - 1);
+            if (id != 1)
+            {
+                this.fileStream.Position += 272;
+            }
+
+            this.fileStream.Read(buf, 0, 2);
+            this.fileStream.Position -= 2;
+            this.fileStream.Write(new byte[] { (byte)(buf[0] | 4),  buf[1] }, 0, 2);
+        }
+
+        private void SetPositionToId(int id)
+        {
+            if (id == 0)
+            {
+                this.fileStream.Position = 0;
+                return;
+            }
+
+            if (this.count < id)
+            {
+                throw new ArgumentException($"Id #{id} is incorrect.");
+            }
+
+            byte[] buffer = new byte[272];
+
+            do
+            {
+                this.fileStream.Read(buffer, 0, 2);
+                if ((buffer[0] & 4) == 4)
+                {
+                    throw new ArgumentException($"Id #{id} is incorrect.");
+                }
+
+                this.fileStream.Read(buffer, 0, 4);
+                if (BitConverter.ToInt32(buffer) == id)
+                {
+                    return;
+                }
+
+                this.fileStream.Read(buffer, 0, 272);
+            }
+            while (this.fileStream.Position != this.fileStream.Length);
         }
     }
 }
