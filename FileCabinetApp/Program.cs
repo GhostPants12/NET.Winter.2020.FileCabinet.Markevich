@@ -27,6 +27,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("create", Create),
             new Tuple<string, Action<string>>("edit", Edit),
             new Tuple<string, Action<string>>("find", Find),
+            new Tuple<string, Action<string>>("remove", Remove),
             new Tuple<string, Action<string>>("stat", Stat),
             new Tuple<string, Action<string>>("list", List),
             new Tuple<string, Action<string>>("export", Export),
@@ -232,9 +233,19 @@ namespace FileCabinetApp
         /// <param name="parameters">The parameters.</param>
         private static void Find(string parameters)
         {
-            string[] parametersArray = parameters.Split('"');
-            string propertyName = parametersArray[0];
-            string valueToFind = parametersArray[1];
+            string propertyName = string.Empty;
+            string valueToFind = string.Empty;
+            try
+            {
+                string[] parametersArray = parameters.Split('"');
+                propertyName = parametersArray[0];
+                valueToFind = parametersArray[1];
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Command parameters are incorrect.");
+            }
+
             if (propertyName.Equals("firstname ", StringComparison.InvariantCultureIgnoreCase))
             {
                 ReadOnlyCollection<FileCabinetRecord> arrayOfRecords = fileCabinetService.FindByFirstName(valueToFind);
@@ -261,6 +272,20 @@ namespace FileCabinetApp
                 {
                     Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {record.Code}, {record.Letter}, {record.Balance.ToString(CultureInfo.InvariantCulture)}, {record.DateOfBirth.ToString("yyyy-MMM-dd", System.Globalization.CultureInfo.InvariantCulture)}");
                 }
+            }
+        }
+
+        private static void Remove(string parameters)
+        {
+            int id = int.Parse(parameters, CultureInfo.InvariantCulture);
+            try
+            {
+                fileCabinetService.DeleteRecord(id);
+                Console.WriteLine($"Record #{id} was successfully deleted.");
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine(ex.Message);
             }
         }
 
