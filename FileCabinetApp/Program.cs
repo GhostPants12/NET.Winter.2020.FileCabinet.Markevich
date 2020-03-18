@@ -2,6 +2,7 @@
 using System.Buffers;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -16,28 +17,10 @@ namespace FileCabinetApp
     {
         private const string DeveloperName = "Ivan Markevich";
         private const string HintMessage = "Enter your command, or enter 'help' to get help.";
-        private const int CommandHelpIndex = 0;
-        private const int DescriptionHelpIndex = 1;
-        private const int ExplanationHelpIndex = 2;
 
         public static bool isRunning = true;
 
         public static IFileCabinetService fileCabinetService = new FileCabinetCustomService();
-
-        private static string[][] helpMessages = new string[][]
-        {
-            new string[] { "create", "creates a record in the list", "The 'create' command leads to the screen where records can be created" },
-            new string[] { "edit", "edits a record in the list", "The 'edit' command leads to the screen where you can recreate the record" },
-            new string[] { "find", "finds a record with a specified property and its specified value", "The 'find' command leads to the screen where records can be found" },
-            new string[] { "remove", "removes record with a specified index from the cabinet", "The 'remove' command leads to the screen where records can be deleted"},
-            new string[] { "purge", "cleans up records' list by removing deleted records", "The 'purge' command leads to the screen where records are purged"},
-            new string[] { "stat", "prints the records' statistics", "The 'stat' command prints the count of the list." },
-            new string[] { "list", "gets the list of the records", "The 'list' command prints out all the records in list." },
-            new string[] { "export", "exports the data to csv or xml format", "The 'export' command leads to the screen where records can be exported" },
-            new string[] { "import", "imports the data to csv or xml format", "The 'import' command leads to the screen where records can be imported" },
-            new string[] { "help", "prints the help screen", "The 'help' command prints the help screen." },
-            new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
-        };
 
         /// <summary>Defines the entry point of the application.</summary>
         /// <param name="args">The arguments.</param>
@@ -101,10 +84,178 @@ namespace FileCabinetApp
             while (isRunning);
         }
 
-        private static CommandHandler CreateCommandHandler()
+        private static CommandHandlerBase CreateCommandHandler()
         {
-            var commandHandler = new CommandHandler();
-            return commandHandler;
+            var createHandler = new CreateCommandHandler();
+            var editHandler = new EditCommandHandler();
+            var findHandler = new FindCommandHandler();
+            var removeHandler = new RemoveCommandHandler();
+            var purgeHandler = new PurgeCommandHandler();
+            var statHandler = new StatCommandHandler();
+            var listHandler = new ListCommandHandler();
+            var exportHandler = new ExportCommandHandler();
+            var importHandler = new ImportCommandHandler();
+            var exitHandler = new ExitCommandHandler();
+            var missedHandler = new MissedCommandHandler();
+            exitHandler.SetNext(missedHandler);
+            importHandler.SetNext(exitHandler);
+            exportHandler.SetNext(importHandler);
+            listHandler.SetNext(exportHandler);
+            statHandler.SetNext(listHandler);
+            purgeHandler.SetNext(statHandler);
+            removeHandler.SetNext(purgeHandler);
+            findHandler.SetNext(removeHandler);
+            editHandler.SetNext(findHandler);
+            createHandler.SetNext(editHandler);
+            return createHandler;
+        }
+
+        public static T ReadInput<T>(Func<string, Tuple<bool, string, T>> converter, Func<T, Tuple<bool, string>> validator)
+        {
+            do
+            {
+                T value;
+
+                var input = Console.ReadLine();
+                var conversionResult = converter(input);
+
+                if (!conversionResult.Item1)
+                {
+                    Console.WriteLine($"Conversion failed: {conversionResult.Item2}. Please, correct your input.");
+                    continue;
+                }
+
+                value = conversionResult.Item3;
+
+                var validationResult = validator(value);
+                if (!validationResult.Item1)
+                {
+                    Console.WriteLine($"Validation failed: {validationResult.Item2}. Please, correct your input.");
+                    continue;
+                }
+
+                return value;
+            }
+            while (true);
+        }
+
+        public static Tuple<bool, string, string> ConvertStringToString(string value)
+        {
+            return new Tuple<bool, string, string>(true, value, value);
+        }
+
+        public static Tuple<bool, string, char> ConvertStringToChar(string value)
+        {
+            if (value.Length == 1)
+            {
+                return new Tuple<bool, string, char>(true, value, value[0]);
+            }
+
+            return new Tuple<bool, string, char>(false, value, '0');
+        }
+
+        public static Tuple<bool, string, short> ConvertStringToShort(string value)
+        {
+            short result;
+            if (short.TryParse(value, out result))
+            {
+                return new Tuple<bool, string, short>(true, value, result);
+            }
+
+            return new Tuple<bool, string, short>(false, value, result);
+        }
+
+        public static Tuple<bool, string, decimal> ConvertStringToDecimal(string value)
+        {
+            decimal result;
+            if (decimal.TryParse(value, out result))
+            {
+                return new Tuple<bool, string, decimal>(true, value, result);
+            }
+
+            return new Tuple<bool, string, decimal>(false, value, result);
+        }
+
+        public static Tuple<bool, string, DateTime> ConvertStringToDate(string value)
+        {
+            DateTime result;
+            if (DateTime.TryParseExact(value, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out result))
+            {
+                return new Tuple<bool, string, DateTime>(true, value, result);
+            }
+
+            return new Tuple<bool, string, DateTime>(false, value, result);
+        }
+
+        public static Tuple<bool, string> ValidateDate(DateTime date)
+        {
+            try
+            {
+                fileCabinetService.GetValidator().ValidateParameters("1234", "1234", 123, 'a', 1, date);
+            }
+            catch (ArgumentException e)
+            {
+                return new Tuple<bool, string>(false, e.Message);
+            }
+
+            return new Tuple<bool, string>(true, string.Empty);
+        }
+
+        public static Tuple<bool, string> ValidateName(string firstname)
+        {
+            try
+            {
+                fileCabinetService.GetValidator()
+                    .ValidateParameters(firstname, "1234", 123, 'a', 1, new DateTime(1990, 1, 1));
+            }
+            catch (ArgumentException e)
+            {
+                return new Tuple<bool, string>(false, e.Message);
+            }
+
+            return new Tuple<bool, string>(true, string.Empty);
+        }
+
+        public static Tuple<bool, string> ValidateCode(short code)
+        {
+            try
+            {
+                fileCabinetService.GetValidator().ValidateParameters("1234", "1234", code, 'a', 1, new DateTime(1990, 1, 1));
+            }
+            catch (ArgumentException e)
+            {
+                return new Tuple<bool, string>(false, e.Message);
+            }
+
+            return new Tuple<bool, string>(true, string.Empty);
+        }
+
+        public static Tuple<bool, string> ValidateBalance(decimal balance)
+        {
+            try
+            {
+                fileCabinetService.GetValidator().ValidateParameters("1234", "1234", 123, 'a', balance, new DateTime(1990, 1, 1));
+            }
+            catch (ArgumentException e)
+            {
+                return new Tuple<bool, string>(false, e.Message);
+            }
+
+            return new Tuple<bool, string>(true, string.Empty);
+        }
+
+        public static Tuple<bool, string> ValidateLetter(char letter)
+        {
+            try
+            {
+                fileCabinetService.GetValidator().ValidateParameters("1234", "1234", 123, letter, 1, new DateTime(1990, 1, 1));
+            }
+            catch (ArgumentException e)
+            {
+                return new Tuple<bool, string>(false, e.Message);
+            }
+
+            return new Tuple<bool, string>(true, string.Empty);
         }
     }
 }
