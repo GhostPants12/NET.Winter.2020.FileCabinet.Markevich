@@ -6,12 +6,9 @@ namespace FileCabinetApp.CommandHandlers
 {
     public abstract class CommandHandlerBase : ICommandHandler
     {
-        private ICommandHandler nextHandler;
+        internal ICommandHandler nextHandler;
 
-        public void Handle(AppCommandRequest request)
-        {
-
-        }
+        public abstract void Handle(AppCommandRequest request);
 
         public void SetNext(ICommandHandler handler)
         {

@@ -108,38 +108,6 @@
             <summary>Defines the entry point of the application.</summary>
             <param name="args">The arguments.</param>
         </member>
-        <member name="M:FileCabinetApp.Program.PrintMissedCommandInfo(System.String)">
-            <summary>Prints the missed command information.</summary>
-            <param name="command">The command.</param>
-        </member>
-        <member name="M:FileCabinetApp.Program.PrintHelp(System.String)">
-            <summary>Prints the help.</summary>
-            <param name="parameters">The parameters.</param>
-        </member>
-        <member name="M:FileCabinetApp.Program.Create(System.String)">
-            <summary>Creates the record.</summary>
-            <param name="parameters">The parameters.</param>
-        </member>
-        <member name="M:FileCabinetApp.Program.Edit(System.String)">
-            <summary>Edits the record.</summary>
-            <param name="parameters">The parameters.</param>
-        </member>
-        <member name="M:FileCabinetApp.Program.Find(System.String)">
-            <summary>Finds the record.</summary>
-            <param name="parameters">The parameters.</param>
-        </member>
-        <member name="M:FileCabinetApp.Program.List(System.String)">
-            <summary>  Gets the list of the records.</summary>
-            <param name="parameters">The parameters.</param>
-        </member>
-        <member name="M:FileCabinetApp.Program.Stat(System.String)">
-            <summary>  Shows the stat.</summary>
-            <param name="parameters">The parameters.</param>
-        </member>
-        <member name="M:FileCabinetApp.Program.Exit(System.String)">
-            <summary>Exits from the application.</summary>
-            <param name="parameters">The parameters.</param>
-        </member>
         <member name="M:FileCabinetApp.RecordData.#ctor(System.String,System.String,System.Int16,System.Char,System.Decimal,System.DateTime)">
             <summary>Initializes a new instance of the <see cref="T:FileCabinetApp.RecordData"/> class.</summary>
             <param name="firstName">The first name.</param>
