@@ -4,13 +4,12 @@ using System.Text;
 
 namespace FileCabinetApp.CommandHandlers
 {
-    public class CreateCommandHandler : CommandHandlerBase
+    public class CreateCommandHandler : ServiceCommandHandlerBase
     {
-        private IFileCabinetService service;
-
-        public CreateCommandHandler(IFileCabinetService serivce)
+        public CreateCommandHandler(IFileCabinetService service)
+            : base(service)
         {
-            this.service = serivce;
+
         }
 
         public override void Handle(AppCommandRequest request)

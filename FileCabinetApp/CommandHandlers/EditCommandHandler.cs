@@ -5,13 +5,12 @@ using System.Text;
 
 namespace FileCabinetApp.CommandHandlers
 {
-    public class EditCommandHandler : CommandHandlerBase
+    public class EditCommandHandler : ServiceCommandHandlerBase
     {
-        private IFileCabinetService service;
-
-        public EditCommandHandler(IFileCabinetService serivce)
+        public EditCommandHandler(IFileCabinetService service)
+            : base(service)
         {
-            this.service = serivce;
+
         }
 
         public override void Handle(AppCommandRequest request)

@@ -4,13 +4,12 @@ using System.Text;
 
 namespace FileCabinetApp.CommandHandlers
 {
-    public class PurgeCommandHandler : CommandHandlerBase
+    public class PurgeCommandHandler : ServiceCommandHandlerBase
     {
-        private IFileCabinetService service;
-
-        public PurgeCommandHandler(IFileCabinetService serivce)
+        public PurgeCommandHandler(IFileCabinetService service)
+            : base(service)
         {
-            this.service = serivce;
+
         }
 
         public override void Handle(AppCommandRequest request)

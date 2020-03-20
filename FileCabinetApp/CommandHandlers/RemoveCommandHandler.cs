@@ -5,13 +5,12 @@ using System.Text;
 
 namespace FileCabinetApp.CommandHandlers
 {
-    public class RemoveCommandHandler : CommandHandlerBase
+    public class RemoveCommandHandler : ServiceCommandHandlerBase
     {
-        private IFileCabinetService service;
-
-        public RemoveCommandHandler(IFileCabinetService serivce)
+        public RemoveCommandHandler(IFileCabinetService service)
+            : base(service)
         {
-            this.service = serivce;
+
         }
 
         public override void Handle(AppCommandRequest request)
