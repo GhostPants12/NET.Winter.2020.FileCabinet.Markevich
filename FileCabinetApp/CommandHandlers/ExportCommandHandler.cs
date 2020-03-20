@@ -8,6 +8,13 @@ namespace FileCabinetApp.CommandHandlers
 {
     public class ExportCommandHandler : CommandHandlerBase
     {
+        private IFileCabinetService service;
+
+        public ExportCommandHandler(IFileCabinetService serivce)
+        {
+            this.service = serivce;
+        }
+
         public override void Handle(AppCommandRequest request)
         {
             if (!request.Command.Equals("export", StringComparison.InvariantCultureIgnoreCase))
@@ -44,7 +51,7 @@ namespace FileCabinetApp.CommandHandlers
                 {
                     using (StreamWriter sr = new StreamWriter(new FileStream(path, FileMode.Create)))
                     {
-                        Program.fileCabinetService.MakeSnapshot().SaveToCsv(sr);
+                        this.service.MakeSnapshot().SaveToCsv(sr);
                         Console.WriteLine($"All records are exported to {path}");
                         sr.Close();
                         return;
@@ -55,7 +62,7 @@ namespace FileCabinetApp.CommandHandlers
                 {
                     using (StreamWriter sr = new StreamWriter(new FileStream(path, FileMode.Create)))
                     {
-                        Program.fileCabinetService.MakeSnapshot().SaveToXml(sr);
+                        this.service.MakeSnapshot().SaveToXml(sr);
                         Console.WriteLine($"All records are exported to {path}");
                         sr.Close();
                     }

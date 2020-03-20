@@ -20,7 +20,7 @@ namespace FileCabinetApp
 
         public static bool isRunning = true;
 
-        public static IFileCabinetService fileCabinetService = new FileCabinetCustomService();
+        private static IFileCabinetService fileCabinetService = new FileCabinetCustomService();
 
         /// <summary>Defines the entry point of the application.</summary>
         /// <param name="args">The arguments.</param>
@@ -86,15 +86,15 @@ namespace FileCabinetApp
 
         private static CommandHandlerBase CreateCommandHandler()
         {
-            var createHandler = new CreateCommandHandler();
-            var editHandler = new EditCommandHandler();
-            var findHandler = new FindCommandHandler();
-            var removeHandler = new RemoveCommandHandler();
-            var purgeHandler = new PurgeCommandHandler();
+            var createHandler = new CreateCommandHandler(fileCabinetService);
+            var editHandler = new EditCommandHandler(fileCabinetService);
+            var findHandler = new FindCommandHandler(fileCabinetService);
+            var removeHandler = new RemoveCommandHandler(fileCabinetService);
+            var purgeHandler = new PurgeCommandHandler(fileCabinetService);
             var statHandler = new StatCommandHandler();
-            var listHandler = new ListCommandHandler();
-            var exportHandler = new ExportCommandHandler();
-            var importHandler = new ImportCommandHandler();
+            var listHandler = new ListCommandHandler(fileCabinetService);
+            var exportHandler = new ExportCommandHandler(fileCabinetService);
+            var importHandler = new ImportCommandHandler(fileCabinetService);
             var exitHandler = new ExitCommandHandler();
             var missedHandler = new MissedCommandHandler();
             exitHandler.SetNext(missedHandler);

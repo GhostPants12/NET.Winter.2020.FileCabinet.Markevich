@@ -6,6 +6,13 @@ namespace FileCabinetApp.CommandHandlers
 {
     public class CreateCommandHandler : CommandHandlerBase
     {
+        private IFileCabinetService service;
+
+        public CreateCommandHandler(IFileCabinetService serivce)
+        {
+            this.service = serivce;
+        }
+
         public override void Handle(AppCommandRequest request)
         {
             if (!request.Command.Equals("create", StringComparison.InvariantCultureIgnoreCase))
@@ -36,7 +43,7 @@ namespace FileCabinetApp.CommandHandlers
                 Console.Write("Date of birth: ");
                 dateOfBirth = Program.ReadInput<DateTime>(Program.ConvertStringToDate, Program.ValidateDate);
                 RecordData recordDataToCreate = new RecordData(firstName, lastName, code, letter, balance, dateOfBirth);
-                id = Program.fileCabinetService.CreateRecord(recordDataToCreate);
+                id = this.service.CreateRecord(recordDataToCreate);
                 Console.WriteLine($"Record #{id} has been created.");
             }
             catch (Exception)

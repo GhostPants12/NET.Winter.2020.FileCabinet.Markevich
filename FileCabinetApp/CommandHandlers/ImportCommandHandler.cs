@@ -7,6 +7,13 @@ namespace FileCabinetApp.CommandHandlers
 {
     public class ImportCommandHandler : CommandHandlerBase
     {
+        private IFileCabinetService service;
+
+        public ImportCommandHandler(IFileCabinetService serivce)
+        {
+            this.service = serivce;
+        }
+
         public override void Handle(AppCommandRequest request)
         {
             if (!request.Command.Equals("import", StringComparison.InvariantCultureIgnoreCase))
@@ -24,9 +31,9 @@ namespace FileCabinetApp.CommandHandlers
                 {
                     using (StreamReader sr = new StreamReader(new FileStream(path, FileMode.Open)))
                     {
-                        FileCabinetServiceSnapshot snapshot = Program.fileCabinetService.MakeSnapshot();
+                        FileCabinetServiceSnapshot snapshot = this.service.MakeSnapshot();
                         snapshot.LoadFromCsv(sr);
-                        Program.fileCabinetService.Restore(snapshot);
+                        this.service.Restore(snapshot);
                         sr.Close();
                     }
 
@@ -37,9 +44,9 @@ namespace FileCabinetApp.CommandHandlers
                 {
                     using (FileStream fs = new FileStream(path, FileMode.Open))
                     {
-                        FileCabinetServiceSnapshot snapshot = Program.fileCabinetService.MakeSnapshot();
+                        FileCabinetServiceSnapshot snapshot = this.service.MakeSnapshot();
                         snapshot.LoadFromXml(fs);
-                        Program.fileCabinetService.Restore(snapshot);
+                        this.service.Restore(snapshot);
                         fs.Close();
                     }
 

@@ -6,6 +6,13 @@ namespace FileCabinetApp.CommandHandlers
 {
     public class PurgeCommandHandler : CommandHandlerBase
     {
+        private IFileCabinetService service;
+
+        public PurgeCommandHandler(IFileCabinetService serivce)
+        {
+            this.service = serivce;
+        }
+
         public override void Handle(AppCommandRequest request)
         {
             if (!request.Command.Equals("purge", StringComparison.InvariantCultureIgnoreCase))
@@ -16,7 +23,7 @@ namespace FileCabinetApp.CommandHandlers
 
             try
             {
-                int purged = Program.fileCabinetService.Purge();
+                int purged = this.service.Purge();
                 Console.WriteLine($"{purged} elements from {Program.fileCabinetService.GetStat() + purged} were purged.");
             }
             catch (NotImplementedException ex)

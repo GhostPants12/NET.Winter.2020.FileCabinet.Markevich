@@ -8,6 +8,13 @@ namespace FileCabinetApp.CommandHandlers
 {
     public class FindCommandHandler : CommandHandlerBase
     {
+        private IFileCabinetService service;
+
+        public FindCommandHandler(IFileCabinetService serivce)
+        {
+            this.service = serivce;
+        }
+
         public override void Handle(AppCommandRequest request)
         {
             if (!request.Command.Equals("find", StringComparison.InvariantCultureIgnoreCase))
@@ -31,7 +38,7 @@ namespace FileCabinetApp.CommandHandlers
 
             if (propertyName.Equals("firstname ", StringComparison.InvariantCultureIgnoreCase))
             {
-                ReadOnlyCollection<FileCabinetRecord> arrayOfRecords = Program.fileCabinetService.FindByFirstName(valueToFind);
+                ReadOnlyCollection<FileCabinetRecord> arrayOfRecords = this.service.FindByFirstName(valueToFind);
                 foreach (FileCabinetRecord record in arrayOfRecords)
                 {
                     Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {record.Code}, {record.Letter}, {record.Balance.ToString(CultureInfo.InvariantCulture)}, {record.DateOfBirth.ToString("yyyy-MMM-dd", System.Globalization.CultureInfo.InvariantCulture)}");
@@ -40,7 +47,7 @@ namespace FileCabinetApp.CommandHandlers
 
             if (propertyName.Equals("lastname ", StringComparison.InvariantCultureIgnoreCase))
             {
-                ReadOnlyCollection<FileCabinetRecord> arrayOfRecords = Program.fileCabinetService.FindByLastName(valueToFind);
+                ReadOnlyCollection<FileCabinetRecord> arrayOfRecords = this.service.FindByLastName(valueToFind);
                 foreach (FileCabinetRecord record in arrayOfRecords)
                 {
                     Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {record.Code}, {record.Letter}, {record.Balance.ToString(CultureInfo.InvariantCulture)}, {record.DateOfBirth.ToString("yyyy-MMM-dd", System.Globalization.CultureInfo.InvariantCulture)}");
@@ -50,7 +57,7 @@ namespace FileCabinetApp.CommandHandlers
             if (propertyName.Equals("dateofbirth ", StringComparison.InvariantCultureIgnoreCase))
             {
                 DateTime parameterDateTime = DateTime.ParseExact(valueToFind, "yyyy-MMM-dd", CultureInfo.InvariantCulture);
-                ReadOnlyCollection<FileCabinetRecord> arrayOfRecords = Program.fileCabinetService.FindByDateOfBirth(parameterDateTime);
+                ReadOnlyCollection<FileCabinetRecord> arrayOfRecords = this.service.FindByDateOfBirth(parameterDateTime);
                 foreach (FileCabinetRecord record in arrayOfRecords)
                 {
                     Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {record.Code}, {record.Letter}, {record.Balance.ToString(CultureInfo.InvariantCulture)}, {record.DateOfBirth.ToString("yyyy-MMM-dd", System.Globalization.CultureInfo.InvariantCulture)}");

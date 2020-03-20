@@ -8,6 +8,13 @@ namespace FileCabinetApp.CommandHandlers
 {
     public class ListCommandHandler : CommandHandlerBase
     {
+        private IFileCabinetService service;
+
+        public ListCommandHandler(IFileCabinetService serivce)
+        {
+            this.service = serivce;
+        }
+
         public override void Handle(AppCommandRequest request)
         {
             if (!request.Command.Equals("list", StringComparison.InvariantCultureIgnoreCase))
@@ -16,7 +23,7 @@ namespace FileCabinetApp.CommandHandlers
                 return;
             }
 
-            ReadOnlyCollection<FileCabinetRecord> arrayOfRecords = Program.fileCabinetService.GetRecords();
+            ReadOnlyCollection<FileCabinetRecord> arrayOfRecords = this.service.GetRecords();
             foreach (FileCabinetRecord record in arrayOfRecords)
             {
                 Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {record.Code}, {record.Letter}, {record.Balance.ToString(CultureInfo.InvariantCulture)}, {record.DateOfBirth.ToString("yyyy-MMM-dd", System.Globalization.CultureInfo.InvariantCulture)}");

@@ -7,6 +7,13 @@ namespace FileCabinetApp.CommandHandlers
 {
     public class EditCommandHandler : CommandHandlerBase
     {
+        private IFileCabinetService service;
+
+        public EditCommandHandler(IFileCabinetService serivce)
+        {
+            this.service = serivce;
+        }
+
         public override void Handle(AppCommandRequest request)
         {
             if (!request.Command.Equals("edit", StringComparison.InvariantCultureIgnoreCase))
@@ -40,7 +47,7 @@ namespace FileCabinetApp.CommandHandlers
                 dateOfBirth = Program.ReadInput<DateTime>(Program.ConvertStringToDate, Program.ValidateDate);
                 RecordData recordDataToEdit = new RecordData(firstName, lastName, code, letter, balance, dateOfBirth);
                 recordDataToEdit.Id = id;
-                Program.fileCabinetService.EditRecord(recordDataToEdit);
+                this.service.EditRecord(recordDataToEdit);
                 Console.WriteLine($"Record #{id} is updated.");
             }
             catch (ArgumentException)
