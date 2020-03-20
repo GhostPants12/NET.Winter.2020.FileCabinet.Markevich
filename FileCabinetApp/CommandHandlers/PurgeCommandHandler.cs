@@ -23,7 +23,7 @@ namespace FileCabinetApp.CommandHandlers
             try
             {
                 int purged = this.service.Purge();
-                Console.WriteLine($"{purged} elements from {Program.fileCabinetService.GetStat() + purged} were purged.");
+                Console.WriteLine($"{purged} elements from {this.service.GetStat() + purged} were purged.");
             }
             catch (NotImplementedException ex)
             {

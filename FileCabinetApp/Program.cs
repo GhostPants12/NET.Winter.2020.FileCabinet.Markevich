@@ -18,7 +18,7 @@ namespace FileCabinetApp
         private const string DeveloperName = "Ivan Markevich";
         private const string HintMessage = "Enter your command, or enter 'help' to get help.";
 
-        public static bool isRunning = true;
+        private static bool isRunning = true;
 
         private static IFileCabinetService fileCabinetService = new FileCabinetCustomService();
 
@@ -95,7 +95,7 @@ namespace FileCabinetApp
             var listHandler = new ListCommandHandler(fileCabinetService);
             var exportHandler = new ExportCommandHandler(fileCabinetService);
             var importHandler = new ImportCommandHandler(fileCabinetService);
-            var exitHandler = new ExitCommandHandler();
+            var exitHandler = new ExitCommandHandler(new Action<bool>(b => isRunning = b));
             var missedHandler = new MissedCommandHandler();
             exitHandler.SetNext(missedHandler);
             importHandler.SetNext(exitHandler);
