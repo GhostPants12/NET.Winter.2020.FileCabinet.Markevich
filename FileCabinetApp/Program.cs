@@ -8,7 +8,7 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using FileCabinetApp;
 using FileCabinetApp.CommandHandlers;
-using FileCabinetApp.IRecordValidator;
+using FileCabinetApp.RecordValidator;
 
 namespace FileCabinetApp
 {
@@ -191,7 +191,7 @@ namespace FileCabinetApp
         {
             try
             {
-                fileCabinetService.GetValidator().ValidateParameters("1234", "1234", 123, 'a', 1, date);
+                fileCabinetService.GetValidator().Validate("1234", "1234", 123, 'a', 1, date);
             }
             catch (ArgumentException e)
             {
@@ -206,7 +206,7 @@ namespace FileCabinetApp
             try
             {
                 fileCabinetService.GetValidator()
-                    .ValidateParameters(firstname, "1234", 123, 'a', 1, new DateTime(1990, 1, 1));
+                    .Validate(firstname, "1234", 123, 'a', 1, new DateTime(1990, 1, 1));
             }
             catch (ArgumentException e)
             {
@@ -220,7 +220,7 @@ namespace FileCabinetApp
         {
             try
             {
-                fileCabinetService.GetValidator().ValidateParameters("1234", "1234", code, 'a', 1, new DateTime(1990, 1, 1));
+                fileCabinetService.GetValidator().Validate("1234", "1234", code, 'a', 1, new DateTime(1990, 1, 1));
             }
             catch (ArgumentException e)
             {
@@ -234,7 +234,7 @@ namespace FileCabinetApp
         {
             try
             {
-                fileCabinetService.GetValidator().ValidateParameters("1234", "1234", 123, 'a', balance, new DateTime(1990, 1, 1));
+                fileCabinetService.GetValidator().Validate("1234", "1234", 123, 'a', balance, new DateTime(1990, 1, 1));
             }
             catch (ArgumentException e)
             {
@@ -248,7 +248,7 @@ namespace FileCabinetApp
         {
             try
             {
-                fileCabinetService.GetValidator().ValidateParameters("1234", "1234", 123, letter, 1, new DateTime(1990, 1, 1));
+                fileCabinetService.GetValidator().Validate("1234", "1234", 123, letter, 1, new DateTime(1990, 1, 1));
             }
             catch (ArgumentException e)
             {

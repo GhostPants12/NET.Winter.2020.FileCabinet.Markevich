@@ -18,12 +18,12 @@ namespace FileCabinetApp.RecordValidator
         /// <exception cref="ArgumentException">Thrown when one of the parameters is incorrect.</exception>
         public void Validate(string firstName, string lastName, short code, char letter, decimal balance, DateTime dateOfBirth)
         {
-            new DefaultFirstNameValidator().Validate(firstName, lastName, code, letter, balance, dateOfBirth);
-            new DefaultLastNameValidator().Validate(firstName, lastName, code, letter, balance, dateOfBirth);
-            new DefaultDateOfBirthValidator().Validate(firstName, lastName, code, letter, balance, dateOfBirth);
-            new DefaultCodeValidator().Validate(firstName, lastName, code, letter, balance, dateOfBirth);
-            new DefaultLetterValidator().Validate(firstName, lastName, code, letter, balance, dateOfBirth);
-            new DefaultBalanceValidator().Validate(firstName, lastName, code, letter, balance, dateOfBirth);
+            new FirstNameValidator(2, 60).Validate(firstName, lastName, code, letter, balance, dateOfBirth);
+            new LastNameValidator(2, 60).Validate(firstName, lastName, code, letter, balance, dateOfBirth);
+            new DateOfBirthValidator(new DateTime(1950, 1, 1), DateTime.Today).Validate(firstName, lastName, code, letter, balance, dateOfBirth);
+            new CodeValidator(0, short.MaxValue).Validate(firstName, lastName, code, letter, balance, dateOfBirth);
+            new LetterValidator(" ").Validate(firstName, lastName, code, letter, balance, dateOfBirth);
+            new BalanceValidator(0, decimal.MaxValue).Validate(firstName, lastName, code, letter, balance, dateOfBirth);
         }
     }
 }

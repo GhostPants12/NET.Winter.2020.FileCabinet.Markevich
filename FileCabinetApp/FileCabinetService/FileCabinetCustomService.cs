@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using FileCabinetApp.IRecordValidator;
+using FileCabinetApp.RecordValidator;
 
 namespace FileCabinetApp
 {

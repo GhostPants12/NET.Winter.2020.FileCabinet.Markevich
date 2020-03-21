@@ -4,13 +4,14 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
 using System.Text;
+using FileCabinetApp.RecordValidator;
 
 namespace FileCabinetApp
 {
     /// <summary>Class for working with the file cabinet.</summary>
     public abstract class FileCabinetMemoryService : IFileCabinetService
     {
-        private readonly IRecordValidator.IRecordValidator validator;
+        private readonly RecordValidator.IRecordValidator validator;
         private List<FileCabinetRecord> list = new List<FileCabinetRecord>();
 
         private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary =
@@ -24,14 +25,14 @@ namespace FileCabinetApp
 
         /// <summary>Initializes a new instance of the <see cref="FileCabinetService"/> class.</summary>
         /// <param name="recordValidator">The record validator.</param>
-        public FileCabinetMemoryService(IRecordValidator.IRecordValidator recordValidator)
+        public FileCabinetMemoryService(RecordValidator.IRecordValidator recordValidator)
         {
             this.validator = recordValidator;
         }
 
         /// <summary>Gets the validator.</summary>
         /// <value>The validator.</value>
-        public IRecordValidator.IRecordValidator GetValidator()
+        public IRecordValidator GetValidator()
         {
             return this.validator;
         }
@@ -41,7 +42,7 @@ namespace FileCabinetApp
         /// <returns>Returns the new record's ID.</returns>
         public int CreateRecord(RecordData newRecordData)
         {
-            this.validator.ValidateParameters(newRecordData.FirstName, newRecordData.LastName, newRecordData.Code,
+            this.validator.Validate(newRecordData.FirstName, newRecordData.LastName, newRecordData.Code,
                 newRecordData.Letter, newRecordData.Balance, newRecordData.DateOfBirth);
             var record = new FileCabinetRecord
             {
@@ -93,7 +94,7 @@ namespace FileCabinetApp
         /// <exception cref="ArgumentException">Thrown when id is incorrect.</exception>
         public void EditRecord(RecordData newRecordData)
         {
-            this.validator.ValidateParameters(newRecordData.FirstName, newRecordData.LastName, newRecordData.Code, newRecordData.Letter, newRecordData.Balance, newRecordData.DateOfBirth);
+            this.validator.Validate(newRecordData.FirstName, newRecordData.LastName, newRecordData.Code, newRecordData.Letter, newRecordData.Balance, newRecordData.DateOfBirth);
             foreach (var record in this.list)
             {
                 if (record.Id == newRecordData.Id)
