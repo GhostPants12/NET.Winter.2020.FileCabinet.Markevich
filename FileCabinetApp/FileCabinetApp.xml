@@ -149,29 +149,9 @@
             <summary>Validator for custom file cabinet.</summary>
             <seealso cref="T:FileCabinetApp.RecordValidator.IRecordValidator" />
         </member>
-        <member name="M:FileCabinetApp.RecordValidator.CustomValidator.Validate(System.String,System.String,System.Int16,System.Char,System.Decimal,System.DateTime)">
-            <summary>Checks the parameters.</summary>
-            <param name="firstName">The first name.</param>
-            <param name="lastName">The last name.</param>
-            <param name="code">The code.</param>
-            <param name="letter">The letter.</param>
-            <param name="balance">The balance.</param>
-            <param name="dateOfBirth">The date of birth.</param>
-            <exception cref="T:System.ArgumentException">Thrown when one of the parameters is incorrect.</exception>
-        </member>
         <member name="T:FileCabinetApp.RecordValidator.DefaultValidator">
             <summary>Validator for default file cabinet service.</summary>
             <seealso cref="T:FileCabinetApp.RecordValidator.IRecordValidator" />
-        </member>
-        <member name="M:FileCabinetApp.RecordValidator.DefaultValidator.Validate(System.String,System.String,System.Int16,System.Char,System.Decimal,System.DateTime)">
-            <summary>Checks the parameters.</summary>
-            <param name="firstName">The first name.</param>
-            <param name="lastName">The last name.</param>
-            <param name="code">The code.</param>
-            <param name="letter">The letter.</param>
-            <param name="balance">The balance.</param>
-            <param name="dateOfBirth">The date of birth.</param>
-            <exception cref="T:System.ArgumentException">Thrown when one of the parameters is incorrect.</exception>
         </member>
         <member name="T:FileCabinetApp.RecordValidator.IRecordValidator">
             <summary>Interface for fields' validation.</summary>
