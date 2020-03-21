@@ -3,15 +3,14 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Text;
-using FileCabinetApp.RecordPrinter;
 
 namespace FileCabinetApp.CommandHandlers
 {
     public class ListCommandHandler : ServiceCommandHandlerBase
     {
-        private IRecordPrinter printer;
+        private Action<IEnumerable<FileCabinetRecord>> printer;
 
-        public ListCommandHandler(IFileCabinetService service, IRecordPrinter printer) 
+        public ListCommandHandler(IFileCabinetService service, Action<IEnumerable<FileCabinetRecord>> printer) 
             : base(service)
         {
             this.printer = printer;
@@ -26,7 +25,7 @@ namespace FileCabinetApp.CommandHandlers
             }
 
             ReadOnlyCollection<FileCabinetRecord> arrayOfRecords = this.service.GetRecords();
-            this.printer.Print(arrayOfRecords);
+            this.printer?.Invoke(arrayOfRecords);
         }
     }
 }

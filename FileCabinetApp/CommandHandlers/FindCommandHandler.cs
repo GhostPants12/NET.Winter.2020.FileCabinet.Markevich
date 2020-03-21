@@ -3,15 +3,14 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Text;
-using FileCabinetApp.RecordPrinter;
 
 namespace FileCabinetApp.CommandHandlers
 {
     public class FindCommandHandler : ServiceCommandHandlerBase
     {
-        private IRecordPrinter printer;
+        private Action<IEnumerable<FileCabinetRecord>> printer;
 
-        public FindCommandHandler(IFileCabinetService service, IRecordPrinter printer)
+        public FindCommandHandler(IFileCabinetService service, Action<IEnumerable<FileCabinetRecord>> printer)
             : base(service)
         {
             this.printer = printer;
@@ -41,20 +40,20 @@ namespace FileCabinetApp.CommandHandlers
             if (propertyName.Equals("firstname ", StringComparison.InvariantCultureIgnoreCase))
             {
                 ReadOnlyCollection<FileCabinetRecord> arrayOfRecords = this.service.FindByFirstName(valueToFind);
-                this.printer.Print(arrayOfRecords);
+                this.printer?.Invoke(arrayOfRecords);
             }
 
             if (propertyName.Equals("lastname ", StringComparison.InvariantCultureIgnoreCase))
             {
                 ReadOnlyCollection<FileCabinetRecord> arrayOfRecords = this.service.FindByLastName(valueToFind);
-                this.printer.Print(arrayOfRecords);
+                this.printer?.Invoke(arrayOfRecords);
             }
 
             if (propertyName.Equals("dateofbirth ", StringComparison.InvariantCultureIgnoreCase))
             {
                 DateTime parameterDateTime = DateTime.ParseExact(valueToFind, "yyyy-MMM-dd", CultureInfo.InvariantCulture);
                 ReadOnlyCollection<FileCabinetRecord> arrayOfRecords = this.service.FindByDateOfBirth(parameterDateTime);
-                this.printer.Print(arrayOfRecords);
+                this.printer?.Invoke(arrayOfRecords);
             }
         }
     }

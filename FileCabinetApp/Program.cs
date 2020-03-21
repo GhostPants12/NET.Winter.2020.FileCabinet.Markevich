@@ -9,7 +9,6 @@ using System.Runtime.CompilerServices;
 using FileCabinetApp;
 using FileCabinetApp.CommandHandlers;
 using FileCabinetApp.IRecordValidator;
-using FileCabinetApp.RecordPrinter;
 
 namespace FileCabinetApp
 {
@@ -87,14 +86,13 @@ namespace FileCabinetApp
 
         private static CommandHandlerBase CreateCommandHandler()
         {
-            var recordPrinter = new DefaultRecordPrinter();
             var createHandler = new CreateCommandHandler(fileCabinetService);
             var editHandler = new EditCommandHandler(fileCabinetService);
-            var findHandler = new FindCommandHandler(fileCabinetService, recordPrinter);
+            var findHandler = new FindCommandHandler(fileCabinetService, DefaultRecordPrint);
             var removeHandler = new RemoveCommandHandler(fileCabinetService);
             var purgeHandler = new PurgeCommandHandler(fileCabinetService);
             var statHandler = new StatCommandHandler(fileCabinetService);
-            var listHandler = new ListCommandHandler(fileCabinetService, recordPrinter);
+            var listHandler = new ListCommandHandler(fileCabinetService, DefaultRecordPrint);
             var exportHandler = new ExportCommandHandler(fileCabinetService);
             var importHandler = new ImportCommandHandler(fileCabinetService);
             var exitHandler = new ExitCommandHandler(new Action<bool>(b => isRunning = b));
@@ -258,6 +256,14 @@ namespace FileCabinetApp
             }
 
             return new Tuple<bool, string>(true, string.Empty);
+        }
+
+        private static void DefaultRecordPrint(IEnumerable<FileCabinetRecord> records)
+        {
+            foreach (FileCabinetRecord record in records)
+            {
+                Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {record.Code}, {record.Letter}, {record.Balance.ToString(CultureInfo.InvariantCulture)}, {record.DateOfBirth.ToString("yyyy-MMM-dd", System.Globalization.CultureInfo.InvariantCulture)}");
+            }
         }
     }
 }
