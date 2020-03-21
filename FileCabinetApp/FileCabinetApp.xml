@@ -149,7 +149,7 @@
             <summary>Validator for custom file cabinet.</summary>
             <seealso cref="T:FileCabinetApp.IRecordValidator.IRecordValidator" />
         </member>
-        <member name="M:FileCabinetApp.IRecordValidator.CustomValidator.ValidateParameters(System.String,System.String,System.Int16,System.Char,System.Decimal,System.DateTime)">
+        <member name="M:FileCabinetApp.IRecordValidator.CustomValidator.Validate(System.String,System.String,System.Int16,System.Char,System.Decimal,System.DateTime)">
             <summary>Checks the parameters.</summary>
             <param name="firstName">The first name.</param>
             <param name="lastName">The last name.</param>
@@ -169,7 +169,7 @@
             <summary>Validator for default file cabinet service.</summary>
             <seealso cref="T:FileCabinetApp.IRecordValidator.IRecordValidator" />
         </member>
-        <member name="M:FileCabinetApp.IRecordValidator.DefaultValidator.ValidateParameters(System.String,System.String,System.Int16,System.Char,System.Decimal,System.DateTime)">
+        <member name="M:FileCabinetApp.IRecordValidator.DefaultValidator.Validate(System.String,System.String,System.Int16,System.Char,System.Decimal,System.DateTime)">
             <summary>Checks the parameters.</summary>
             <param name="firstName">The first name.</param>
             <param name="lastName">The last name.</param>
@@ -188,7 +188,7 @@
         <member name="T:FileCabinetApp.IRecordValidator.IRecordValidator">
             <summary>Interface for fields' validation.</summary>
         </member>
-        <member name="M:FileCabinetApp.IRecordValidator.IRecordValidator.ValidateParameters(System.String,System.String,System.Int16,System.Char,System.Decimal,System.DateTime)">
+        <member name="M:FileCabinetApp.IRecordValidator.IRecordValidator.Validate(System.String,System.String,System.Int16,System.Char,System.Decimal,System.DateTime)">
             <summary>Validates the parameters.</summary>
             <param name="firstName">First name.</param>
             <param name="lastName">Last name.</param>

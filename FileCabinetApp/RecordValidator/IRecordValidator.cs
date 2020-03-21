@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace FileCabinetApp.IRecordValidator
+namespace FileCabinetApp.RecordValidator
 {
     /// <summary>Interface for fields' validation.</summary>
     public interface IRecordValidator
@@ -14,6 +14,6 @@ namespace FileCabinetApp.IRecordValidator
         /// <param name="letter">Letter.</param>
         /// <param name="balance">Balance.</param>
         /// <param name="dateOfBirth">Date of birth.</param>
-        void ValidateParameters(string firstName, string lastName, short code, char letter, decimal balance, DateTime dateOfBirth);
+        void Validate(string firstName, string lastName, short code, char letter, decimal balance, DateTime dateOfBirth);
     }
 }
