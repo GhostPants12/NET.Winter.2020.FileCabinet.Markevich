@@ -11,7 +11,7 @@ namespace FileCabinetApp
     {
         /// <summary>Initializes a new instance of the <see cref="FileCabinetCustomService"/> class.</summary>
         public FileCabinetCustomService()
-            : base(new CustomValidator())
+            : base(new ValidatorBuilder().CreateCustom())
         {
         }
     }
