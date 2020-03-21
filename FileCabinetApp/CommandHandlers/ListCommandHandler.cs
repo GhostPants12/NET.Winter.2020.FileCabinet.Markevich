@@ -3,16 +3,18 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Text;
+using FileCabinetApp.RecordPrinter;
 
 namespace FileCabinetApp.CommandHandlers
 {
-    public class ListCommandHandler : CommandHandlerBase
+    public class ListCommandHandler : ServiceCommandHandlerBase
     {
-        private IFileCabinetService service;
+        private IRecordPrinter printer;
 
-        public ListCommandHandler(IFileCabinetService serivce)
+        public ListCommandHandler(IFileCabinetService service, IRecordPrinter printer) 
+            : base(service)
         {
-            this.service = serivce;
+            this.printer = printer;
         }
 
         public override void Handle(AppCommandRequest request)
@@ -24,10 +26,7 @@ namespace FileCabinetApp.CommandHandlers
             }
 
             ReadOnlyCollection<FileCabinetRecord> arrayOfRecords = this.service.GetRecords();
-            foreach (FileCabinetRecord record in arrayOfRecords)
-            {
-                Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {record.Code}, {record.Letter}, {record.Balance.ToString(CultureInfo.InvariantCulture)}, {record.DateOfBirth.ToString("yyyy-MMM-dd", System.Globalization.CultureInfo.InvariantCulture)}");
-            }
+            this.printer.Print(arrayOfRecords);
         }
     }
 }

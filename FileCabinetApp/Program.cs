@@ -9,6 +9,7 @@ using System.Runtime.CompilerServices;
 using FileCabinetApp;
 using FileCabinetApp.CommandHandlers;
 using FileCabinetApp.IRecordValidator;
+using FileCabinetApp.RecordPrinter;
 
 namespace FileCabinetApp
 {
@@ -86,13 +87,14 @@ namespace FileCabinetApp
 
         private static CommandHandlerBase CreateCommandHandler()
         {
+            var recordPrinter = new DefaultRecordPrinter();
             var createHandler = new CreateCommandHandler(fileCabinetService);
             var editHandler = new EditCommandHandler(fileCabinetService);
-            var findHandler = new FindCommandHandler(fileCabinetService);
+            var findHandler = new FindCommandHandler(fileCabinetService, recordPrinter);
             var removeHandler = new RemoveCommandHandler(fileCabinetService);
             var purgeHandler = new PurgeCommandHandler(fileCabinetService);
             var statHandler = new StatCommandHandler(fileCabinetService);
-            var listHandler = new ListCommandHandler(fileCabinetService);
+            var listHandler = new ListCommandHandler(fileCabinetService, recordPrinter);
             var exportHandler = new ExportCommandHandler(fileCabinetService);
             var importHandler = new ImportCommandHandler(fileCabinetService);
             var exitHandler = new ExitCommandHandler(new Action<bool>(b => isRunning = b));
