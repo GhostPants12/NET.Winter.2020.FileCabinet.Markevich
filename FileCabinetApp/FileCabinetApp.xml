@@ -60,7 +60,7 @@
         <member name="T:FileCabinetApp.FileCabinetMemoryService">
             <summary>Class for working with the file cabinet.</summary>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetMemoryService.#ctor(FileCabinetApp.IRecordValidator.IRecordValidator)">
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.#ctor(FileCabinetApp.RecordValidator.IRecordValidator)">
             <summary>Initializes a new instance of the <see cref="!:FileCabinetService"/> class.</summary>
             <param name="recordValidator">The record validator.</param>
         </member>
@@ -108,38 +108,6 @@
             <summary>Defines the entry point of the application.</summary>
             <param name="args">The arguments.</param>
         </member>
-        <member name="M:FileCabinetApp.Program.PrintMissedCommandInfo(System.String)">
-            <summary>Prints the missed command information.</summary>
-            <param name="command">The command.</param>
-        </member>
-        <member name="M:FileCabinetApp.Program.PrintHelp(System.String)">
-            <summary>Prints the help.</summary>
-            <param name="parameters">The parameters.</param>
-        </member>
-        <member name="M:FileCabinetApp.Program.Create(System.String)">
-            <summary>Creates the record.</summary>
-            <param name="parameters">The parameters.</param>
-        </member>
-        <member name="M:FileCabinetApp.Program.Edit(System.String)">
-            <summary>Edits the record.</summary>
-            <param name="parameters">The parameters.</param>
-        </member>
-        <member name="M:FileCabinetApp.Program.Find(System.String)">
-            <summary>Finds the record.</summary>
-            <param name="parameters">The parameters.</param>
-        </member>
-        <member name="M:FileCabinetApp.Program.List(System.String)">
-            <summary>  Gets the list of the records.</summary>
-            <param name="parameters">The parameters.</param>
-        </member>
-        <member name="M:FileCabinetApp.Program.Stat(System.String)">
-            <summary>  Shows the stat.</summary>
-            <param name="parameters">The parameters.</param>
-        </member>
-        <member name="M:FileCabinetApp.Program.Exit(System.String)">
-            <summary>Exits from the application.</summary>
-            <param name="parameters">The parameters.</param>
-        </member>
         <member name="M:FileCabinetApp.RecordData.#ctor(System.String,System.String,System.Int16,System.Char,System.Decimal,System.DateTime)">
             <summary>Initializes a new instance of the <see cref="T:FileCabinetApp.RecordData"/> class.</summary>
             <param name="firstName">The first name.</param>
@@ -177,50 +145,10 @@
             <summary>Gets the date of birth.</summary>
             <value>The date of birth.</value>
         </member>
-        <member name="T:FileCabinetApp.IRecordValidator.CustomValidator">
-            <summary>Validator for custom file cabinet.</summary>
-            <seealso cref="T:FileCabinetApp.IRecordValidator.IRecordValidator" />
-        </member>
-        <member name="M:FileCabinetApp.IRecordValidator.CustomValidator.ValidateParameters(System.String,System.String,System.Int16,System.Char,System.Decimal,System.DateTime)">
-            <summary>Checks the parameters.</summary>
-            <param name="firstName">The first name.</param>
-            <param name="lastName">The last name.</param>
-            <param name="code">The code.</param>
-            <param name="letter">The letter.</param>
-            <param name="balance">The balance.</param>
-            <param name="dateOfBirth">The date of birth.</param>
-            <exception cref="T:System.ArgumentException">Thrown when one of the parameters is incorrect.</exception>
-        </member>
-        <member name="M:FileCabinetApp.IRecordValidator.CustomValidator.CheckName(System.String)">
-            <summary>Checks the name.</summary>
-            <param name="name">The name.</param>
-            <exception cref="T:System.ArgumentNullException">name - Name is null.</exception>
-            <exception cref="T:System.ArgumentException">name - Name's length is less than two or more than 60.</exception>
-        </member>
-        <member name="T:FileCabinetApp.IRecordValidator.DefaultValidator">
-            <summary>Validator for default file cabinet service.</summary>
-            <seealso cref="T:FileCabinetApp.IRecordValidator.IRecordValidator" />
-        </member>
-        <member name="M:FileCabinetApp.IRecordValidator.DefaultValidator.ValidateParameters(System.String,System.String,System.Int16,System.Char,System.Decimal,System.DateTime)">
-            <summary>Checks the parameters.</summary>
-            <param name="firstName">The first name.</param>
-            <param name="lastName">The last name.</param>
-            <param name="code">The code.</param>
-            <param name="letter">The letter.</param>
-            <param name="balance">The balance.</param>
-            <param name="dateOfBirth">The date of birth.</param>
-            <exception cref="T:System.ArgumentException">Thrown when one of the parameters is incorrect.</exception>
-        </member>
-        <member name="M:FileCabinetApp.IRecordValidator.DefaultValidator.CheckName(System.String)">
-            <summary>Checks the name.</summary>
-            <param name="name">The name.</param>
-            <exception cref="T:System.ArgumentNullException">name - Name is null.</exception>
-            <exception cref="T:System.ArgumentException">name - Name's length is less than two or more than 60.</exception>
-        </member>
-        <member name="T:FileCabinetApp.IRecordValidator.IRecordValidator">
+        <member name="T:FileCabinetApp.RecordValidator.IRecordValidator">
             <summary>Interface for fields' validation.</summary>
         </member>
-        <member name="M:FileCabinetApp.IRecordValidator.IRecordValidator.ValidateParameters(System.String,System.String,System.Int16,System.Char,System.Decimal,System.DateTime)">
+        <member name="M:FileCabinetApp.RecordValidator.IRecordValidator.Validate(System.String,System.String,System.Int16,System.Char,System.Decimal,System.DateTime)">
             <summary>Validates the parameters.</summary>
             <param name="firstName">First name.</param>
             <param name="lastName">Last name.</param>

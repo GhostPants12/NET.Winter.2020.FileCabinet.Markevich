@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using FileCabinetApp.IRecordValidator;
+using FileCabinetApp.RecordValidator;
 
 namespace FileCabinetApp
 {
@@ -11,7 +11,7 @@ namespace FileCabinetApp
     {
         /// <summary>Initializes a new instance of the <see cref="FileCabinetCustomService"/> class.</summary>
         public FileCabinetCustomService()
-            : base(new CustomValidator())
+            : base(new ValidatorBuilder().CreateCustom())
         {
         }
     }

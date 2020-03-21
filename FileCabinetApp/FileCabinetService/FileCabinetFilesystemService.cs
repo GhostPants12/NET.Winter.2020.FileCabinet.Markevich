@@ -6,7 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
-using FileCabinetApp.IRecordValidator;
+using FileCabinetApp.RecordValidator;
 
 namespace FileCabinetApp
 {
@@ -16,9 +16,9 @@ namespace FileCabinetApp
         private int count;
         private int idCounter = 0;
         private FileStream fileStream;
-        private readonly IRecordValidator.IRecordValidator validator;
+        private readonly IRecordValidator validator;
 
-        public FileCabinetFilesystemService(FileStream fileStream, IRecordValidator.IRecordValidator validator)
+        public FileCabinetFilesystemService(FileStream fileStream, IRecordValidator validator)
         {
             this.fileStream = fileStream;
             this.validator = validator;
@@ -35,7 +35,7 @@ namespace FileCabinetApp
 
         public int CreateRecord(RecordData newRecordData)
         {
-            this.validator.ValidateParameters(newRecordData.FirstName, newRecordData.LastName, newRecordData.Code, newRecordData.Letter, newRecordData.Balance, newRecordData.DateOfBirth);
+            this.validator.Validate(newRecordData.FirstName, newRecordData.LastName, newRecordData.Code, newRecordData.Letter, newRecordData.Balance, newRecordData.DateOfBirth);
             newRecordData.Id = ++this.idCounter;
             byte[] buffer = new byte[120];
             this.fileStream.Write(BitConverter.GetBytes((short)0), 0, 2);
@@ -76,7 +76,7 @@ namespace FileCabinetApp
             this.fileStream.Position = 0;
             byte[] buffer = new byte[280];
             this.SetPositionToId(newRecordData.Id);
-            this.validator.ValidateParameters(newRecordData.FirstName, newRecordData.LastName,
+            this.validator.Validate(newRecordData.FirstName, newRecordData.LastName,
                 newRecordData.Code, newRecordData.Letter, newRecordData.Balance, newRecordData.DateOfBirth);
             foreach (var element in Encoding.Default.GetBytes(newRecordData.FirstName))
             {
@@ -244,7 +244,7 @@ namespace FileCabinetApp
             return this.count;
         }
 
-        public IRecordValidator.IRecordValidator GetValidator()
+        public IRecordValidator GetValidator()
         {
             return this.validator;
         }

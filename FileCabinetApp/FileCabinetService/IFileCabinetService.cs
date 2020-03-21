@@ -7,7 +7,7 @@ namespace FileCabinetApp
 {
     public interface IFileCabinetService
     {
-        IRecordValidator.IRecordValidator GetValidator();
+        RecordValidator.IRecordValidator GetValidator();
 
         int CreateRecord(RecordData newRecordData);
 
