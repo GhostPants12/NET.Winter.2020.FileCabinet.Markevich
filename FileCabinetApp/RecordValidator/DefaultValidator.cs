@@ -18,48 +18,87 @@ namespace FileCabinetApp.IRecordValidator
         /// <exception cref="ArgumentException">Thrown when one of the parameters is incorrect.</exception>
         public void ValidateParameters(string firstName, string lastName, short code, char letter, decimal balance, DateTime dateOfBirth)
         {
-            this.CheckName(firstName);
-            this.CheckName(lastName);
-            if (dateOfBirth < new DateTime(1950, 1, 1) || dateOfBirth > DateTime.Today)
+            this.ValidateFirstName(firstName);
+            this.ValidateLastName(lastName);
+            this.ValidateDateOfBirth(dateOfBirth);
+            this.ValidateCode(code);
+            this.ValidateLetter(letter);
+            this.ValidateBalance(balance);
+        }
+
+        /// <summary>Validates the first name.</summary>
+        /// <param name="firstName">The name.</param>
+        /// <exception cref="ArgumentNullException">name - Name is null.</exception>
+        /// <exception cref="ArgumentException">name - Name's length is less than two or more than 60.</exception>
+        private void ValidateFirstName(string firstName)
+        {
+            if (firstName == null)
             {
-                throw new ArgumentException($"{nameof(dateOfBirth)} is earlier than 01-Jan-1950 or later than today.");
+                throw new ArgumentNullException(nameof(firstName), "Name is null.");
             }
 
-            if (code < 0)
+            if (firstName.Length < 2 || firstName.Length > 60)
             {
-                throw new ArgumentException($"{nameof(code)} is less than zero.");
+                throw new ArgumentException($"{nameof(firstName)}'s length is less than 2 or more than 60.");
             }
 
-            if (letter == ' ')
+            if (firstName.Contains(' ', StringComparison.InvariantCulture))
             {
-                throw new ArgumentException($"{nameof(letter)} can't be whitespace.");
-            }
-
-            if (balance < 0)
-            {
-                throw new ArgumentException($"{nameof(balance)} can't be negative.");
+                throw new ArgumentException($"{nameof(firstName)} contains whitespaces.");
             }
         }
 
         /// <summary>Checks the name.</summary>
-        /// <param name="name">The name.</param>
+        /// <param name="lastName">The name.</param>
         /// <exception cref="ArgumentNullException">name - Name is null.</exception>
         /// <exception cref="ArgumentException">name - Name's length is less than two or more than 60.</exception>
-        private void CheckName(string name)
+        private void ValidateLastName(string lastName)
         {
-            if (name == null)
+            if (lastName == null)
             {
-                throw new ArgumentNullException(nameof(name), "Name is null.");
+                throw new ArgumentNullException(nameof(lastName), "Last Name is null.");
             }
 
-            if (name.Length < 2 || name.Length > 60)
+            if (lastName.Length < 2 || lastName.Length > 60)
             {
-                throw new ArgumentException($"{nameof(name)}'s length is less than 2 or more than 60.");
+                throw new ArgumentException($"{nameof(lastName)}'s length is less than 2 or more than 60.");
             }
 
-            if (name.Contains(' ', StringComparison.InvariantCulture))
+            if (lastName.Contains(' ', StringComparison.InvariantCulture))
             {
-                throw new ArgumentException($"{nameof(name)} contains whitespaces.");
+                throw new ArgumentException($"{nameof(lastName)} contains whitespaces.");
+            }
+        }
+
+        private void ValidateDateOfBirth(DateTime dateOfBirth)
+        {
+            if (dateOfBirth < new DateTime(1950, 1, 1) || dateOfBirth > DateTime.Today)
+            {
+                throw new ArgumentException($"{nameof(dateOfBirth)} is earlier than 01-Jan-1950 or later than today.");
+            }
+        }
+
+        private void ValidateCode(short code)
+        {
+            if (code < 0)
+            {
+                throw new ArgumentException($"{nameof(code)} is less than zero.");
+            }
+        }
+
+        private void ValidateLetter(char letter)
+        {
+            if (letter == ' ')
+            {
+                throw new ArgumentException($"{nameof(letter)} can't be whitespace.");
+            }
+        }
+
+        private void ValidateBalance(decimal balance)
+        {
+            if (balance < 0)
+            {
+                throw new ArgumentException($"{nameof(balance)} can't be negative.");
             }
         }
     }

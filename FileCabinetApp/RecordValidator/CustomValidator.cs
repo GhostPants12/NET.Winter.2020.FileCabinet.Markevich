@@ -18,43 +18,77 @@ namespace FileCabinetApp.IRecordValidator
         /// <exception cref="ArgumentException">Thrown when one of the parameters is incorrect.</exception>
         public void ValidateParameters(string firstName, string lastName, short code, char letter, decimal balance, DateTime dateOfBirth)
         {
-            this.CheckName(firstName);
-            this.CheckName(lastName);
-            if (dateOfBirth < new DateTime(1900, 1, 1) || dateOfBirth > DateTime.Today)
+            this.ValidateFirstName(firstName);
+            this.ValidateLastName(lastName);
+            this.ValidateDateOfBirth(dateOfBirth);
+            this.ValidateCode(code);
+            this.ValidateLetter(letter);
+            this.ValidateBalance(balance);
+        }
+
+        /// <summary>Validates the first name.</summary>
+        /// <param name="firstName">The name.</param>
+        /// <exception cref="ArgumentNullException">name - Name is null.</exception>
+        /// <exception cref="ArgumentException">name - Name's length is less than two or more than 60.</exception>
+        private void ValidateFirstName(string firstName)
+        {
+            if (firstName == null)
             {
-                throw new ArgumentException($"{nameof(dateOfBirth)} is earlier than 01-Jan-1950 or later than today.");
+                throw new ArgumentNullException(nameof(firstName), "Name is null.");
             }
 
-            if (code < 1)
+            if (firstName.Length < 2 || firstName.Length > 30)
             {
-                throw new ArgumentException($"{nameof(code)} is less than one.");
-            }
-
-            if (letter == ' ')
-            {
-                throw new ArgumentException($"{nameof(letter)} can't be whitespace.");
-            }
-
-            if (balance < 0)
-            {
-                throw new ArgumentException($"{nameof(balance)} can't be negative.");
+                throw new ArgumentException($"{nameof(firstName)}'s length is less than 2 or more than 30.");
             }
         }
 
         /// <summary>Checks the name.</summary>
-        /// <param name="name">The name.</param>
+        /// <param name="lastName">The name.</param>
         /// <exception cref="ArgumentNullException">name - Name is null.</exception>
         /// <exception cref="ArgumentException">name - Name's length is less than two or more than 60.</exception>
-        private void CheckName(string name)
+        private void ValidateLastName(string lastName)
         {
-            if (name == null)
+            if (lastName == null)
             {
-                throw new ArgumentNullException(nameof(name), "Name is null.");
+                throw new ArgumentNullException(nameof(lastName), "Name is null.");
             }
 
-            if (name.Length < 2 || name.Length > 30)
+            if (lastName.Length < 2 || lastName.Length > 30)
             {
-                throw new ArgumentException($"{nameof(name)}'s length is less than 2 or more than 30.");
+                throw new ArgumentException($"{nameof(lastName)}'s length is less than 2 or more than 30.");
+            }
+        }
+
+        private void ValidateDateOfBirth(DateTime dateOfBirth)
+        {
+            if (dateOfBirth < new DateTime(1900, 1, 1) || dateOfBirth > DateTime.Today)
+            {
+                throw new ArgumentException($"{nameof(dateOfBirth)} is earlier than 01-Jan-1950 or later than today.");
+            }
+        }
+
+        private void ValidateCode(short code)
+        {
+            if (code < 1)
+            {
+                throw new ArgumentException($"{nameof(code)} is less than one.");
+            }
+        }
+
+        private void ValidateLetter(char letter)
+        {
+            if (letter == ' ')
+            {
+                throw new ArgumentException($"{nameof(letter)} can't be whitespace.");
+            }
+        }
+
+        private void ValidateBalance(decimal balance)
+        {
+            if (balance < 0)
+            {
+                throw new ArgumentException($"{nameof(balance)} can't be negative.");
             }
         }
     }
