@@ -6,21 +6,24 @@ namespace FileCabinetApp.RecordValidator
 {
     public class BalanceValidator : IRecordValidator
     {
-        private decimal min;
-        private decimal max;
+        public BalanceValidator() { }
 
         public BalanceValidator(decimal min, decimal max)
         {
-            this.min = min;
-            this.max = max;
+            this.Min = min;
+            this.Max = max;
         }
+
+        public decimal Min { get; set; }
+
+        public decimal Max { get; set; }
 
         public void Validate(string firstName, string lastName, short code, char letter, decimal balance,
             DateTime dateOfBirth)
         {
-            if (balance < this.min || balance > this.max)
+            if (balance < this.Min || balance > this.Max)
             {
-                throw new ArgumentException($"{nameof(balance)} it less than {this.min} or more than {this.max}.");
+                throw new ArgumentException($"{nameof(balance)} it less than {this.Min} or more than {this.Max}.");
             }
         }
     }
