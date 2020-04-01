@@ -22,7 +22,7 @@ namespace FileCabinetApp.CommandHandlers
             }
 
             Console.WriteLine("Exiting an application...");
-            close?.Invoke(false);
+            this.close?.Invoke(false);
         }
     }
 }

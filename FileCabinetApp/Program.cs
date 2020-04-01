@@ -76,6 +76,11 @@ namespace FileCabinetApp
                 fileCabinetService = new RecordMeter(fileCabinetService);
             }
 
+            if (args.Contains("use-logger"))
+            {
+                fileCabinetService = new ServiceLogger(fileCabinetService);
+            }
+
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
             Console.WriteLine(Program.HintMessage);
             Console.WriteLine();
