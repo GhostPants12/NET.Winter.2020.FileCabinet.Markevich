@@ -61,7 +61,7 @@
             <summary>Class for working with the file cabinet.</summary>
         </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.#ctor(FileCabinetApp.RecordValidator.IRecordValidator)">
-            <summary>Initializes a new instance of the <see cref="!:FileCabinetService"/> class.</summary>
+            <summary>Initializes a new instance of the <see cref="N:FileCabinetApp.FileCabinetService"/> class.</summary>
             <param name="recordValidator">The record validator.</param>
         </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.GetValidator">
