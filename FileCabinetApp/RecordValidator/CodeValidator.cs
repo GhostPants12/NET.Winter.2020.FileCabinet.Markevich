@@ -6,20 +6,23 @@ namespace FileCabinetApp.RecordValidator
 {
     public class CodeValidator : IRecordValidator
     {
-        private short min;
-        private short max;
+        public CodeValidator() { }
 
         public CodeValidator(short min, short max)
         {
-            this.min = min;
-            this.max = max;
+            this.Min = min;
+            this.Max = max;
         }
+
+        public short Min { get; set; }
+
+        public short Max { get; set; }
 
         public void Validate(string firstName, string lastName, short code, char letter, decimal balance, DateTime dateOfBirth)
         {
-            if (code < this.min || code > this.max)
+            if (code < this.Min || code > this.Max)
             {
-                throw new ArgumentException($"{nameof(code)} is less than {this.min} or more than {this.max}.");
+                throw new ArgumentException($"{nameof(code)} is less than {this.Min} or more than {this.Max}.");
             }
         }
     }

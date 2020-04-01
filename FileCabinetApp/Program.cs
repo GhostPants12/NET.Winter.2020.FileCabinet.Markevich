@@ -5,9 +5,11 @@ using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using FileCabinetApp;
 using FileCabinetApp.CommandHandlers;
+using FileCabinetApp.FileCabinetService;
 using FileCabinetApp.RecordValidator;
 
 namespace FileCabinetApp
@@ -16,7 +18,7 @@ namespace FileCabinetApp
     public static class Program
     {
         private const string DeveloperName = "Ivan Markevich";
-        private const string HintMessage = "Enter your command, or enter 'help' to get help.";
+        private const string HintMessage = "Enter your command, or enter 'help' To get help.";
 
         private static bool isRunning = true;
 
@@ -28,36 +30,55 @@ namespace FileCabinetApp
         {
             if (args.Length >= 1)
             {
-                if (args[0].Equals("--validation-rules=default", StringComparison.InvariantCultureIgnoreCase) ||
-                    (args[0] == "-v" && args[1].Equals("default", StringComparison.CurrentCultureIgnoreCase)))
+                for (int i = 0; i < args.Length - 1; i++)
                 {
-                    fileCabinetService = new FileCabinetDefaultService();
-                    Console.WriteLine("Using default validation rules.");
-                }
+                    if (args[i].Equals("--validation-rules=default", StringComparison.InvariantCultureIgnoreCase) ||
+                        (args[i] == "-v" && args[i + 1].Equals("default", StringComparison.CurrentCultureIgnoreCase)))
+                    {
+                        fileCabinetService = new FileCabinetDefaultService();
+                        Console.WriteLine("Using default validation rules.");
+                        break;
+                    }
 
-                if (args[0].Equals("--validation-rules=custom", StringComparison.InvariantCultureIgnoreCase) ||
-                    (args[0] == "-v" && args[1].Equals("custom", StringComparison.CurrentCultureIgnoreCase)))
-                {
-                    fileCabinetService = new FileCabinetCustomService();
-                    Console.WriteLine("Using custom validation rules.");
-                }
+                    if (args[i].Equals("--validation-rules=custom", StringComparison.InvariantCultureIgnoreCase) ||
+                        (args[i] == "-v" && args[i + 1].Equals("custom", StringComparison.CurrentCultureIgnoreCase)))
+                    {
+                        fileCabinetService = new FileCabinetCustomService();
+                        Console.WriteLine("Using custom validation rules.");
+                        break;
+                    }
 
-                if (args[0].Equals("--storage=memory", StringComparison.InvariantCultureIgnoreCase) ||
-                    (args[0] == "-s" && args[1].Equals("memory", StringComparison.CurrentCultureIgnoreCase)))
-                {
-                    fileCabinetService = new FileCabinetDefaultService();
-                    Console.WriteLine("Using default validation rules.");
-                }
+                    if (args[i].Equals("--storage=memory", StringComparison.InvariantCultureIgnoreCase) ||
+                        (args[i] == "-s" && args[i + 1].Equals("memory", StringComparison.CurrentCultureIgnoreCase)))
+                    {
+                        fileCabinetService = new FileCabinetDefaultService();
+                        Console.WriteLine("Using default validation rules.");
+                        break;
+                    }
 
-                if (args[0].Equals("--storage=file", StringComparison.InvariantCultureIgnoreCase) ||
-                    (args[0] == "-s" && args[1].Equals("file", StringComparison.CurrentCultureIgnoreCase)))
-                {
-                    fileCabinetService = new FileCabinetFilesystemService(new FileStream("cabinet-records.db", FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None), new ValidatorBuilder().CreateDefault());
+                    if (args[i].Equals("--storage=file", StringComparison.InvariantCultureIgnoreCase) ||
+                        (args[i] == "-s" && args[i + 1].Equals("file", StringComparison.CurrentCultureIgnoreCase)))
+                    {
+                        fileCabinetService = new FileCabinetFilesystemService(
+                            new FileStream("cabinet-records.db", FileMode.OpenOrCreate, FileAccess.ReadWrite,
+                                FileShare.None), new ValidatorBuilder().CreateDefault());
+                        break;
+                    }
                 }
             }
             else
             {
                 Console.WriteLine("Using default validation rules.");
+            }
+
+            if (args.Contains("use-stopwatch"))
+            {
+                fileCabinetService = new RecordMeter(fileCabinetService);
+            }
+
+            if (args.Contains("use-logger"))
+            {
+                fileCabinetService = new ServiceLogger(fileCabinetService);
             }
 
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");

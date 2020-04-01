@@ -6,18 +6,20 @@ namespace FileCabinetApp.RecordValidator
 {
     public class LetterValidator : IRecordValidator
     {
-        private string unsupported;
+        public LetterValidator() { }
 
         public LetterValidator(string unsupported)
         {
-            this.unsupported = unsupported;
+            this.Unsupported = unsupported;
         }
+
+        public string Unsupported { get; set; }
 
         public void Validate(string firstName, string lastName, short code, char letter, decimal balance, DateTime dateOfBirth)
         {
-            if (this.unsupported.Contains(letter, StringComparison.InvariantCultureIgnoreCase))
+            if (this.Unsupported.Contains(letter, StringComparison.InvariantCultureIgnoreCase))
             {
-                throw new ArgumentException($"{nameof(letter)} can't be one of these symbols: \"{this.unsupported}\".");
+                throw new ArgumentException($"{nameof(letter)} can't be one of these symbols: \"{this.Unsupported}\".");
             }
         }
     }

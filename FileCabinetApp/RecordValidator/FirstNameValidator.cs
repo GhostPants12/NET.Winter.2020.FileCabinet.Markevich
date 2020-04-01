@@ -6,14 +6,17 @@ namespace FileCabinetApp.RecordValidator
 {
     public class FirstNameValidator : IRecordValidator
     {
-        private int minLength;
-        private int maxLength;
+        public FirstNameValidator() { }
 
         public FirstNameValidator(int min, int max)
         {
-            this.minLength = min;
-            this.maxLength = max;
+            this.MinLength = min;
+            this.MaxLength = max;
         }
+
+        public int MinLength { get; set; }
+
+        public int MaxLength { get; set; }
 
         public void Validate(string firstName, string lastName, short code, char letter, decimal balance, DateTime dateOfBirth)
         {
@@ -22,9 +25,9 @@ namespace FileCabinetApp.RecordValidator
                 throw new ArgumentNullException(nameof(firstName), "Name is null.");
             }
 
-            if (firstName.Length < this.minLength || firstName.Length > this.maxLength)
+            if (firstName.Length < this.MinLength || firstName.Length > this.MaxLength)
             {
-                throw new ArgumentException($"{nameof(firstName)}'s length is less than {this.minLength} or more than {this.maxLength}.");
+                throw new ArgumentException($"{nameof(firstName)}'s length is less than {this.MinLength} or more than {this.MaxLength}.");
             }
 
             if (firstName.Contains(' ', StringComparison.InvariantCulture))

@@ -1,22 +1,65 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
+using System.Text.Json;
+using Microsoft.Extensions.Configuration;
 
 namespace FileCabinetApp.RecordValidator
 {
     public static class ValidatorBuilderExtension
     {
-        public static IRecordValidator CreateCustom(this ValidatorBuilder builder)
-        {
-            return new CompositeValidator(new IRecordValidator[] {new FirstNameValidator(2, 30), new LastNameValidator(2, 30), new DateOfBirthValidator(new DateTime(1900, 1, 1), DateTime.Today),
-                new CodeValidator(1, short.MaxValue), new LetterValidator(" "), new BalanceValidator(0, decimal.MaxValue),
-            });
-        }
-
         public static IRecordValidator CreateDefault(this ValidatorBuilder builder)
         {
-            return new CompositeValidator(new IRecordValidator[] { new FirstNameValidator(2, 60), new LastNameValidator(2, 60), new DateOfBirthValidator(new DateTime(1950, 1, 1), DateTime.Today),
-                new CodeValidator(0, short.MaxValue), new LetterValidator(" "), new BalanceValidator(0, decimal.MaxValue),
+            var config = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("validation-rules.json").Build();
+
+            FirstNameValidator firstNameValidator =
+                config.GetSection("default:firstName").Get<FirstNameValidator>();
+            LastNameValidator lastNameValidator =
+                config.GetSection("default:lastName").Get<LastNameValidator>();
+            DateOfBirthValidator dateOfBirthValidator =
+                config.GetSection("default:dateOfBirth").Get<DateOfBirthValidator>();
+            CodeValidator codeValidator =
+                config.GetSection("default:code").Get<CodeValidator>();
+            LetterValidator letterValidator =
+                config.GetSection("default:letter").Get<LetterValidator>();
+            BalanceValidator balanceValidator =
+                config.GetSection("default:balance").Get<BalanceValidator>();
+
+            return new CompositeValidator(new IRecordValidator[]
+                {
+                    firstNameValidator, lastNameValidator,
+                    dateOfBirthValidator, codeValidator,
+                    letterValidator, balanceValidator,
+                });
+        }
+
+        public static IRecordValidator CreateCustom(this ValidatorBuilder builder)
+        {
+            var config = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("validation-rules.json").Build();
+
+            FirstNameValidator firstNameValidator =
+                config.GetSection("custom:firstName").Get<FirstNameValidator>();
+            LastNameValidator lastNameValidator =
+                config.GetSection("custom:lastName").Get<LastNameValidator>();
+            DateOfBirthValidator dateOfBirthValidator =
+                config.GetSection("custom:dateOfBirth").Get<DateOfBirthValidator>();
+            CodeValidator codeValidator =
+                config.GetSection("custom:code").Get<CodeValidator>();
+            LetterValidator letterValidator =
+                config.GetSection("custom:letter").Get<LetterValidator>();
+            BalanceValidator balanceValidator =
+                config.GetSection("custom:balance").Get<BalanceValidator>();
+
+            return new CompositeValidator(new IRecordValidator[]
+            {
+                firstNameValidator, lastNameValidator,
+                dateOfBirthValidator, codeValidator,
+                letterValidator, balanceValidator,
             });
         }
     }
