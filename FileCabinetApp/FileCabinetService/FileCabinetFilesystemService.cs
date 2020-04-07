@@ -14,23 +14,22 @@ namespace FileCabinetApp
     {
         private int removedCount;
         private int count;
-        private int idCounter = 0;
+        private int idCounter;
         private FileStream fileStream;
         private readonly IRecordValidator validator;
+        private readonly SortedList<string, List<long>> firstNameDictionary =
+            new SortedList<string, List<long>>();
+
+        private readonly SortedList<string, List<long>> lastNameDictionary =
+            new SortedList<string, List<long>>();
+
+        private readonly Dictionary<DateTime, List<long>> dateOfBirthDictionary =
+            new Dictionary<DateTime, List<long>>();
 
         public FileCabinetFilesystemService(FileStream fileStream, IRecordValidator validator)
         {
             this.fileStream = fileStream;
             this.validator = validator;
-            try
-            {
-                this.GetStat();
-                idCounter = this.GetRecords().Max((record => record.Id));
-            }
-            catch (Exception ex)
-            {
-                this.count = 0;
-            }
         }
 
         public int CreateRecord(RecordData newRecordData)

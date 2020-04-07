@@ -60,7 +60,7 @@ namespace FileCabinetApp
                         (args[i] == "-s" && args[i + 1].Equals("file", StringComparison.CurrentCultureIgnoreCase)))
                     {
                         fileCabinetService = new FileCabinetFilesystemService(
-                            new FileStream("cabinet-records.db", FileMode.OpenOrCreate, FileAccess.ReadWrite,
+                            new FileStream("cabinet-records.db", FileMode.Create, FileAccess.ReadWrite,
                                 FileShare.None), new ValidatorBuilder().CreateDefault());
                         break;
                     }
