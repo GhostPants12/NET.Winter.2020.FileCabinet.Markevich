@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using FileCabinetApp.FileCabinetService;
 using FileCabinetApp.RecordValidator;
 
 namespace FileCabinetApp
@@ -35,6 +36,36 @@ namespace FileCabinetApp
         public int CreateRecord(RecordData newRecordData)
         {
             this.validator.Validate(newRecordData.FirstName, newRecordData.LastName, newRecordData.Code, newRecordData.Letter, newRecordData.Balance, newRecordData.DateOfBirth);
+            if (!this.firstNameDictionary.ContainsKey(newRecordData.FirstName))
+            {
+                this.firstNameDictionary.Add(newRecordData.FirstName, new List<long>());
+                this.firstNameDictionary[newRecordData.FirstName].Add(this.fileStream.Position);
+            }
+            else
+            {
+                this.firstNameDictionary[newRecordData.FirstName].Add(this.fileStream.Position);
+            }
+
+            if (!this.lastNameDictionary.ContainsKey(newRecordData.LastName))
+            {
+                this.lastNameDictionary.Add(newRecordData.LastName, new List<long>());
+                this.lastNameDictionary[newRecordData.LastName].Add(this.fileStream.Position);
+            }
+            else
+            {
+                this.lastNameDictionary[newRecordData.LastName].Add(this.fileStream.Position);
+            }
+
+            if (!this.dateOfBirthDictionary.ContainsKey(newRecordData.DateOfBirth))
+            {
+                this.dateOfBirthDictionary.Add(newRecordData.DateOfBirth, new List<long>());
+                this.dateOfBirthDictionary[newRecordData.DateOfBirth].Add(this.fileStream.Position);
+            }
+            else
+            {
+                this.dateOfBirthDictionary[newRecordData.DateOfBirth].Add(this.fileStream.Position);
+            }
+
             newRecordData.Id = ++this.idCounter;
             byte[] buffer = new byte[120];
             this.fileStream.Write(BitConverter.GetBytes((short)0), 0, 2);
@@ -105,7 +136,7 @@ namespace FileCabinetApp
             this.fileStream.Position = positionBackup;
         }
 
-        public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(DateTime dateTime)
+        public IRecordIterator FindByDateOfBirth(DateTime dateTime)
         {
             List<FileCabinetRecord> returnList = new List<FileCabinetRecord>();
             foreach (var record in this.GetRecords())
@@ -116,10 +147,10 @@ namespace FileCabinetApp
                 }
             }
 
-            return new ReadOnlyCollection<FileCabinetRecord>(returnList);
+            return new FilesystemIterator(this.fileStream, this.dateOfBirthDictionary[dateTime]);
         }
 
-        public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
+        public IRecordIterator FindByFirstName(string firstName)
         {
             List<FileCabinetRecord> returnList = new List<FileCabinetRecord>();
             foreach (var record in this.GetRecords())
@@ -130,10 +161,10 @@ namespace FileCabinetApp
                 }
             }
 
-            return new ReadOnlyCollection<FileCabinetRecord>(returnList);
+            return new FilesystemIterator(fileStream, this.firstNameDictionary[firstName]);
         }
 
-        public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
+        public IRecordIterator FindByLastName(string lastName)
         {
             List<FileCabinetRecord> returnList = new List<FileCabinetRecord>();
             foreach (var record in this.GetRecords())
@@ -144,7 +175,7 @@ namespace FileCabinetApp
                 }
             }
 
-            return new ReadOnlyCollection<FileCabinetRecord>(returnList);
+            return new FilesystemIterator(fileStream, this.lastNameDictionary[lastName]);
         }
 
         public ReadOnlyCollection<FileCabinetRecord> GetRecords()
@@ -304,7 +335,7 @@ namespace FileCabinetApp
 
         public int GetRemovedStat()
         {
-            GetRecords();
+            this.GetRecords();
             return this.removedCount;
         }
     }
