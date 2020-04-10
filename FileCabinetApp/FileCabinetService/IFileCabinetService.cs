@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
+using FileCabinetApp.FileCabinetService;
 
 namespace FileCabinetApp
 {
@@ -15,11 +16,11 @@ namespace FileCabinetApp
 
         void DeleteRecord(int id);
 
-        ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName);
+        IEnumerable<FileCabinetRecord> FindByFirstName(string firstName);
 
-        ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName);
+        IEnumerable<FileCabinetRecord> FindByLastName(string lastName);
 
-        ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(DateTime dateTime);
+        IEnumerable<FileCabinetRecord> FindByDateOfBirth(DateTime dateTime);
 
         ReadOnlyCollection<FileCabinetRecord> GetRecords();
 

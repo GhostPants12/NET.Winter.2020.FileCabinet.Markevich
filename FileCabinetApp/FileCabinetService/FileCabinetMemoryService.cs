@@ -4,6 +4,8 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
 using System.Text;
+using FileCabinetApp.FileCabinetService;
+using FileCabinetApp.Iterators;
 using FileCabinetApp.RecordValidator;
 
 namespace FileCabinetApp
@@ -163,7 +165,7 @@ namespace FileCabinetApp
         /// <summary>Finds the record by its first name.</summary>
         /// <param name="firstName">The first name.</param>
         /// <returns>The array of record with specific first name.</returns>
-        public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
+        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
         {
             List<FileCabinetRecord> resultList = new List<FileCabinetRecord>();
             foreach (var key in this.firstNameDictionary.Keys)
@@ -174,13 +176,16 @@ namespace FileCabinetApp
                 }
             }
 
-            return new ReadOnlyCollection<FileCabinetRecord>(resultList);
+            foreach (var element in new MemoryCollection(resultList))
+            {
+                yield return element;
+            }
         }
 
         /// <summary>Finds the record by its last name.</summary>
         /// <param name="lastName">The last name.</param>
         /// <returns>The array of record with specific last name.</returns>
-        public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
+        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
         {
             List<FileCabinetRecord> resultList = new List<FileCabinetRecord>();
             foreach (var key in this.lastNameDictionary.Keys)
@@ -191,13 +196,16 @@ namespace FileCabinetApp
                 }
             }
 
-            return new ReadOnlyCollection<FileCabinetRecord>(resultList);
+            foreach (var element in new MemoryCollection(resultList))
+            {
+                yield return element;
+            }
         }
 
         /// <summary>Finds the record by its date of birth.</summary>
         /// <param name="dateTime">The date of birth.</param>
         /// <returns>The array of record with specific date of birth.</returns>
-        public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(DateTime dateTime)
+        public IEnumerable<FileCabinetRecord> FindByDateOfBirth(DateTime dateTime)
         {
             List<FileCabinetRecord> resultList = new List<FileCabinetRecord>();
             foreach (var key in this.dateOfBirthDictionary.Keys)
@@ -208,7 +216,10 @@ namespace FileCabinetApp
                 }
             }
 
-            return new ReadOnlyCollection<FileCabinetRecord>(resultList);
+            foreach (var element in new MemoryCollection(resultList))
+            {
+                yield return element;
+            }
         }
 
         /// <summary>Gets all the records.</summary>

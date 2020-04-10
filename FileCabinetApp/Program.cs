@@ -60,7 +60,7 @@ namespace FileCabinetApp
                         (args[i] == "-s" && args[i + 1].Equals("file", StringComparison.CurrentCultureIgnoreCase)))
                     {
                         fileCabinetService = new FileCabinetFilesystemService(
-                            new FileStream("cabinet-records.db", FileMode.OpenOrCreate, FileAccess.ReadWrite,
+                            new FileStream("cabinet-records.db", FileMode.Create, FileAccess.ReadWrite,
                                 FileShare.None), new ValidatorBuilder().CreateDefault());
                         break;
                     }
@@ -87,20 +87,27 @@ namespace FileCabinetApp
 
             do
             {
-                Console.Write("> ");
-                var inputs = Console.ReadLine().Split(' ', 2);
-                const int commandIndex = 0;
-                var command = inputs[commandIndex];
-
-                if (string.IsNullOrEmpty(command))
+                try
                 {
-                    Console.WriteLine(Program.HintMessage);
-                    continue;
-                }
+                    Console.Write("> ");
+                    var inputs = Console.ReadLine().Split(' ', 2);
+                    const int commandIndex = 0;
+                    var command = inputs[commandIndex];
 
-                const int parametersIndex = 1;
-                var parameters = inputs.Length > 1 ? inputs[parametersIndex] : string.Empty;
-                CreateCommandHandler().Handle(new AppCommandRequest(command, parameters));
+                    if (string.IsNullOrEmpty(command))
+                    {
+                        Console.WriteLine(Program.HintMessage);
+                        continue;
+                    }
+
+                    const int parametersIndex = 1;
+                    var parameters = inputs.Length > 1 ? inputs[parametersIndex] : string.Empty;
+                    CreateCommandHandler().Handle(new AppCommandRequest(command, parameters));
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
             }
             while (isRunning);
         }
