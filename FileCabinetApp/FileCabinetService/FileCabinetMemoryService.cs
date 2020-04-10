@@ -176,7 +176,10 @@ namespace FileCabinetApp
                 }
             }
 
-            return new MemoryCollection(resultList);
+            foreach (var element in new MemoryCollection(resultList))
+            {
+                yield return element;
+            }
         }
 
         /// <summary>Finds the record by its last name.</summary>
@@ -193,7 +196,10 @@ namespace FileCabinetApp
                 }
             }
 
-            return new MemoryCollection(resultList);
+            foreach (var element in new MemoryCollection(resultList))
+            {
+                yield return element;
+            }
         }
 
         /// <summary>Finds the record by its date of birth.</summary>
@@ -210,7 +216,10 @@ namespace FileCabinetApp
                 }
             }
 
-            return new MemoryCollection(resultList);
+            foreach (var element in new MemoryCollection(resultList))
+            {
+                yield return element;
+            }
         }
 
         /// <summary>Gets all the records.</summary>

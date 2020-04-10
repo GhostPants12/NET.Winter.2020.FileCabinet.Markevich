@@ -137,11 +137,29 @@ namespace FileCabinetApp
             this.fileStream.Position = positionBackup;
         }
 
-        public IEnumerable<FileCabinetRecord> FindByDateOfBirth(DateTime dateTime) => new FilesystemCollection(this.fileStream, !this.dateOfBirthDictionary.ContainsKey(dateTime) ? new List<long>() : this.dateOfBirthDictionary[dateTime]);
+        public IEnumerable<FileCabinetRecord> FindByDateOfBirth(DateTime dateTime)
+        {
+            foreach (var element in new FilesystemCollection(this.fileStream, !this.dateOfBirthDictionary.ContainsKey(dateTime) ? new List<long>() : this.dateOfBirthDictionary[dateTime]))
+            {
+                yield return element;
+            }
+        }
 
-        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName) => new FilesystemCollection(this.fileStream, !this.firstNameDictionary.ContainsKey(firstName) ? new List<long>() : this.firstNameDictionary[firstName]);
+        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
+        {
+            foreach (var element in new FilesystemCollection(this.fileStream, !this.firstNameDictionary.ContainsKey(firstName) ? new List<long>() : this.firstNameDictionary[firstName]))
+            {
+                yield return element;
+            }
+        }
 
-        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName) => new FilesystemCollection(this.fileStream, !this.lastNameDictionary.ContainsKey(lastName) ? new List<long>() : this.lastNameDictionary[lastName]);
+        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
+        {
+            foreach (var element in new FilesystemCollection(this.fileStream, !this.lastNameDictionary.ContainsKey(lastName) ? new List<long>() : this.lastNameDictionary[lastName]))
+            {
+                yield return element;
+            }
+        }
 
         public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
