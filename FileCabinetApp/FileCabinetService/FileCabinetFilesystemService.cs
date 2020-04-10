@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using FileCabinetApp.FileCabinetService;
+using FileCabinetApp.Iterators;
 using FileCabinetApp.RecordValidator;
 
 namespace FileCabinetApp
@@ -136,47 +137,11 @@ namespace FileCabinetApp
             this.fileStream.Position = positionBackup;
         }
 
-        public IRecordIterator FindByDateOfBirth(DateTime dateTime)
-        {
-            List<FileCabinetRecord> returnList = new List<FileCabinetRecord>();
-            foreach (var record in this.GetRecords())
-            {
-                if (record.DateOfBirth.Equals(dateTime))
-                {
-                    returnList.Add(record);
-                }
-            }
+        public IEnumerable<FileCabinetRecord> FindByDateOfBirth(DateTime dateTime) => new FilesystemCollection(this.fileStream, !this.dateOfBirthDictionary.ContainsKey(dateTime) ? new List<long>() : this.dateOfBirthDictionary[dateTime]);
 
-            return new FilesystemIterator(this.fileStream, this.dateOfBirthDictionary[dateTime]);
-        }
+        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName) => new FilesystemCollection(this.fileStream, !this.firstNameDictionary.ContainsKey(firstName) ? new List<long>() : this.firstNameDictionary[firstName]);
 
-        public IRecordIterator FindByFirstName(string firstName)
-        {
-            List<FileCabinetRecord> returnList = new List<FileCabinetRecord>();
-            foreach (var record in this.GetRecords())
-            {
-                if (record.FirstName.Equals(firstName, StringComparison.InvariantCulture))
-                {
-                    returnList.Add(record);
-                }
-            }
-
-            return new FilesystemIterator(fileStream, this.firstNameDictionary[firstName]);
-        }
-
-        public IRecordIterator FindByLastName(string lastName)
-        {
-            List<FileCabinetRecord> returnList = new List<FileCabinetRecord>();
-            foreach (var record in this.GetRecords())
-            {
-                if (record.LastName.Equals(lastName, StringComparison.InvariantCulture))
-                {
-                    returnList.Add(record);
-                }
-            }
-
-            return new FilesystemIterator(fileStream, this.lastNameDictionary[lastName]);
-        }
+        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName) => new FilesystemCollection(this.fileStream, !this.lastNameDictionary.ContainsKey(lastName) ? new List<long>() : this.lastNameDictionary[lastName]);
 
         public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {

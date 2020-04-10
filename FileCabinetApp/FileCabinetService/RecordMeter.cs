@@ -55,30 +55,30 @@ namespace FileCabinetApp.FileCabinetService
             this.stopwatch.Reset();
         }
 
-        public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
+        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
         {
             this.stopwatch.Start();
-            ReadOnlyCollection<FileCabinetRecord> returnCollection = this.service.FindByFirstName(firstName);
+            IEnumerable<FileCabinetRecord> returnCollection = this.service.FindByFirstName(firstName);
             this.stopwatch.Stop();
             Console.WriteLine($"FindByFirstName method execution duration is {this.stopwatch.Elapsed.Ticks} ticks.");
             this.stopwatch.Reset();
             return returnCollection;
         }
 
-        public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
+        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
         {
             this.stopwatch.Start();
-            ReadOnlyCollection<FileCabinetRecord> returnCollection = this.service.FindByLastName(lastName);
+            IEnumerable<FileCabinetRecord> returnCollection = this.service.FindByLastName(lastName);
             this.stopwatch.Stop();
             Console.WriteLine($"FindByLastName method execution duration is {this.stopwatch.Elapsed.Ticks} ticks.");
             this.stopwatch.Reset();
             return returnCollection;
         }
 
-        public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(DateTime dateTime)
+        public IEnumerable<FileCabinetRecord> FindByDateOfBirth(DateTime dateTime)
         {
             this.stopwatch.Start();
-            ReadOnlyCollection<FileCabinetRecord> returnCollection = this.service.FindByDateOfBirth(dateTime);
+            IEnumerable<FileCabinetRecord> returnCollection = this.service.FindByDateOfBirth(dateTime);
             this.stopwatch.Stop();
             Console.WriteLine($"FindByDateOfBirth method execution duration is {this.stopwatch.Elapsed.Ticks} ticks.");
             this.stopwatch.Reset();

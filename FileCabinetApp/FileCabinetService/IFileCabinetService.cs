@@ -16,11 +16,11 @@ namespace FileCabinetApp
 
         void DeleteRecord(int id);
 
-        IRecordIterator FindByFirstName(string firstName);
+        IEnumerable<FileCabinetRecord> FindByFirstName(string firstName);
 
-        IRecordIterator FindByLastName(string lastName);
+        IEnumerable<FileCabinetRecord> FindByLastName(string lastName);
 
-        IRecordIterator FindByDateOfBirth(DateTime dateTime);
+        IEnumerable<FileCabinetRecord> FindByDateOfBirth(DateTime dateTime);
 
         ReadOnlyCollection<FileCabinetRecord> GetRecords();
 
