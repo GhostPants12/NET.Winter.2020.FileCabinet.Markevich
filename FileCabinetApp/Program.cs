@@ -125,6 +125,7 @@ namespace FileCabinetApp
             var importHandler = new ImportCommandHandler(fileCabinetService);
             var exitHandler = new ExitCommandHandler(new Action<bool>(b => isRunning = b));
             var missedHandler = new MissedCommandHandler();
+            var insertHandler = new InsertCommandHandler(fileCabinetService);
             exitHandler.SetNext(missedHandler);
             importHandler.SetNext(exitHandler);
             exportHandler.SetNext(importHandler);
@@ -135,7 +136,8 @@ namespace FileCabinetApp
             findHandler.SetNext(removeHandler);
             editHandler.SetNext(findHandler);
             createHandler.SetNext(editHandler);
-            return createHandler;
+            insertHandler.SetNext(createHandler);
+            return insertHandler;
         }
 
         public static T ReadInput<T>(Func<string, Tuple<bool, string, T>> converter, Func<T, Tuple<bool, string>> validator)
