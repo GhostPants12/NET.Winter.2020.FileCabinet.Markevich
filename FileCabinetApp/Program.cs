@@ -126,6 +126,7 @@ namespace FileCabinetApp
             var exitHandler = new ExitCommandHandler(new Action<bool>(b => isRunning = b));
             var missedHandler = new MissedCommandHandler();
             var insertHandler = new InsertCommandHandler(fileCabinetService);
+            var deleteHandler = new DeleteCommandHandler(fileCabinetService);
             exitHandler.SetNext(missedHandler);
             importHandler.SetNext(exitHandler);
             exportHandler.SetNext(importHandler);
@@ -136,7 +137,8 @@ namespace FileCabinetApp
             findHandler.SetNext(removeHandler);
             editHandler.SetNext(findHandler);
             createHandler.SetNext(editHandler);
-            insertHandler.SetNext(createHandler);
+            deleteHandler.SetNext(createHandler);
+            insertHandler.SetNext(deleteHandler);
             return insertHandler;
         }
 
