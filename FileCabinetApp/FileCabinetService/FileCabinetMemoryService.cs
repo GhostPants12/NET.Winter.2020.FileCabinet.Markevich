@@ -101,7 +101,33 @@ namespace FileCabinetApp
             {
                 if (record.Id == newRecordData.Id)
                 {
-                    this.firstNameDictionary.Remove(record.FirstName);
+                    if (this.firstNameDictionary[record.FirstName].Count > 1)
+                    {
+                        this.firstNameDictionary[record.FirstName].Remove(record);
+                    }
+                    else
+                    {
+                        this.firstNameDictionary.Remove(record.FirstName);
+                    }
+
+                    if (this.lastNameDictionary[record.LastName].Count > 1)
+                    {
+                        this.lastNameDictionary[record.LastName].Remove(record);
+                    }
+                    else
+                    {
+                        this.lastNameDictionary.Remove(record.LastName);
+                    }
+
+                    if (this.dateOfBirthDictionary[record.DateOfBirth].Count > 1)
+                    {
+                        this.dateOfBirthDictionary[record.DateOfBirth].Remove(record);
+                    }
+                    else
+                    {
+                        this.dateOfBirthDictionary.Remove(record.DateOfBirth);
+                    }
+
                     record.FirstName = newRecordData.FirstName;
                     record.LastName = newRecordData.LastName;
                     record.Code = newRecordData.Code;
