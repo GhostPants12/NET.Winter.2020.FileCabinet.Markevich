@@ -102,13 +102,77 @@ namespace FileCabinetApp
 
         public void EditRecord(RecordData newRecordData)
         {
+            this.validator.Validate(newRecordData.FirstName, newRecordData.LastName,
+                newRecordData.Code, newRecordData.Letter, newRecordData.Balance, newRecordData.DateOfBirth);
+            foreach (var record in this.GetRecords())
+            {
+                if (record.Id == newRecordData.Id)
+                {
+                    if (this.firstNameDictionary[record.FirstName].Count > 1)
+                    {
+                        this.firstNameDictionary[record.FirstName].Remove(this.fileStream.Position);
+                    }
+                    else
+                    {
+                        this.firstNameDictionary.Remove(record.FirstName);
+                    }
+
+                    if (this.lastNameDictionary[record.LastName].Count > 1)
+                    {
+                        this.lastNameDictionary[record.LastName].Remove(this.fileStream.Position);
+                    }
+                    else
+                    {
+                        this.lastNameDictionary.Remove(record.LastName);
+                    }
+
+                    if (this.dateOfBirthDictionary[record.DateOfBirth].Count > 1)
+                    {
+                        this.dateOfBirthDictionary[record.DateOfBirth].Remove(this.fileStream.Position);
+                    }
+                    else
+                    {
+                        this.dateOfBirthDictionary.Remove(record.DateOfBirth);
+                    }
+                }
+            }
+
             long positionBackup = this.fileStream.Position;
             int i = 0;
             this.fileStream.Position = 0;
             byte[] buffer = new byte[280];
             this.SetPositionToId(newRecordData.Id);
-            this.validator.Validate(newRecordData.FirstName, newRecordData.LastName,
-                newRecordData.Code, newRecordData.Letter, newRecordData.Balance, newRecordData.DateOfBirth);
+
+            if (!this.firstNameDictionary.ContainsKey(newRecordData.FirstName))
+            {
+                this.firstNameDictionary.Add(newRecordData.FirstName, new List<long>());
+                this.firstNameDictionary[newRecordData.FirstName].Add(this.fileStream.Position);
+            }
+            else
+            {
+                this.firstNameDictionary[newRecordData.FirstName].Add(this.fileStream.Position);
+            }
+
+            if (!this.lastNameDictionary.ContainsKey(newRecordData.LastName))
+            {
+                this.lastNameDictionary.Add(newRecordData.LastName, new List<long>());
+                this.lastNameDictionary[newRecordData.LastName].Add(this.fileStream.Position);
+            }
+            else
+            {
+                this.lastNameDictionary[newRecordData.LastName].Add(this.fileStream.Position);
+            }
+
+            if (!this.dateOfBirthDictionary.ContainsKey(newRecordData.DateOfBirth))
+            {
+                this.dateOfBirthDictionary.Add(newRecordData.DateOfBirth, new List<long>());
+                this.dateOfBirthDictionary[newRecordData.DateOfBirth].Add(this.fileStream.Position);
+            }
+            else
+            {
+                this.dateOfBirthDictionary[newRecordData.DateOfBirth].Add(this.fileStream.Position);
+            }
+
             foreach (var element in Encoding.Default.GetBytes(newRecordData.FirstName))
             {
                 buffer[i] = element;
