@@ -115,10 +115,8 @@ namespace FileCabinetApp
         private static CommandHandlerBase CreateCommandHandler()
         {
             var createHandler = new CreateCommandHandler(fileCabinetService);
-            var findHandler = new FindCommandHandler(fileCabinetService, DefaultRecordPrint);
             var purgeHandler = new PurgeCommandHandler(fileCabinetService);
             var statHandler = new StatCommandHandler(fileCabinetService);
-            var listHandler = new ListCommandHandler(fileCabinetService, DefaultRecordPrint);
             var exportHandler = new ExportCommandHandler(fileCabinetService);
             var importHandler = new ImportCommandHandler(fileCabinetService);
             var exitHandler = new ExitCommandHandler(new Action<bool>(b => isRunning = b));
@@ -130,11 +128,9 @@ namespace FileCabinetApp
             exitHandler.SetNext(missedHandler);
             importHandler.SetNext(exitHandler);
             exportHandler.SetNext(importHandler);
-            listHandler.SetNext(exportHandler);
-            statHandler.SetNext(listHandler);
+            statHandler.SetNext(exportHandler);
             purgeHandler.SetNext(statHandler);
-            findHandler.SetNext(purgeHandler);
-            createHandler.SetNext(findHandler);
+            createHandler.SetNext(purgeHandler);
             updateHandler.SetNext(createHandler);
             deleteHandler.SetNext(updateHandler);
             selectHandler.SetNext(deleteHandler);
@@ -288,14 +284,6 @@ namespace FileCabinetApp
             }
 
             return new Tuple<bool, string>(true, string.Empty);
-        }
-
-        private static void DefaultRecordPrint(IEnumerable<FileCabinetRecord> records)
-        {
-            foreach (FileCabinetRecord record in records)
-            {
-                Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {record.Code}, {record.Letter}, {record.Balance.ToString(CultureInfo.InvariantCulture)}, {record.DateOfBirth.ToString("yyyy-MMM-dd", System.Globalization.CultureInfo.InvariantCulture)}");
-            }
         }
     }
 }
