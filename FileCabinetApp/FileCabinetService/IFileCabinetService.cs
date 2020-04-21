@@ -33,5 +33,7 @@ namespace FileCabinetApp
         int GetStat();
 
         int GetRemovedStat();
+
+        Dictionary<string, string> GetSelectDictionary();
     }
 }

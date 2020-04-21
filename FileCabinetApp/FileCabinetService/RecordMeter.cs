@@ -143,5 +143,14 @@ namespace FileCabinetApp.FileCabinetService
             this.stopwatch.Reset();
             return returnValue;
         }
+
+        public Dictionary<string, string> GetSelectDictionary()
+        {
+            this.stopwatch.Start();
+            Dictionary<string, string> dic = this.service.GetSelectDictionary();
+            this.stopwatch.Stop();
+            Console.WriteLine($"GetSelectDictionary method execution duration is {this.stopwatch.Elapsed.Ticks} ticks.");
+            return dic;
+        }
     }
 }
