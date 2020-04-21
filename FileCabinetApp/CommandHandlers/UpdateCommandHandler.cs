@@ -127,67 +127,65 @@ namespace FileCabinetApp.CommandHandlers
             {
                 foreach (var param in Regex.Split(parameters, @",(\s)*"))
                 {
-                    if (!param.Equals(" ", StringComparison.InvariantCultureIgnoreCase))
+                    if (param.Equals(" ", StringComparison.InvariantCultureIgnoreCase)) continue;
+                    var conditionArguments = param.Split('=', 2);
+                    var conditionKey = conditionArguments[0]
+                        .Replace(" ", string.Empty, StringComparison.InvariantCultureIgnoreCase);
+                    var conditionValue = conditionArguments[1].Split(@"'")[1];
+                    if (conditionKey.Equals("firstname", StringComparison.InvariantCultureIgnoreCase))
                     {
-                        var conditionArguments = param.Split('=', 2);
-                        var conditionKey = conditionArguments[0]
-                            .Replace(" ", string.Empty, StringComparison.InvariantCultureIgnoreCase);
-                        var conditionValue = conditionArguments[1].Split(@"'")[1];
-                        if (conditionKey.Equals("firstname", StringComparison.InvariantCultureIgnoreCase))
+                        element.FirstName = conditionValue;
+                        this.service.EditRecord(new RecordData(element.FirstName, element.LastName, element.Code, element.Letter, element.Balance, element.DateOfBirth) { Id = element.Id });
+                    }
+
+                    if (conditionKey.Equals("lastname", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        element.LastName = conditionValue;
+                        this.service.EditRecord(new RecordData(element.FirstName, element.LastName, element.Code, element.Letter, element.Balance, element.DateOfBirth) { Id = element.Id });
+                    }
+
+                    if (conditionKey.Equals("dateofbirth", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        if (!DateTime.TryParseExact(conditionValue, "M/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var time))
                         {
-                            element.FirstName = conditionValue;
-                            this.service.EditRecord(new RecordData(element.FirstName, element.LastName, element.Code, element.Letter, element.Balance, element.DateOfBirth) { Id = element.Id });
+                            throw new ArgumentException($"{conditionValue} is an incorrect date of birth.");
                         }
 
-                        if (conditionKey.Equals("lastname", StringComparison.InvariantCultureIgnoreCase))
+                        element.DateOfBirth = time;
+                        this.service.EditRecord(new RecordData(element.FirstName, element.LastName, element.Code, element.Letter, element.Balance, element.DateOfBirth) { Id = element.Id });
+                    }
+
+                    if (conditionKey.Equals("code", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        if (!short.TryParse(conditionValue, out var code))
                         {
-                            element.LastName = conditionValue;
-                            this.service.EditRecord(new RecordData(element.FirstName, element.LastName, element.Code, element.Letter, element.Balance, element.DateOfBirth) { Id = element.Id });
+                            throw new ArgumentException($"{conditionValue} is an incorrect code.");
                         }
 
-                        if (conditionKey.Equals("dateofbirth", StringComparison.InvariantCultureIgnoreCase))
-                        {
-                            if (!DateTime.TryParseExact(conditionValue, "M/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var time))
-                            {
-                                throw new ArgumentException($"{conditionValue} is an incorrect date of birth.");
-                            }
+                        element.Code = code;
+                        this.service.EditRecord(new RecordData(element.FirstName, element.LastName, element.Code, element.Letter, element.Balance, element.DateOfBirth) { Id = element.Id });
+                    }
 
-                            element.DateOfBirth = time;
-                            this.service.EditRecord(new RecordData(element.FirstName, element.LastName, element.Code, element.Letter, element.Balance, element.DateOfBirth) { Id = element.Id });
+                    if (conditionKey.Equals("letter", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        if (!char.TryParse(conditionValue, out var letter))
+                        {
+                            throw new ArgumentException($"{conditionValue} is an incorrect letter.");
                         }
 
-                        if (conditionKey.Equals("code", StringComparison.InvariantCultureIgnoreCase))
-                        {
-                            if (!short.TryParse(conditionValue, out var code))
-                            {
-                                throw new ArgumentException($"{conditionValue} is an incorrect code.");
-                            }
+                        element.Letter = letter;
+                        this.service.EditRecord(new RecordData(element.FirstName, element.LastName, element.Code, element.Letter, element.Balance, element.DateOfBirth) { Id = element.Id });
+                    }
 
-                            element.Code = code;
-                            this.service.EditRecord(new RecordData(element.FirstName, element.LastName, element.Code, element.Letter, element.Balance, element.DateOfBirth) { Id = element.Id });
+                    if (conditionKey.Equals("balance", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        if (!decimal.TryParse(conditionValue, out var balance))
+                        {
+                            throw new ArgumentException($"{conditionValue} is an incorrect balance.");
                         }
 
-                        if (conditionKey.Equals("letter", StringComparison.InvariantCultureIgnoreCase))
-                        {
-                            if (!char.TryParse(conditionValue, out var letter))
-                            {
-                                throw new ArgumentException($"{conditionValue} is an incorrect letter.");
-                            }
-
-                            element.Letter = letter;
-                            this.service.EditRecord(new RecordData(element.FirstName, element.LastName, element.Code, element.Letter, element.Balance, element.DateOfBirth) { Id = element.Id });
-                        }
-
-                        if (conditionKey.Equals("balance", StringComparison.InvariantCultureIgnoreCase))
-                        {
-                            if (!decimal.TryParse(conditionValue, out var balance))
-                            {
-                                throw new ArgumentException($"{conditionValue} is an incorrect balance.");
-                            }
-
-                            element.Balance = balance;
-                            this.service.EditRecord(new RecordData(element.FirstName, element.LastName, element.Code, element.Letter, element.Balance, element.DateOfBirth) { Id = element.Id });
-                        }
+                        element.Balance = balance;
+                        this.service.EditRecord(new RecordData(element.FirstName, element.LastName, element.Code, element.Letter, element.Balance, element.DateOfBirth) { Id = element.Id });
                     }
                 }
             }

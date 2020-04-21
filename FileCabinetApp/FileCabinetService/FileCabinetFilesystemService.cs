@@ -69,6 +69,7 @@ namespace FileCabinetApp
 
             newRecordData.Id = ++this.idCounter;
             byte[] buffer = new byte[120];
+            byte[] cleanArr = new byte[120];
             this.fileStream.Write(BitConverter.GetBytes((short)0), 0, 2);
             int i = 0;
             this.fileStream.Write(BitConverter.GetBytes(newRecordData.Id));
@@ -80,6 +81,7 @@ namespace FileCabinetApp
 
             i = 0;
             this.fileStream.Write(buffer, 0, 120);
+            Array.Copy(cleanArr, buffer, 120);
             foreach (var element in Encoding.Default.GetBytes(newRecordData.LastName))
             {
                 buffer[i] = element;
@@ -140,6 +142,7 @@ namespace FileCabinetApp
             long positionBackup = this.fileStream.Position;
             int i = 0;
             this.fileStream.Position = 0;
+            byte[] cleanArr = new byte[280];
             byte[] buffer = new byte[280];
             this.SetPositionToId(newRecordData.Id);
 
@@ -181,6 +184,7 @@ namespace FileCabinetApp
 
             i = 0;
             this.fileStream.Write(buffer, 0, 120);
+            Array.Copy(cleanArr, buffer, 120);
             foreach (var element in Encoding.Default.GetBytes(newRecordData.LastName))
             {
                 buffer[i] = element;
