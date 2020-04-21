@@ -230,5 +230,21 @@ namespace FileCabinetApp.FileCabinetService
                 this.writer.Close();
             }
         }
+
+        public Dictionary<string, string> GetSelectDictionary()
+        {
+            try
+            {
+                this.writer = new StreamWriter(new FileStream("log.txt", FileMode.Append));
+                this.writer.WriteLine($"{DateTime.Now} - Calling GetSelectDictionary().");
+                Dictionary<string, string> dic = this.service.GetSelectDictionary();
+                this.writer.WriteLine($"{DateTime.Now} - GetSelectDictionary() returned {dic}.");
+                return dic;
+            }
+            finally
+            {
+                this.writer.Close();
+            }
+        }
     }
 }

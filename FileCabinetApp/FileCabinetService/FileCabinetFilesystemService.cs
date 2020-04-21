@@ -14,6 +14,9 @@ namespace FileCabinetApp
 {
     public class FileCabinetFilesystemService : IFileCabinetService
     {
+        private Dictionary<string, string> SelectDictionary =
+            new Dictionary<string, string>();
+
         private int removedCount;
         private int count;
         private int idCounter;
@@ -99,6 +102,7 @@ namespace FileCabinetApp
                 this.fileStream.Write(BitConverter.GetBytes(value));
             }
 
+            this.SelectDictionary = new Dictionary<string, string>();
             return newRecordData.Id;
         }
 
@@ -203,6 +207,7 @@ namespace FileCabinetApp
             }
 
             this.fileStream.Position = positionBackup;
+            this.SelectDictionary = new Dictionary<string, string>();
         }
 
         public IEnumerable<FileCabinetRecord> FindByDateOfBirth(DateTime dateTime)
@@ -355,6 +360,7 @@ namespace FileCabinetApp
             this.fileStream.Read(buf, 0, 2);
             this.fileStream.Position -= 2;
             this.fileStream.Write(new byte[] { (byte)(buf[0] | 4),  buf[1] }, 0, 2);
+            this.SelectDictionary = new Dictionary<string, string>();
         }
 
         private void SetPositionToId(int id)
@@ -388,6 +394,11 @@ namespace FileCabinetApp
         {
             this.GetRecords();
             return this.removedCount;
+        }
+
+        public Dictionary<string, string> GetSelectDictionary()
+        {
+            return this.SelectDictionary;
         }
     }
 }

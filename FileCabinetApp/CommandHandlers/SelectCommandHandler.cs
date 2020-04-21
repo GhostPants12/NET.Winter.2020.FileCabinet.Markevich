@@ -12,7 +12,7 @@ namespace FileCabinetApp.CommandHandlers
 {
     public class SelectCommandHandler : ServiceCommandHandlerBase
     {
-        public SelectCommandHandler(IFileCabinetService service) 
+        public SelectCommandHandler(IFileCabinetService service)
             : base(service)
         {
         }
@@ -25,9 +25,17 @@ namespace FileCabinetApp.CommandHandlers
                 return;
             }
 
+            StringBuilder resultBuilder = new StringBuilder();
+            Dictionary<string, string> dic = this.service.GetSelectDictionary();
+            if (dic.ContainsKey(request.Parameters))
+            {
+                Console.WriteLine(dic[request.Parameters]);
+                return;
+            }
+
             Dictionary<int, string> numberParamsDictionary = new Dictionary<int, string>()
             {
-                { 0, "Id"},
+                { 0, "Id" },
                 { 1, "FirstName" },
                 { 2, "LastName" },
                 { 3, "DateOfBirth" },
@@ -245,23 +253,22 @@ namespace FileCabinetApp.CommandHandlers
 
             Tuple<string, int[]> divider = new Tuple<string, int[]>(dividerStringBuilder.ToString(), maxLengthArray);
 
-            Console.WriteLine(divider.Item1);
+            resultBuilder.Append(divider.Item1 + Environment.NewLine);
 
             for (int i = 0; i < rows.Length; i++)
             {
                 if (rows[i])
                 {
-                    Console.Write(" | " + numberParamsDictionary[i]);
+                    resultBuilder.Append(" | " + numberParamsDictionary[i]);
                     for (int j = 0; j < divider.Item2[i] - numberParamsDictionary[i].Length; j++)
                     {
-                        Console.Write(" ");
+                        resultBuilder.Append(" ");
                     }
                 }
             }
 
-            Console.Write(" |");
-            Console.WriteLine();
-            Console.WriteLine(divider.Item1);
+            resultBuilder.Append(" |" + Environment.NewLine);
+            resultBuilder.Append(divider.Item1 + Environment.NewLine);
             foreach (var record in resultList)
             {
                 for (int i = 0; i < rows.Length; i++)
@@ -295,30 +302,32 @@ namespace FileCabinetApp.CommandHandlers
                     }
                 }
 
-                Console.Write(" |");
-                Console.WriteLine();
-                Console.WriteLine(divider.Item1);
+                resultBuilder.Append(" |" + Environment.NewLine);
+                resultBuilder.Append(divider.Item1 + Environment.NewLine);
             }
+
+            Console.WriteLine(resultBuilder.ToString());
+            dic.Add(request.Parameters, resultBuilder.ToString());
 
             void WriteRow(string element, int counter)
             {
-                Console.Write(" | ");
+                resultBuilder.Append(" | ");
                 if (counter == 1 || counter == 2)
                 {
-                    Console.Write(element);
+                    resultBuilder.Append(element);
                     for (int j = 0; j < divider.Item2[counter] - element.Length; j++)
                     {
-                        Console.Write(" ");
+                        resultBuilder.Append(" ");
                     }
                 }
                 else
                 {
                     for (int j = 0; j < divider.Item2[counter] - element.Length; j++)
                     {
-                        Console.Write(" ");
+                        resultBuilder.Append(" ");
                     }
 
-                    Console.Write(element);
+                    resultBuilder.Append(element);
                 }
             }
 

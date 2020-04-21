@@ -13,6 +13,9 @@ namespace FileCabinetApp
     /// <summary>Class for working with the file cabinet.</summary>
     public abstract class FileCabinetMemoryService : IFileCabinetService
     {
+        private Dictionary<string, string> SelectDictionary =
+            new Dictionary<string, string>();
+
         private readonly RecordValidator.IRecordValidator validator;
         private List<FileCabinetRecord> list = new List<FileCabinetRecord>();
 
@@ -88,6 +91,7 @@ namespace FileCabinetApp
                 this.dateOfBirthDictionary[newRecordData.DateOfBirth].Add(record);
             }
 
+            this.SelectDictionary = new Dictionary<string, string>();
             return record.Id;
         }
 
@@ -164,6 +168,7 @@ namespace FileCabinetApp
                         this.dateOfBirthDictionary[newRecordData.DateOfBirth].Add(record);
                     }
 
+                    this.SelectDictionary = new Dictionary<string, string>();
                     return;
                 }
             }
@@ -181,6 +186,7 @@ namespace FileCabinetApp
                     this.lastNameDictionary[element.LastName].Remove(element);
                     this.dateOfBirthDictionary[element.DateOfBirth].Remove(element);
                     this.list.Remove(element);
+                    this.SelectDictionary = new Dictionary<string, string>();
                     return;
                 }
             }
@@ -280,6 +286,11 @@ namespace FileCabinetApp
         public int Purge()
         {
             throw new NotImplementedException("This method is incorrect for this type of FileCabinet.");
+        }
+
+        public Dictionary<string, string> GetSelectDictionary()
+        {
+            return this.SelectDictionary;
         }
     }
 }
