@@ -9,20 +9,28 @@ using FileCabinetApp.Writers;
 
 namespace FileCabinetApp
 {
+    /// <summary>Class-container for FileCabinet exporting.</summary>
     public class FileCabinetServiceSnapshot
     {
+        /// <summary>The records.</summary>
         private FileCabinetRecord[] records;
 
+        /// <summary>Initializes a new instance of the <see cref="FileCabinetServiceSnapshot" /> class.</summary>
+        /// <param name="list">The list of records.</param>
         public FileCabinetServiceSnapshot(List<FileCabinetRecord> list)
         {
-            this.records = list.ToArray();
+            if (list != null)
+            {
+                this.records = list.ToArray();
+            }
         }
 
-        public ReadOnlyCollection<FileCabinetRecord> Records
-        {
-            get => Array.AsReadOnly(this.records);
-        }
+        /// <summary>Gets the records.</summary>
+        /// <value>The records.</value>
+        public ReadOnlyCollection<FileCabinetRecord> Records => Array.AsReadOnly(this.records);
 
+        /// <summary>Saves snapshot to CSV format.</summary>
+        /// <param name="sr">The stream for a file.</param>
         public void SaveToCsv(StreamWriter sr)
         {
             FileCabinetRecordCsvWriter writer = new FileCabinetRecordCsvWriter(sr);
@@ -32,6 +40,8 @@ namespace FileCabinetApp
             }
         }
 
+        /// <summary>Loads the snapshot from CSV file.</summary>
+        /// <param name="sr">The stream for a file.</param>
         public void LoadFromCsv(StreamReader sr)
         {
             int overwrittenElements = 0;
@@ -68,6 +78,8 @@ namespace FileCabinetApp
             Array.Resize(ref this.records, this.records.Length - overwrittenElements);
         }
 
+        /// <summary>Saves snapshot to XML file.</summary>
+        /// <param name="sr">The stream for a file.</param>
         public void SaveToXml(StreamWriter sr)
         {
             FileCabinetRecordXmlWriter writer = new FileCabinetRecordXmlWriter(sr);
@@ -79,6 +91,8 @@ namespace FileCabinetApp
             writer.EndWriting();
         }
 
+        /// <summary>Loads snapshot from XML file.</summary>
+        /// <param name="fs">The stream for a file.</param>
         public void LoadFromXml(FileStream fs)
         {
             int overwrittenElements = 0;

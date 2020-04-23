@@ -7,8 +7,12 @@ using Microsoft.Extensions.Configuration;
 
 namespace FileCabinetApp.RecordValidator
 {
+    /// <summary>Class-builder for validator creating.</summary>
     public static class ValidatorBuilderExtension
     {
+        /// <summary>Creates the default validator.</summary>
+        /// <param name="builder">The builder.</param>
+        /// <returns>Returns the default validator.</returns>
         public static IRecordValidator CreateDefault(this ValidatorBuilder builder)
         {
             var config = new ConfigurationBuilder()
@@ -36,6 +40,9 @@ namespace FileCabinetApp.RecordValidator
                 });
         }
 
+        /// <summary>Creates the custom validator.</summary>
+        /// <param name="builder">The builder.</param>
+        /// <returns>The validator.</returns>
         public static IRecordValidator CreateCustom(this ValidatorBuilder builder)
         {
             var config = new ConfigurationBuilder()

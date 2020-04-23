@@ -8,17 +8,24 @@ using System.Text.RegularExpressions;
 
 namespace FileCabinetApp.CommandHandlers
 {
+    /// <summary>CommandHandler for the insert command.</summary>
     public class InsertCommandHandler : ServiceCommandHandlerBase
     {
-        public InsertCommandHandler(IFileCabinetService service) : base(service)
+        /// <summary>Initializes a new instance of the <see cref="InsertCommandHandler" /> class.</summary>
+        /// <param name="service">The service.</param>
+        public InsertCommandHandler(IFileCabinetService service)
+            : base(service)
         {
         }
 
+        /// <summary>Handles the specified request.</summary>
+        /// <param name="request">The request.</param>
+        /// <exception cref="ArgumentException">Some of the parameters are missing in the {request.Parameters}.</exception>
         public override void Handle(AppCommandRequest request)
         {
-            if (!request.Command.Equals("insert", StringComparison.InvariantCultureIgnoreCase))
+            if (request != null && !request.Command.Equals("insert", StringComparison.InvariantCultureIgnoreCase))
             {
-                this.nextHandler.Handle(request);
+                this.NextHandler.Handle(request);
                 return;
             }
 
@@ -28,79 +35,85 @@ namespace FileCabinetApp.CommandHandlers
             short code = -1;
             char letter = ' ';
             decimal balance = -1;
-            DateTime dateOfBirth = new DateTime();
-            string[] commandArray = Regex.Split(request.Parameters, "( values )");
-            for (int i = 0; i < commandArray.Length; i++)
+            DateTime dateOfBirth = default;
+            if (request != null)
             {
-                commandArray[i] = Regex.Replace(commandArray[i], "[()]", string.Empty);
-            }
-
-            string[] paramsArray = commandArray[0].Replace(" ", string.Empty, StringComparison.InvariantCultureIgnoreCase).Split(",");
-            string[] valueArray = commandArray[2].Split(',');
-            for (int i = 0; i < valueArray.Length; i++)
-            {
-                valueArray[i] = Regex.Replace(valueArray[i], @"(\s+)'", "'").Replace("'", string.Empty, StringComparison.InvariantCultureIgnoreCase);
-            }
-
-            for (int i = 0; i < paramsArray.Length; i++)
-            {
-                if (paramsArray[i].Equals("firstname", StringComparison.InvariantCultureIgnoreCase))
+                string[] commandArray = Regex.Split(request.Parameters, "( values )");
+                for (int i = 0; i < commandArray.Length; i++)
                 {
-                    firstName = valueArray[i];
-                    isFull[0] = true;
+                    commandArray[i] = Regex.Replace(commandArray[i], "[()]", string.Empty);
                 }
 
-                if (paramsArray[i].Equals("lastname", StringComparison.InvariantCultureIgnoreCase))
+                string[] paramsArray = commandArray[0].Replace(" ", string.Empty, StringComparison.InvariantCultureIgnoreCase).Split(",");
+                string[] valueArray = commandArray[2].Split(',');
+                for (int i = 0; i < valueArray.Length; i++)
                 {
-                    lastName = valueArray[i];
-                    isFull[1] = true;
+                    valueArray[i] = Regex.Replace(valueArray[i], @"(\s+)'", "'").Replace("'", string.Empty, StringComparison.InvariantCultureIgnoreCase);
                 }
 
-                if (paramsArray[i].Equals("dateofbirth", StringComparison.InvariantCultureIgnoreCase))
+                for (int i = 0; i < paramsArray.Length; i++)
                 {
-                    if (!DateTime.TryParseExact(valueArray[i], "M/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var time))
+                    if (paramsArray[i].Equals("firstname", StringComparison.InvariantCultureIgnoreCase))
                     {
-                        throw new ArgumentException($"{valueArray[i]} is an incorrect date of birth.");
+                        firstName = valueArray[i];
+                        isFull[0] = true;
                     }
 
-                    dateOfBirth = time;
-                    isFull[2] = true;
-                }
-
-                if (paramsArray[i].Equals("code", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    if (!short.TryParse(valueArray[i], out code))
+                    if (paramsArray[i].Equals("lastname", StringComparison.InvariantCultureIgnoreCase))
                     {
-                        throw new ArgumentException($"{valueArray[i]} is an incorrect code.");
+                        lastName = valueArray[i];
+                        isFull[1] = true;
                     }
 
-                    isFull[3] = true;
-                }
-
-                if (paramsArray[i].Equals("letter", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    if (!char.TryParse(valueArray[i], out letter))
+                    if (paramsArray[i].Equals("dateofbirth", StringComparison.InvariantCultureIgnoreCase))
                     {
-                        throw new ArgumentException($"{valueArray[i]} is an incorrect letter.");
+                        if (!DateTime.TryParseExact(valueArray[i], "M/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var time))
+                        {
+                            throw new ArgumentException($"{valueArray[i]} is an incorrect date of birth.");
+                        }
+
+                        dateOfBirth = time;
+                        isFull[2] = true;
                     }
 
-                    isFull[4] = true;
-                }
-
-                if (paramsArray[i].Equals("balance", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    if (!decimal.TryParse(valueArray[i], out balance))
+                    if (paramsArray[i].Equals("code", StringComparison.InvariantCultureIgnoreCase))
                     {
-                        throw new ArgumentException($"{valueArray[i]} is an incorrect balance.");
+                        if (!short.TryParse(valueArray[i], out code))
+                        {
+                            throw new ArgumentException($"{valueArray[i]} is an incorrect code.");
+                        }
+
+                        isFull[3] = true;
                     }
 
-                    isFull[5] = true;
+                    if (paramsArray[i].Equals("letter", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        if (!char.TryParse(valueArray[i], out letter))
+                        {
+                            throw new ArgumentException($"{valueArray[i]} is an incorrect letter.");
+                        }
+
+                        isFull[4] = true;
+                    }
+
+                    if (paramsArray[i].Equals("balance", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        if (!decimal.TryParse(valueArray[i], out balance))
+                        {
+                            throw new ArgumentException($"{valueArray[i]} is an incorrect balance.");
+                        }
+
+                        isFull[5] = true;
+                    }
                 }
             }
 
             if (isFull.All(b => !b))
             {
-                throw new ArgumentException($"Some of the parameters are missing in the {request.Parameters}.");
+                if (request != null)
+                {
+                    throw new ArgumentException($"Some of the parameters are missing in the {request.Parameters}.");
+                }
             }
 
             RecordData recordDataToCreate = new RecordData(firstName, lastName, code, letter, balance, dateOfBirth);

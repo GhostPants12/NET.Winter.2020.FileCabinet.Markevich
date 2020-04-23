@@ -7,16 +7,21 @@ using FileCabinetApp.RecordValidator;
 
 namespace FileCabinetApp.FileCabinetService
 {
+    /// <summary>Class-decorator for recording and logging the time of FileCabinet methods.</summary>
     public class RecordMeter : IFileCabinetService
     {
         private readonly Stopwatch stopwatch = new Stopwatch();
-        private IFileCabinetService service;
+        private readonly IFileCabinetService service;
 
+        /// <summary>Initializes a new instance of the <see cref="RecordMeter" /> class.</summary>
+        /// <param name="service">The service.</param>
         public RecordMeter(IFileCabinetService service)
         {
             this.service = service;
         }
 
+        /// <summary>Gets the validator.</summary>
+        /// <returns>Returns the validator.</returns>
         public IRecordValidator GetValidator()
         {
             this.stopwatch.Start();
@@ -27,6 +32,9 @@ namespace FileCabinetApp.FileCabinetService
             return returnValidator;
         }
 
+        /// <summary>Creates the record.</summary>
+        /// <param name="newRecordData">The new record data.</param>
+        /// <returns>Returns the id of a created record.</returns>
         public int CreateRecord(RecordData newRecordData)
         {
             this.stopwatch.Start();
@@ -37,6 +45,8 @@ namespace FileCabinetApp.FileCabinetService
             return returnValue;
         }
 
+        /// <summary>Edits the record.</summary>
+        /// <param name="newRecordData">The new record data.</param>
         public void EditRecord(RecordData newRecordData)
         {
             this.stopwatch.Start();
@@ -46,6 +56,8 @@ namespace FileCabinetApp.FileCabinetService
             this.stopwatch.Reset();
         }
 
+        /// <summary>Deletes the record with the specified id.</summary>
+        /// <param name="id">The identifier.</param>
         public void DeleteRecord(int id)
         {
             this.stopwatch.Start();
@@ -55,6 +67,9 @@ namespace FileCabinetApp.FileCabinetService
             this.stopwatch.Reset();
         }
 
+        /// <summary>Finds the records by firstname.</summary>
+        /// <param name="firstName">The first name.</param>
+        /// <returns>Returns records with the specified first name.</returns>
         public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
         {
             this.stopwatch.Start();
@@ -65,6 +80,9 @@ namespace FileCabinetApp.FileCabinetService
             return returnCollection;
         }
 
+        /// <summary>Finds the records by lastname.</summary>
+        /// <param name="lastName">The last name.</param>
+        /// <returns>Returns records with the specified last name.</returns>
         public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
         {
             this.stopwatch.Start();
@@ -75,6 +93,9 @@ namespace FileCabinetApp.FileCabinetService
             return returnCollection;
         }
 
+        /// <summary>Finds the records by date of birth.</summary>
+        /// <param name="dateTime">The date of birth.</param>
+        /// <returns>Returns records with the specified date of birth.</returns>
         public IEnumerable<FileCabinetRecord> FindByDateOfBirth(DateTime dateTime)
         {
             this.stopwatch.Start();
@@ -85,6 +106,8 @@ namespace FileCabinetApp.FileCabinetService
             return returnCollection;
         }
 
+        /// <summary>Gets the records.</summary>
+        /// <returns>Returns the collection of records.</returns>
         public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
             this.stopwatch.Start();
@@ -95,6 +118,8 @@ namespace FileCabinetApp.FileCabinetService
             return returnCollection;
         }
 
+        /// <summary>Makes the snapshot.</summary>
+        /// <returns>Returns the snapshot of current FileCabinet.</returns>
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
             this.stopwatch.Start();
@@ -105,6 +130,8 @@ namespace FileCabinetApp.FileCabinetService
             return snapshot;
         }
 
+        /// <summary>Restores the FileCabinet with specified snapshot.</summary>
+        /// <param name="snapshot">The snapshot.</param>
         public void Restore(FileCabinetServiceSnapshot snapshot)
         {
             this.stopwatch.Start();
@@ -114,6 +141,8 @@ namespace FileCabinetApp.FileCabinetService
             this.stopwatch.Reset();
         }
 
+        /// <summary>Purges this instance.</summary>
+        /// <returns>Amount of purged elements.</returns>
         public int Purge()
         {
             this.stopwatch.Start();
@@ -124,6 +153,8 @@ namespace FileCabinetApp.FileCabinetService
             return returnValue;
         }
 
+        /// <summary>Gets the stat.</summary>
+        /// <returns>Returns the count of records.</returns>
         public int GetStat()
         {
             this.stopwatch.Start();
@@ -134,6 +165,8 @@ namespace FileCabinetApp.FileCabinetService
             return returnValue;
         }
 
+        /// <summary>Gets the removed stat.</summary>
+        /// <returns>Returns the count of removed records.</returns>
         public int GetRemovedStat()
         {
             this.stopwatch.Start();
@@ -144,6 +177,8 @@ namespace FileCabinetApp.FileCabinetService
             return returnValue;
         }
 
+        /// <summary>Gets the select dictionary.</summary>
+        /// <returns>Returns the select dictionary.</returns>
         public Dictionary<string, string> GetSelectDictionary()
         {
             this.stopwatch.Start();

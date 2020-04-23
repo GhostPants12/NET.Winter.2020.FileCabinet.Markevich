@@ -135,7 +135,7 @@ namespace FileCabinetGenerator
                     case "xml":
                         using (FileStream fs = new FileStream(path, FileMode.OpenOrCreate))
                         {
-                            XMLContainer container = new XMLContainer();
+                            XmlContainer container = new XmlContainer();
                             container.Records = RecordGenerator.Generate(recordsAmount, startId);
                             new XMLWriter(fs).Generate(container);
                         }
