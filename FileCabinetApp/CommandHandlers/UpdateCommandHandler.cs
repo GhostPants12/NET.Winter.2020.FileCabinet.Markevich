@@ -89,48 +89,91 @@ namespace FileCabinetApp.CommandHandlers
                     }
                 }
 
-                var andCollection = new List<IEnumerable<FileCabinetRecord>>();
-                var streak = false;
+                var orCollection = new List<IEnumerable<FileCabinetRecord>>();
+                List<FileCabinetRecord> andEnumerable = new List<FileCabinetRecord>();
+                bool streak = false;
                 for (int i = 0; i < boolOperatorsList.Count; i++)
                 {
-                    if (boolOperatorsList[i].Equals("and", StringComparison.InvariantCultureIgnoreCase))
+                    if (boolOperatorsList[i].Replace(" ", string.Empty, StringComparison.InvariantCulture).Equals("or", StringComparison.InvariantCultureIgnoreCase))
                     {
-                        collectionsList[i] = collectionsList[i].Intersect(collectionsList[i + 1]);
-                        collectionsList[i + 1] = collectionsList[i];
-                        if (!streak)
+                        if (streak)
                         {
-                            andCollection.Add(collectionsList[i]);
-                            streak = true;
-                            continue;
+                            orCollection.Add(andEnumerable);
                         }
 
-                        andCollection[andCollection.Count - 1] = andCollection[andCollection.Count - 1].Intersect(collectionsList[i]);
-                        continue;
+                        if (!streak)
+                        {
+                            orCollection.Add(collectionsList[i]);
+                            streak = false;
+                        }
+
+                        if (i + 1 == boolOperatorsList.Count)
+                        {
+                            orCollection.Add(collectionsList[i + 1]);
+                        }
                     }
 
-                    streak = false;
+                    if (boolOperatorsList[i].Replace(" ", string.Empty, StringComparison.InvariantCulture)
+                        .Equals("and", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        if (!streak)
+                        {
+                            andEnumerable =
+                                new List<FileCabinetRecord>(Intersect(collectionsList[i], collectionsList[i + 1]));
+                            streak = true;
+                        }
+
+                        if (streak)
+                        {
+                            andEnumerable = Intersect(andEnumerable, collectionsList[i + 1]).ToList();
+                        }
+
+                        if (i + 1 == boolOperatorsList.Count)
+                        {
+                            orCollection.Add(andEnumerable);
+                        }
+                    }
                 }
 
-                if (andCollection.Count == 0)
+                if (boolOperatorsList.Count == 0)
                 {
-                    andCollection = collectionsList;
+                    orCollection.Add(collectionsList[0]);
                 }
 
-                foreach (var element in collectionsList.Distinct().Except(andCollection))
-                {
-                    andCollection.Add(element);
-                }
-
-                var resultList = andCollection[0];
+                List<FileCabinetRecord> resultList = orCollection[0].ToList();
                 var index = 0;
 
                 foreach (var boolOperation in boolOperatorsList)
                 {
-                    if (boolOperation.Equals("or", StringComparison.InvariantCultureIgnoreCase))
+                    if (boolOperation.Replace(" ", string.Empty, StringComparison.InvariantCulture)
+                        .Equals("or", StringComparison.InvariantCultureIgnoreCase))
                     {
-                        resultList = resultList.Union(andCollection[index].Union(andCollection[++index])).ToList();
+                        resultList = resultList.Union(orCollection[index].Union(orCollection[++index])).ToList();
                     }
                 }
+
+                List<int> toRemove = new List<int>();
+                for (int i = 0; i < resultList.Count; i++)
+                {
+                    for (int j = i + 1; j < resultList.Count; j++)
+                    {
+                        if (resultList[i].Id == resultList[j].Id)
+                        {
+                            toRemove.Add(j);
+                        }
+                    }
+                }
+
+                List<FileCabinetRecord> result = new List<FileCabinetRecord>();
+                for (int i = 0; i < resultList.Count; i++)
+                {
+                    if (!toRemove.Contains(i))
+                    {
+                        result.Add(resultList[i]);
+                    }
+                }
+
+                resultList = result;
 
                 foreach (var element in resultList)
                 {
@@ -201,6 +244,23 @@ namespace FileCabinetApp.CommandHandlers
                             this.service.EditRecord(new RecordData(element.FirstName, element.LastName, element.Code, element.Letter, element.Balance, element.DateOfBirth) { Id = element.Id });
                         }
                     }
+                }
+
+                IEnumerable<FileCabinetRecord> Intersect(IEnumerable<FileCabinetRecord> targetList, IEnumerable<FileCabinetRecord> sourceList)
+                {
+                    List<FileCabinetRecord> result = new List<FileCabinetRecord>();
+                    foreach (var record in targetList)
+                    {
+                        foreach (var sourceRecord in sourceList)
+                        {
+                            if (record.Id == sourceRecord.Id)
+                            {
+                                result.Add(record);
+                            }
+                        }
+                    }
+
+                    return result;
                 }
             }
         }

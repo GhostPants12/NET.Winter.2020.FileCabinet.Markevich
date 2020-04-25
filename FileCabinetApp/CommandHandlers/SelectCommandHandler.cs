@@ -154,6 +154,11 @@ namespace FileCabinetApp.CommandHandlers
                     }
                 }
 
+                if (boolOperatorsList.Count == 0)
+                {
+                    orCollection.Add(collectionsList[0]);
+                }
+
                 List<FileCabinetRecord> resultList = orCollection[0].ToList();
                 var index = 0;
 

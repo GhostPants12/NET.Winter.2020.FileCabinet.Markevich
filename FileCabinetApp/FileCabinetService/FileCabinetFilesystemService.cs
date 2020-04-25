@@ -171,31 +171,31 @@ namespace FileCabinetApp
                 if (!this.firstNameDictionary.ContainsKey(newRecordData.FirstName))
                 {
                     this.firstNameDictionary.Add(newRecordData.FirstName, new List<long>());
-                    this.firstNameDictionary[newRecordData.FirstName].Add(this.fileStream.Position);
+                    this.firstNameDictionary[newRecordData.FirstName].Add(this.fileStream.Position - 6);
                 }
                 else
                 {
-                    this.firstNameDictionary[newRecordData.FirstName].Add(this.fileStream.Position);
+                    this.firstNameDictionary[newRecordData.FirstName].Add(this.fileStream.Position - 6);
                 }
 
                 if (!this.lastNameDictionary.ContainsKey(newRecordData.LastName))
                 {
                     this.lastNameDictionary.Add(newRecordData.LastName, new List<long>());
-                    this.lastNameDictionary[newRecordData.LastName].Add(this.fileStream.Position);
+                    this.lastNameDictionary[newRecordData.LastName].Add(this.fileStream.Position - 6);
                 }
                 else
                 {
-                    this.lastNameDictionary[newRecordData.LastName].Add(this.fileStream.Position);
+                    this.lastNameDictionary[newRecordData.LastName].Add(this.fileStream.Position - 6);
                 }
 
                 if (!this.dateOfBirthDictionary.ContainsKey(newRecordData.DateOfBirth))
                 {
                     this.dateOfBirthDictionary.Add(newRecordData.DateOfBirth, new List<long>());
-                    this.dateOfBirthDictionary[newRecordData.DateOfBirth].Add(this.fileStream.Position);
+                    this.dateOfBirthDictionary[newRecordData.DateOfBirth].Add(this.fileStream.Position - 6);
                 }
                 else
                 {
-                    this.dateOfBirthDictionary[newRecordData.DateOfBirth].Add(this.fileStream.Position);
+                    this.dateOfBirthDictionary[newRecordData.DateOfBirth].Add(this.fileStream.Position - 6);
                 }
 
                 foreach (var element in Encoding.Default.GetBytes(newRecordData.FirstName))
@@ -225,9 +225,8 @@ namespace FileCabinetApp
                 }
 
                 this.fileStream.Position = positionBackup;
+                this.selectDictionary = new Dictionary<string, string>();
             }
-
-            this.selectDictionary = new Dictionary<string, string>();
         }
 
         /// <summary>Finds the record by date of birth.</summary>
