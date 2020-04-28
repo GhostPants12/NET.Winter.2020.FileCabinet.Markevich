@@ -6,70 +6,78 @@ using System.Text;
 
 namespace FileCabinetApp.CommandHandlers
 {
+    /// <summary>CommandHandler for export command.</summary>
     public class ExportCommandHandler : ServiceCommandHandlerBase
     {
+        /// <summary>Initializes a new instance of the <see cref="ExportCommandHandler" /> class.</summary>
+        /// <param name="service">The service.</param>
         public ExportCommandHandler(IFileCabinetService service)
             : base(service)
         {
-
         }
 
+        /// <summary>Handles the specified request.</summary>
+        /// <param name="request">The request.</param>
         public override void Handle(AppCommandRequest request)
         {
-            if (!request.Command.Equals("export", StringComparison.InvariantCultureIgnoreCase))
+            if (request != null && !request.Command.Equals("export", StringComparison.InvariantCultureIgnoreCase))
             {
-                this.nextHandler.Handle(request);
+                this.NextHandler.Handle(request);
                 return;
             }
 
-            string[] parametersArray = request.Parameters.Split(' ');
-            string formatName = parametersArray[0];
-            string path = parametersArray[1];
-            try
+            if (request != null)
             {
-                if (File.Exists(path))
+                string[] parametersArray = request.Parameters.Split(' ');
+                if (parametersArray.Length < 2)
                 {
-                    while (true)
-                    {
-                        Console.Write($"File is exist - rewrite {path} [Y/n] ");
-                        string answer = Console.ReadKey().KeyChar.ToString(CultureInfo.InvariantCulture);
-                        Console.WriteLine();
-                        if (answer.Equals("y", StringComparison.InvariantCultureIgnoreCase))
-                        {
-                            break;
-                        }
-
-                        if (answer.Equals("n", StringComparison.InvariantCultureIgnoreCase))
-                        {
-                            return;
-                        }
-                    }
+                    throw new ArgumentException($"{request.Parameters} are incorrect parameters.");
                 }
 
-                if (formatName.Equals("csv", StringComparison.InvariantCultureIgnoreCase))
+                string formatName = parametersArray[0];
+                string path = parametersArray[1];
+                try
                 {
-                    using (StreamWriter sr = new StreamWriter(new FileStream(path, FileMode.Create)))
+                    if (File.Exists(path))
                     {
+                        while (true)
+                        {
+                            Console.Write($"File is exist - rewrite {path} [Y/n] ");
+                            string answer = Console.ReadKey().KeyChar.ToString(CultureInfo.InvariantCulture);
+                            Console.WriteLine();
+                            if (answer.Equals("y", StringComparison.InvariantCultureIgnoreCase))
+                            {
+                                break;
+                            }
+
+                            if (answer.Equals("n", StringComparison.InvariantCultureIgnoreCase))
+                            {
+                                return;
+                            }
+                        }
+                    }
+
+                    if (formatName.Equals("csv", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        using StreamWriter sr = new StreamWriter(new FileStream(path, FileMode.Create));
                         this.service.MakeSnapshot().SaveToCsv(sr);
                         Console.WriteLine($"All records are exported to {path}");
                         sr.Close();
                         return;
                     }
-                }
 
-                if (formatName.Equals("xml", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    using (StreamWriter sr = new StreamWriter(new FileStream(path, FileMode.Create)))
+                    if (formatName.Equals("xml", StringComparison.InvariantCultureIgnoreCase))
                     {
+                        using StreamWriter sr = new StreamWriter(new FileStream(path, FileMode.Create));
                         this.service.MakeSnapshot().SaveToXml(sr);
                         Console.WriteLine($"All records are exported to {path}");
                         sr.Close();
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Export failed: " + ex.Message);
+                catch (ArgumentException ex)
+                {
+                    Console.WriteLine("Export failed: " + ex.Message);
+                }
             }
         }
     }

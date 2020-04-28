@@ -12,7 +12,7 @@ namespace FileCabinetGenerator
 {
     class XMLWriter
     {
-        private readonly XmlSerializer serializer = new XmlSerializer(typeof(XMLContainer));
+        private readonly XmlSerializer serializer = new XmlSerializer(typeof(XmlContainer));
         private FileStream fs;
 
         public XMLWriter(FileStream fs)
@@ -20,7 +20,7 @@ namespace FileCabinetGenerator
             this.fs = fs;
         }
 
-        public void Generate(XMLContainer container)
+        public void Generate(XmlContainer container)
         {
             serializer.Serialize(fs, container);
         }

@@ -33,9 +33,10 @@ namespace FileCabinetApp
         [XmlIgnore]
         public DateTime DateOfBirth { get; set; }
 
-        /// <summary>Property for date time representation for xml serialization.</summary>
+        /// <summary>Gets or sets property for date time representation for xml serialization.</summary>
         /// <value>The date.</value>
-        [XmlElement("dateOfBirth"), Browsable(false)]
+        [XmlElement("dateOfBirth")]
+        [Browsable(false)]
         public string Date
         {
             get => this.DateOfBirth.ToString("MM/dd/yyyy", CultureInfo.InvariantCulture);
@@ -53,13 +54,14 @@ namespace FileCabinetApp
         [XmlIgnore]
         public char Letter { get; set; }
 
-        /// <summary>Property for date time representation for xml serialization.</summary>
+        /// <summary>Gets or sets property for date time representation for xml serialization.</summary>
         /// <value>The date.</value>
-        [XmlElement("letter"), Browsable(false)]
+        [XmlElement("letter")]
+        [Browsable(false)]
         public string LetterProperty
         {
-            get { return this.Letter.ToString(CultureInfo.InvariantCulture); }
-            set { this.Letter = value.Single(); }
+            get => this.Letter.ToString(CultureInfo.InvariantCulture);
+            set => this.Letter = value.Single();
         }
 
         /// <summary>Gets or sets the balance.</summary>

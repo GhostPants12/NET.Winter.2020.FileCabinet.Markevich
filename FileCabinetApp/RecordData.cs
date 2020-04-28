@@ -4,6 +4,7 @@ using System.Text;
 
 namespace FileCabinetApp
 {
+    /// <summary>Class-container for the fields of FileCabinetRecord.</summary>
     public class RecordData
     {
         /// <summary>Initializes a new instance of the <see cref="RecordData"/> class.</summary>

@@ -10,14 +10,11 @@ using FileCabinetApp.RecordValidator;
 
 namespace FileCabinetApp
 {
+    #pragma warning disable CA1303 // Do not pass literals as localized parameters
     /// <summary>Class for working with the file cabinet.</summary>
     public abstract class FileCabinetMemoryService : IFileCabinetService
     {
-        private Dictionary<string, string> SelectDictionary =
-            new Dictionary<string, string>();
-
         private readonly RecordValidator.IRecordValidator validator;
-        private List<FileCabinetRecord> list = new List<FileCabinetRecord>();
 
         private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary =
             new Dictionary<string, List<FileCabinetRecord>>();
@@ -28,15 +25,21 @@ namespace FileCabinetApp
         private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary =
             new Dictionary<DateTime, List<FileCabinetRecord>>();
 
-        /// <summary>Initializes a new instance of the <see cref="FileCabinetService"/> class.</summary>
+        private List<FileCabinetRecord> list = new List<FileCabinetRecord>();
+
+        private Dictionary<string, string> selectDictionary =
+            new Dictionary<string, string>();
+
+        /// <summary>Initializes a new instance of the <see cref="FileCabinetMemoryService"/> class.</summary>
         /// <param name="recordValidator">The record validator.</param>
-        public FileCabinetMemoryService(RecordValidator.IRecordValidator recordValidator)
+        protected FileCabinetMemoryService(RecordValidator.IRecordValidator recordValidator)
         {
             this.validator = recordValidator;
         }
 
         /// <summary>Gets the validator.</summary>
         /// <value>The validator.</value>
+        /// <returns>Validator for this class.</returns>
         public IRecordValidator GetValidator()
         {
             return this.validator;
@@ -47,52 +50,56 @@ namespace FileCabinetApp
         /// <returns>Returns the new record's ID.</returns>
         public int CreateRecord(RecordData newRecordData)
         {
-            this.validator.Validate(newRecordData.FirstName, newRecordData.LastName, newRecordData.Code,
-                newRecordData.Letter, newRecordData.Balance, newRecordData.DateOfBirth);
-            var record = new FileCabinetRecord
+            if (newRecordData != null)
             {
-                Id = this.list.Count + 1,
-                FirstName = newRecordData.FirstName,
-                LastName = newRecordData.LastName,
-                Code = newRecordData.Code,
-                Letter = newRecordData.Letter,
-                Balance = newRecordData.Balance,
-                DateOfBirth = newRecordData.DateOfBirth,
-            };
+                this.validator.Validate(newRecordData.FirstName, newRecordData.LastName, newRecordData.Code, newRecordData.Letter, newRecordData.Balance, newRecordData.DateOfBirth);
+                var record = new FileCabinetRecord
+                {
+                    Id = this.list.Count + 1,
+                    FirstName = newRecordData.FirstName,
+                    LastName = newRecordData.LastName,
+                    Code = newRecordData.Code,
+                    Letter = newRecordData.Letter,
+                    Balance = newRecordData.Balance,
+                    DateOfBirth = newRecordData.DateOfBirth,
+                };
 
-            this.list.Add(record);
-            if (!this.firstNameDictionary.ContainsKey(newRecordData.FirstName))
-            {
-                this.firstNameDictionary.Add(newRecordData.FirstName, new List<FileCabinetRecord>());
-                this.firstNameDictionary[newRecordData.FirstName].Add(record);
-            }
-            else
-            {
-                this.firstNameDictionary[newRecordData.FirstName].Add(record);
+                this.list.Add(record);
+                if (!this.firstNameDictionary.ContainsKey(newRecordData.FirstName))
+                {
+                    this.firstNameDictionary.Add(newRecordData.FirstName, new List<FileCabinetRecord>());
+                    this.firstNameDictionary[newRecordData.FirstName].Add(record);
+                }
+                else
+                {
+                    this.firstNameDictionary[newRecordData.FirstName].Add(record);
+                }
+
+                if (!this.lastNameDictionary.ContainsKey(newRecordData.LastName))
+                {
+                    this.lastNameDictionary.Add(newRecordData.LastName, new List<FileCabinetRecord>());
+                    this.lastNameDictionary[newRecordData.LastName].Add(record);
+                }
+                else
+                {
+                    this.lastNameDictionary[newRecordData.LastName].Add(record);
+                }
+
+                if (!this.dateOfBirthDictionary.ContainsKey(newRecordData.DateOfBirth))
+                {
+                    this.dateOfBirthDictionary.Add(newRecordData.DateOfBirth, new List<FileCabinetRecord>());
+                    this.dateOfBirthDictionary[newRecordData.DateOfBirth].Add(record);
+                }
+                else
+                {
+                    this.dateOfBirthDictionary[newRecordData.DateOfBirth].Add(record);
+                }
+
+                this.selectDictionary = new Dictionary<string, string>();
+                return record.Id;
             }
 
-            if (!this.lastNameDictionary.ContainsKey(newRecordData.LastName))
-            {
-                this.lastNameDictionary.Add(newRecordData.LastName, new List<FileCabinetRecord>());
-                this.lastNameDictionary[newRecordData.LastName].Add(record);
-            }
-            else
-            {
-                this.lastNameDictionary[newRecordData.LastName].Add(record);
-            }
-
-            if (!this.dateOfBirthDictionary.ContainsKey(newRecordData.DateOfBirth))
-            {
-                this.dateOfBirthDictionary.Add(newRecordData.DateOfBirth, new List<FileCabinetRecord>());
-                this.dateOfBirthDictionary[newRecordData.DateOfBirth].Add(record);
-            }
-            else
-            {
-                this.dateOfBirthDictionary[newRecordData.DateOfBirth].Add(record);
-            }
-
-            this.SelectDictionary = new Dictionary<string, string>();
-            return record.Id;
+            throw new ArgumentNullException(nameof(newRecordData), $"{nameof(newRecordData)} is null.");
         }
 
         /// <summary>Edits the record.</summary>
@@ -100,82 +107,88 @@ namespace FileCabinetApp
         /// <exception cref="ArgumentException">Thrown when id is incorrect.</exception>
         public void EditRecord(RecordData newRecordData)
         {
-            this.validator.Validate(newRecordData.FirstName, newRecordData.LastName, newRecordData.Code, newRecordData.Letter, newRecordData.Balance, newRecordData.DateOfBirth);
-            foreach (var record in this.list)
+            if (newRecordData != null)
             {
-                if (record.Id == newRecordData.Id)
+                this.validator.Validate(newRecordData.FirstName, newRecordData.LastName, newRecordData.Code, newRecordData.Letter, newRecordData.Balance, newRecordData.DateOfBirth);
+                foreach (var record in this.list)
                 {
-                    if (this.firstNameDictionary[record.FirstName].Count > 1)
+                    if (record.Id == newRecordData.Id)
                     {
-                        this.firstNameDictionary[record.FirstName].Remove(record);
-                    }
-                    else
-                    {
-                        this.firstNameDictionary.Remove(record.FirstName);
-                    }
+                        if (this.firstNameDictionary[record.FirstName].Count > 1)
+                        {
+                            this.firstNameDictionary[record.FirstName].Remove(record);
+                        }
+                        else
+                        {
+                            this.firstNameDictionary.Remove(record.FirstName);
+                        }
 
-                    if (this.lastNameDictionary[record.LastName].Count > 1)
-                    {
-                        this.lastNameDictionary[record.LastName].Remove(record);
-                    }
-                    else
-                    {
-                        this.lastNameDictionary.Remove(record.LastName);
-                    }
+                        if (this.lastNameDictionary[record.LastName].Count > 1)
+                        {
+                            this.lastNameDictionary[record.LastName].Remove(record);
+                        }
+                        else
+                        {
+                            this.lastNameDictionary.Remove(record.LastName);
+                        }
 
-                    if (this.dateOfBirthDictionary[record.DateOfBirth].Count > 1)
-                    {
-                        this.dateOfBirthDictionary[record.DateOfBirth].Remove(record);
-                    }
-                    else
-                    {
-                        this.dateOfBirthDictionary.Remove(record.DateOfBirth);
-                    }
+                        if (this.dateOfBirthDictionary[record.DateOfBirth].Count > 1)
+                        {
+                            this.dateOfBirthDictionary[record.DateOfBirth].Remove(record);
+                        }
+                        else
+                        {
+                            this.dateOfBirthDictionary.Remove(record.DateOfBirth);
+                        }
 
-                    record.FirstName = newRecordData.FirstName;
-                    record.LastName = newRecordData.LastName;
-                    record.Code = newRecordData.Code;
-                    record.Letter = newRecordData.Letter;
-                    record.Balance = newRecordData.Balance;
-                    record.DateOfBirth = newRecordData.DateOfBirth;
-                    if (!this.firstNameDictionary.ContainsKey(newRecordData.FirstName))
-                    {
-                        this.firstNameDictionary.Add(newRecordData.FirstName, new List<FileCabinetRecord>());
-                        this.firstNameDictionary[newRecordData.FirstName].Add(record);
-                    }
-                    else
-                    {
-                        this.firstNameDictionary[newRecordData.FirstName].Add(record);
-                    }
+                        record.FirstName = newRecordData.FirstName;
+                        record.LastName = newRecordData.LastName;
+                        record.Code = newRecordData.Code;
+                        record.Letter = newRecordData.Letter;
+                        record.Balance = newRecordData.Balance;
+                        record.DateOfBirth = newRecordData.DateOfBirth;
+                        if (!this.firstNameDictionary.ContainsKey(newRecordData.FirstName))
+                        {
+                            this.firstNameDictionary.Add(newRecordData.FirstName, new List<FileCabinetRecord>());
+                            this.firstNameDictionary[newRecordData.FirstName].Add(record);
+                        }
+                        else
+                        {
+                            this.firstNameDictionary[newRecordData.FirstName].Add(record);
+                        }
 
-                    if (!this.lastNameDictionary.ContainsKey(newRecordData.LastName))
-                    {
-                        this.lastNameDictionary.Add(newRecordData.LastName, new List<FileCabinetRecord>());
-                        this.lastNameDictionary[newRecordData.LastName].Add(record);
-                    }
-                    else
-                    {
-                        this.lastNameDictionary[newRecordData.LastName].Add(record);
-                    }
+                        if (!this.lastNameDictionary.ContainsKey(newRecordData.LastName))
+                        {
+                            this.lastNameDictionary.Add(newRecordData.LastName, new List<FileCabinetRecord>());
+                            this.lastNameDictionary[newRecordData.LastName].Add(record);
+                        }
+                        else
+                        {
+                            this.lastNameDictionary[newRecordData.LastName].Add(record);
+                        }
 
-                    if (!this.dateOfBirthDictionary.ContainsKey(newRecordData.DateOfBirth))
-                    {
-                        this.dateOfBirthDictionary.Add(newRecordData.DateOfBirth, new List<FileCabinetRecord>());
-                        this.dateOfBirthDictionary[newRecordData.DateOfBirth].Add(record);
-                    }
-                    else
-                    {
-                        this.dateOfBirthDictionary[newRecordData.DateOfBirth].Add(record);
-                    }
+                        if (!this.dateOfBirthDictionary.ContainsKey(newRecordData.DateOfBirth))
+                        {
+                            this.dateOfBirthDictionary.Add(newRecordData.DateOfBirth, new List<FileCabinetRecord>());
+                            this.dateOfBirthDictionary[newRecordData.DateOfBirth].Add(record);
+                        }
+                        else
+                        {
+                            this.dateOfBirthDictionary[newRecordData.DateOfBirth].Add(record);
+                        }
 
-                    this.SelectDictionary = new Dictionary<string, string>();
-                    return;
+                        this.selectDictionary = new Dictionary<string, string>();
+                        return;
+                    }
                 }
-            }
 
-            throw new ArgumentException($"{nameof(newRecordData.Id)} is incorrect.");
+                throw new ArgumentException($"{nameof(newRecordData.Id)} is incorrect.");
+            }
         }
 
+        /// <summary>Deletes the record with the specified id.</summary>
+        /// <param name="id">The identifier.</param>
+        /// <exception cref="ArgumentException">Id #{id} doesn't exist.</exception>
         public void DeleteRecord(int id)
         {
             foreach (var element in this.list)
@@ -186,7 +199,7 @@ namespace FileCabinetApp
                     this.lastNameDictionary[element.LastName].Remove(element);
                     this.dateOfBirthDictionary[element.DateOfBirth].Remove(element);
                     this.list.Remove(element);
-                    this.SelectDictionary = new Dictionary<string, string>();
+                    this.selectDictionary = new Dictionary<string, string>();
                     return;
                 }
             }
@@ -261,14 +274,21 @@ namespace FileCabinetApp
             return new ReadOnlyCollection<FileCabinetRecord>(this.list);
         }
 
+        /// <summary>Makes the snapshot.</summary>
+        /// <returns>Returns the snapshot of current FileCabinet.</returns>
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
             return new FileCabinetServiceSnapshot(this.list);
         }
 
+        /// <summary>Restores the FileCabinet with specified snapshot.</summary>
+        /// <param name="snapshot">The snapshot.</param>
         public void Restore(FileCabinetServiceSnapshot snapshot)
         {
-            this.list = new List<FileCabinetRecord>(snapshot.Records);
+            if (snapshot != null)
+            {
+                this.list = new List<FileCabinetRecord>(snapshot.Records);
+            }
         }
 
         /// <summary>Gets the stat.</summary>
@@ -278,19 +298,26 @@ namespace FileCabinetApp
             return this.list.Count;
         }
 
+        /// <summary>Gets the removed stat.</summary>
+        /// <returns>Returns the count of removed records.</returns>
         public int GetRemovedStat()
         {
             return 0;
         }
 
+        /// <summary>Purges this instance.</summary>
+        /// <returns>Amount of purged elements.</returns>
+        /// <exception cref="NotImplementedException">This method is incorrect for this type of FileCabinet.</exception>
         public int Purge()
         {
             throw new NotImplementedException("This method is incorrect for this type of FileCabinet.");
         }
 
+        /// <summary>Gets the select dictionary.</summary>
+        /// <returns>Returns the select dictionary.</returns>
         public Dictionary<string, string> GetSelectDictionary()
         {
-            return this.SelectDictionary;
+            return this.selectDictionary;
         }
     }
 }

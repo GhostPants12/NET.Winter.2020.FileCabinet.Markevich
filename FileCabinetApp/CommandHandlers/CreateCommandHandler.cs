@@ -4,19 +4,25 @@ using System.Text;
 
 namespace FileCabinetApp.CommandHandlers
 {
+    /// <summary>CommandHandler for the create command.</summary>
     public class CreateCommandHandler : ServiceCommandHandlerBase
     {
+        #pragma warning disable CA1303 // Do not pass literals as localized parameters
+
+        /// <summary>Initializes a new instance of the <see cref="CreateCommandHandler" /> class.</summary>
+        /// <param name="service">The service.</param>
         public CreateCommandHandler(IFileCabinetService service)
             : base(service)
         {
-
         }
 
+        /// <summary>Handles the specified request.</summary>
+        /// <param name="request">The request.</param>
         public override void Handle(AppCommandRequest request)
         {
-            if (!request.Command.Equals("create", StringComparison.InvariantCultureIgnoreCase))
+            if (request != null && !request.Command.Equals("create", StringComparison.InvariantCultureIgnoreCase))
             {
-                this.nextHandler.Handle(request);
+                this.NextHandler.Handle(request);
                 return;
             }
 
@@ -45,9 +51,11 @@ namespace FileCabinetApp.CommandHandlers
                 id = this.service.CreateRecord(recordDataToCreate);
                 Console.WriteLine($"Record #{id} has been created.");
             }
-            catch (Exception)
+            #pragma warning disable CA1031 // Do not catch general exception types
+            catch
+            #pragma warning restore CA1031 // Do not catch general exception types
             {
-                Handle(request);
+                this.Handle(request);
             }
         }
     }

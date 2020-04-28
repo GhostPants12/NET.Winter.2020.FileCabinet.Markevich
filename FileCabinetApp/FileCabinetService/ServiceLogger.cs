@@ -8,17 +8,26 @@ using FileCabinetApp.RecordValidator;
 
 namespace FileCabinetApp.FileCabinetService
 {
-    public class ServiceLogger : IFileCabinetService
+    /// <summary>Class-decorator for FileCabinet logging.</summary>
+    public class ServiceLogger : IFileCabinetService, IDisposable
     {
-        private IFileCabinetService service;
+        #pragma warning disable CA1303 // Do not pass literals as localized parameters
+
+        private readonly IFileCabinetService service;
+
+        private bool isDisposed;
 
         private TextWriter writer;
 
+        /// <summary>Initializes a new instance of the <see cref="ServiceLogger" /> class.</summary>
+        /// <param name="service">The service.</param>
         public ServiceLogger(IFileCabinetService service)
         {
             this.service = service;
         }
 
+        /// <summary>Gets the validator.</summary>
+        /// <returns>Returns the validator.</returns>
         public IRecordValidator GetValidator()
         {
             try
@@ -36,18 +45,26 @@ namespace FileCabinetApp.FileCabinetService
             }
         }
 
+        /// <summary>Creates the record.</summary>
+        /// <param name="newRecordData">The new record data.</param>
+        /// <returns>Returns the id of a created record.</returns>
         public int CreateRecord(RecordData newRecordData)
         {
             try
             {
                 this.writer = new StreamWriter(new FileStream("log.txt", FileMode.Append));
-                this.writer.WriteLine(
-                    $"{DateTime.Now} - Calling CreateRecord() with FirstName = '{newRecordData.FirstName}', " +
-                    $"LastName = '{newRecordData.LastName}', DateOfBirth = '{newRecordData.DateOfBirth.ToString("MM/dd/yyyy", CultureInfo.InvariantCulture)}', " +
-                    $"Code = '{newRecordData.Code}', Letter = '{newRecordData.Letter}', Balance = '{newRecordData.Balance}'.");
-                int returnValue = this.service.CreateRecord(newRecordData);
-                this.writer.WriteLine($"{DateTime.Now} - CreateRecord() returned {returnValue}.");
-                return returnValue;
+                if (newRecordData != null)
+                {
+                    this.writer.WriteLine(
+                        $"{DateTime.Now} - Calling CreateRecord() with FirstName = '{newRecordData.FirstName}', " +
+                        $"LastName = '{newRecordData.LastName}', DateOfBirth = '{newRecordData.DateOfBirth.ToString("MM/dd/yyyy", CultureInfo.InvariantCulture)}', " +
+                        $"Code = '{newRecordData.Code}', Letter = '{newRecordData.Letter}', Balance = '{newRecordData.Balance}'.");
+                    int returnValue = this.service.CreateRecord(newRecordData);
+                    this.writer.WriteLine($"{DateTime.Now} - CreateRecord() returned {returnValue}.");
+                    return returnValue;
+                }
+
+                throw new ArgumentNullException(nameof(newRecordData), $"{nameof(newRecordData)} is null.");
             }
             finally
             {
@@ -55,15 +72,22 @@ namespace FileCabinetApp.FileCabinetService
             }
         }
 
+        /// <summary>Edits the record.</summary>
+        /// <param name="newRecordData">The new record data.</param>
         public void EditRecord(RecordData newRecordData)
         {
             try
             {
                 this.writer = new StreamWriter(new FileStream("log.txt", FileMode.Append));
-                this.writer.WriteLine($"{DateTime.Now} - Calling EditRecord() with FirstName = '{newRecordData.FirstName}', " +
-                                      $"LastName = '{newRecordData.LastName}', DateOfBirth = '{newRecordData.DateOfBirth.ToString("MM/dd/yyyy", CultureInfo.InvariantCulture)}', " +
-                                      $"Code = '{newRecordData.Code}', Letter = '{newRecordData.Letter}', Balance = '{newRecordData.Balance}'.");
-                this.service.EditRecord(newRecordData);
+                if (newRecordData != null)
+                {
+                    this.writer.WriteLine(
+                        $"{DateTime.Now} - Calling EditRecord() with FirstName = '{newRecordData.FirstName}', " +
+                        $"LastName = '{newRecordData.LastName}', DateOfBirth = '{newRecordData.DateOfBirth.ToString("MM/dd/yyyy", CultureInfo.InvariantCulture)}', " +
+                        $"Code = '{newRecordData.Code}', Letter = '{newRecordData.Letter}', Balance = '{newRecordData.Balance}'.");
+                    this.service.EditRecord(newRecordData);
+                }
+
                 this.writer.WriteLine($"{DateTime.Now} - EditRecord() was executed.");
             }
             finally
@@ -72,6 +96,8 @@ namespace FileCabinetApp.FileCabinetService
             }
         }
 
+        /// <summary>Deletes the record with the specified id.</summary>
+        /// <param name="id">The identifier.</param>
         public void DeleteRecord(int id)
         {
             try
@@ -87,6 +113,9 @@ namespace FileCabinetApp.FileCabinetService
             }
         }
 
+        /// <summary>Finds the records by firstname.</summary>
+        /// <param name="firstName">The first name.</param>
+        /// <returns>Returns records with the specified first name.</returns>
         public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
         {
             try
@@ -103,6 +132,9 @@ namespace FileCabinetApp.FileCabinetService
             }
         }
 
+        /// <summary>Finds the records by lastname.</summary>
+        /// <param name="lastName">The last name.</param>
+        /// <returns>Returns records with the specified last name.</returns>
         public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
         {
             try
@@ -119,6 +151,9 @@ namespace FileCabinetApp.FileCabinetService
             }
         }
 
+        /// <summary>Finds the records by date of birth.</summary>
+        /// <param name="dateTime">The date of birth.</param>
+        /// <returns>Returns records with the specified date of birth.</returns>
         public IEnumerable<FileCabinetRecord> FindByDateOfBirth(DateTime dateTime)
         {
             try
@@ -136,6 +171,8 @@ namespace FileCabinetApp.FileCabinetService
             }
         }
 
+        /// <summary>Gets the records.</summary>
+        /// <returns>Returns the collection of records.</returns>
         public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
             try
@@ -152,6 +189,8 @@ namespace FileCabinetApp.FileCabinetService
             }
         }
 
+        /// <summary>Makes the snapshot.</summary>
+        /// <returns>Returns the snapshot of current FileCabinet.</returns>
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
             try
@@ -168,6 +207,8 @@ namespace FileCabinetApp.FileCabinetService
             }
         }
 
+        /// <summary>Restores the FileCabinet with specified snapshot.</summary>
+        /// <param name="snapshot">The snapshot.</param>
         public void Restore(FileCabinetServiceSnapshot snapshot)
         {
             try
@@ -183,6 +224,8 @@ namespace FileCabinetApp.FileCabinetService
             }
         }
 
+        /// <summary>Purges this instance.</summary>
+        /// <returns>Amount of purged elements.</returns>
         public int Purge()
         {
             try
@@ -199,6 +242,8 @@ namespace FileCabinetApp.FileCabinetService
             }
         }
 
+        /// <summary>Gets the stat.</summary>
+        /// <returns>Returns the count of records.</returns>
         public int GetStat()
         {
             try
@@ -215,6 +260,8 @@ namespace FileCabinetApp.FileCabinetService
             }
         }
 
+        /// <summary>Gets the removed stat.</summary>
+        /// <returns>Returns the count of removed records.</returns>
         public int GetRemovedStat()
         {
             try
@@ -231,6 +278,8 @@ namespace FileCabinetApp.FileCabinetService
             }
         }
 
+        /// <summary>Gets the select dictionary.</summary>
+        /// <returns>Returns the select dictionary.</returns>
         public Dictionary<string, string> GetSelectDictionary()
         {
             try
@@ -245,6 +294,30 @@ namespace FileCabinetApp.FileCabinetService
             {
                 this.writer.Close();
             }
+        }
+
+        /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
+        /// <param name="disposing">If true, this object is going to be disposed.</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (this.isDisposed)
+            {
+                return;
+            }
+
+            if (disposing)
+            {
+                this.writer.Dispose();
+            }
+
+            this.isDisposed = true;
         }
     }
 }
